@@ -16,8 +16,24 @@ const TYPES = {
     ScheduleRepository:Symbol("ScheduleRepository"),
     ScheduleService:Symbol("ScheduleService"),
 
+    
+    //schedule
+    BlueprintScheduleRepository:Symbol("BlueprintScheduleRepository"),
+    BlueprintScheduleService:Symbol("BlueprintScheduleService"),
+
+    //ward
+    WardRepository:Symbol("WardRepository"),
+    WardService:Symbol("WardService"),
+
+    //speicaliztion
+    SpecializationRepository:Symbol("SpecializationRepository"),
+    SpecializationService:Symbol("SpecializationService"),
+
     //utils section
     ResponseUtil: Symbol('ResponseUtil'),
+
+    //counter
+    CounterRepository: Symbol('CounterRepository'),
 
     Controller: Symbol('Controller')
 };

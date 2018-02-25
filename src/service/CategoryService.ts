@@ -5,6 +5,7 @@ import * as _ from 'lodash';
 import { CategoryRepository } from '../repository/CategoryRepository';
 import { RequestQueryDto } from '../model/RequestQueryDto';
 import AppConstants from "../util/AppConstant"
+import { ParseUtils } from '../util/parse-utils';
 
 export interface CategoryService {
     query(obj: RequestQueryDto);
@@ -36,15 +37,57 @@ export class CategoryServiceImpl implements CategoryService {
             obj.offset = AppConstants.DEFAULT_OFFSET_RECORD_SEARCH;
         }
 
-        var re = await this.registrationRepo.query(obj.resource, obj.filter, obj.sort,  obj.limit, obj.offset).then(result=>{
+        var re = await this.registrationRepo.query(obj.resource, obj.filter, this.getJoinTable(obj.resource), obj.sort,  obj.limit, obj.offset).then(result=>{
             if(result && result.length > 0)
              {
+                //  if(result.)
+                result[0].data = this.parseObj(result[0].data, obj.resource);
                 return result[0];
              }
              return result;
         });
         return re;
     }
+
+    private getJoinTable(resource: string) {
+        switch (resource) {
+            case 'ward_tbl':
+                return [{
+                    from: 'specialization_tbl',
+                    localField: "specialization_id",
+                    foreignField: "id",
+                    as: "specialization_tbl"
+                }];
+            case 'blueprint_schedule_tbl':
+                return [{
+                    from: 'specialization_tbl',
+                    localField: "specialization_id",
+                    foreignField: "id",
+                    as: "specialization_tbl"
+                },
+                {
+                    from: 'ward_tbl',
+                    localField: "ward_id",
+                    foreignField: "id",
+                    as: "ward_tbl"
+                }];
+        }
+        return null;
+    }
+
+    private parseObj(data: any[], resource: string) {
+        switch (resource) {
+            case 'ward_tbl':
+                return ParseUtils.mappingField(data, 'specialization_tbl', 'name', 'specialization_name', false);
+            case 'blueprint_schedule_tbl':
+                data = ParseUtils.mappingField(data, 'specialization_tbl', 'name', 'specialization_name', false);
+                return ParseUtils.mappingField(data, 'ward_tbl', 'name', 'ward_name', false);
+        }
+        return data;
+
+    }
+
+
 
  
 }

@@ -5,18 +5,18 @@ import 'reflect-metadata';
 import * as _ from 'lodash';
 import { ResponseModel, Status } from '../model/ResponseDto';
 import to from '../util/promise-utils';
-import { WardRepository } from '../repository/WardRepository';
+import { SpecializationRepository } from '../repository/SpecializationRepository';
 
 
-export interface WardService {
+export interface SpecializationService {
     insert(obj: any): Promise<any>;
     update(obj: any): Promise<ResponseModel<any>>;
 }
 
 @injectable()
-export class WardServiceImpl implements WardService {
-    @inject(TYPES.WardRepository)
-    private scheduleRepository: WardRepository;
+export class SpecializationServiceImpl implements SpecializationService {
+    @inject(TYPES.SpecializationRepository)
+    private scheduleRepository: SpecializationRepository;
 
 
     public async insert(obj: any): Promise<any> {

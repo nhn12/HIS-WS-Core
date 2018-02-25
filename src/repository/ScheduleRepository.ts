@@ -15,6 +15,8 @@ export interface ScheduleRepository {
 @injectable()
 export class ScheduleRepositoryImpl implements ScheduleRepository {
     col:mongoose.Model<any>;
+
+    
     constructor() {
 
         this.col = mongoose.model('schedule_tbl', SchedulerSchema );
