@@ -71,6 +71,14 @@ export class CategoryServiceImpl implements CategoryService {
                     foreignField: "id",
                     as: "ward_tbl"
                 }];
+            case 'specialization_tbl':
+                return [{
+                    from: 'specialization_price_tbl',
+                    localField: "id",
+                    foreignField: "specialization_id",
+                    as: "specialization_tbl"
+                }];
+            
         }
         return null;
     }

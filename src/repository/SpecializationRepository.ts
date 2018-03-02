@@ -37,10 +37,18 @@ export class SpecializationRepositoryImpl implements SpecializationRepository {
         return Object.assign<SpecializationDto[], mongoose.Document[]>(result, data);
     }
 
-    public async insert(obj: any): Promise<SpecializationDto[]> {
-        var count = await this.counterRepository.getNextSequenceValue('specialization_tbl');
-        obj.id = count;
-        let [err, data] = await to(this.col.insertMany([obj]));
+    public async insert(obj: any[]): Promise<SpecializationDto[]> {
+        for(var i = 0; i < obj.length; i++)
+        {
+            if(obj[i].id == null)
+            {
+                let count = await this.counterRepository.getNextSequenceValue('specialization_tbl');
+                obj[i].id = count;
+            }
+
+        }     
+        console.log(obj);
+        let [err, data] = await to(this.col.insertMany(obj));
         
         if(err) {
             return Promise.reject(err);

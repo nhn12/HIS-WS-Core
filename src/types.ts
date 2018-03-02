@@ -29,6 +29,22 @@ const TYPES = {
     SpecializationRepository:Symbol("SpecializationRepository"),
     SpecializationService:Symbol("SpecializationService"),
 
+    //speicalization price
+    SpecializationPriceRepository:Symbol("SpecializationPriceRepository"),
+    SpecializationPriceService:Symbol("SpecializationPriceService"),
+
+    //Type
+    TypeRepository:Symbol("TypeRepository"),
+    TypeService:Symbol("TypeService"),
+
+    //Config
+    ConfigRepository:Symbol("ConfigRepository"),
+    ConfigService:Symbol("ConfigService"),
+
+    //Province
+    ProvinceRepository:Symbol("ProvinceRepository"),
+    ProvinceService:Symbol("ProvinceService"),
+
     //utils section
     ResponseUtil: Symbol('ResponseUtil'),
 

@@ -24,8 +24,10 @@ export class SpecializationController implements RegistrableController {
                 const [err, addresses] = await to(this.specializationService.insert(req.body));
                 if(err) {
                     res.json(this.responseUtils.buildErrorData(err));
+                    return;
                 }
                 res.json(new ResponseModel(Status._200, "success", addresses));
+                return;
             })
     }
 }

@@ -26,6 +26,18 @@ import { ScheduleController } from './controller/ScheduleController';
 import { SpecializationController } from './controller/SpecializationController';
 import { BlueprintScheduleService, BlueprintScheduleServiceImpl } from './service/BlueprintScheduleService';
 import { BlueprintScheduleController } from './controller/BlueprintScheduleController';
+import { SpecializationPriceServiceImpl, SpecializationPriceService } from './service/SpecializationPriceService';
+import { SpecializationPriceRepository, SpecializationPriceRepositoryImpl } from './repository/SpecializationPriceRepository';
+import { SpecializationPriceController } from './controller/SpecializationPriceController';
+import { TypeService, TypeServiceImpl } from './service/TypeService';
+import { TypeRepository, TypeRepositoryImpl } from './repository/TypeRepository';
+import { TypeController } from './controller/TypeController';
+import { ConfigService, ConfigServiceImpl } from './service/ConfigService';
+import { ConfigRepository, ConfigRepositoryImpl } from './repository/ConfigRepository';
+import { ConfigController } from './controller/ConfigController';
+import { ProvinceService, ProvinceServiceImpl } from './service/ProvinceService';
+import { ProvinceRepository, ProvinceRepositoryImpl } from './repository/ProvinceRepository';
+import { ProvinceController } from './controller/ProvinceController';
 
 const container = new Container();
 container.bind<RegistrableController>(TYPES.Controller).to(MedicalRegistrationController);
@@ -35,8 +47,10 @@ container.bind<RegistrableController>(TYPES.Controller).to(ScheduleController);
 container.bind<RegistrableController>(TYPES.Controller).to(WardController);
 container.bind<RegistrableController>(TYPES.Controller).to(SpecializationController);
 container.bind<RegistrableController>(TYPES.Controller).to(BlueprintScheduleController);
-
-
+container.bind<RegistrableController>(TYPES.Controller).to(SpecializationPriceController);
+container.bind<RegistrableController>(TYPES.Controller).to(TypeController);
+container.bind<RegistrableController>(TYPES.Controller).to(ConfigController);
+container.bind<RegistrableController>(TYPES.Controller).to(ProvinceController);
 
 
 container.bind<AddressService>(TYPES.AddressService).to(AddressServiceImpl);
@@ -67,6 +81,22 @@ container.bind<WardRepository>(TYPES.WardRepository).to(WardRepositoryImpl);
 //specialization
 container.bind<SpecializationService>(TYPES.SpecializationService).to(SpecializationServiceImpl);
 container.bind<SpecializationRepository>(TYPES.SpecializationRepository).to(SpecializationRepositoryImpl);
+
+//specializationPrice
+container.bind<SpecializationPriceService>(TYPES.SpecializationPriceService).to(SpecializationPriceServiceImpl);
+container.bind<SpecializationPriceRepository>(TYPES.SpecializationPriceRepository).to(SpecializationPriceRepositoryImpl);
+
+//type
+container.bind<TypeService>(TYPES.TypeService).to(TypeServiceImpl);
+container.bind<TypeRepository>(TYPES.TypeRepository).to(TypeRepositoryImpl);
+
+//config
+container.bind<ConfigService>(TYPES.ConfigService).to(ConfigServiceImpl);
+container.bind<ConfigRepository>(TYPES.ConfigRepository).to(ConfigRepositoryImpl);
+
+//province
+container.bind<ProvinceService>(TYPES.ProvinceService).to(ProvinceServiceImpl);
+container.bind<ProvinceRepository>(TYPES.ProvinceService).to(ProvinceRepositoryImpl);
 
 //counter 
 container.bind<CounterRepository>(TYPES.CounterRepository).to(CounterRepositoryImpl)
