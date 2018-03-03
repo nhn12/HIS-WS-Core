@@ -55,6 +55,7 @@ export class ScheduleServiceImpl implements ScheduleService {
                 tempSchedule = tempSchedule.map(value=>{
                     value.specialization_id = blueList[i].specialization_id;
                     value.ward_id = blueList[i].ward_id;
+                    value.period = value.period.valueOf()/1000;
                     return value;
                 });
 
