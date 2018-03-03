@@ -1,5 +1,5 @@
-function to(promise) {
-  return promise.then(data => {
+function to<T>(promise) {
+  return promise.then((data: T) => {
      return [null, data];
   }).catch(err => [err]);
 };

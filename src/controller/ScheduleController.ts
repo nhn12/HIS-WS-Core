@@ -3,7 +3,7 @@ import {injectable, inject} from 'inversify';
 import TYPES from '../types';
 import {RegistrableController} from './RegisterableController';
 import { ResponseUtil } from '../util/ResponseUtils';
-import { Status } from '../model/ResponseDto';
+import { Status, ResponseModel } from '../model/ResponseDto';
 import { ScheduleService } from '../service/ScheduleService';
 import to from '../util/promise-utils';
 
@@ -22,7 +22,9 @@ export class ScheduleController implements RegistrableController {
         app.route('/api/schedule/insert')
             .post(async(req: express.Request, res: express.Response, next: express.NextFunction) => {
                 const [err, addresses] = await to(this.scheduleService.insert(req.body));
-                console.log(addresses);
+                if(err) {
+                    return res.json(this.responseUtils.buildErrorData(JSON.stringify(err)));
+                }
                 res.json(addresses);
             })
     }

@@ -15,6 +15,9 @@ export var SchedulerSchema: Schema = new Schema({
     channel: String,
     has_sync: {type: Boolean, default: false},
 
+    ward_id: Number,
+    specialization_id: Number,
+
     //audit tbl
     created_by: String,
     created_date: {type: Date, default: Date.now},

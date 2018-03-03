@@ -3,7 +3,7 @@
   "formatter": "json",
   "rules": {
     "quotemark": [
-      true,
+      false,
       "single"
     ],
     "no-var-requires": false,
@@ -11,8 +11,8 @@
       true,
       "never-prefix"
     ],
-    "max-line-length": [true, 160],
-    "trailing-comma": [true, {"multiline": "never", "singleline": "never"}],
+    "max-line-length": [false, 160],
+    "trailing-comma": [false, {"multiline": "never", "singleline": "never"}],
     "object-literal-sort-keys": false
   }
 }

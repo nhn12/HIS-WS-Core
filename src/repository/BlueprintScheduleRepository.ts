@@ -27,7 +27,7 @@ export class BlueprintScheduleRepositoryImpl implements BlueprintScheduleReposit
     }
 
     public async findAll(): Promise<Array<BlueprintScheduleDto>> {
-        let data = await this.col.find();
+        let data = await this.col.find({deleted_flag: false});
         let result: BlueprintScheduleDto[] = [];
         return Object.assign<BlueprintScheduleDto[], mongoose.Document[]>(result, data);
     }
@@ -46,7 +46,11 @@ export class BlueprintScheduleRepositoryImpl implements BlueprintScheduleReposit
     }
 
     public async delete(obj: any): Promise<boolean> {
-        let [err, response] = await to(this.col.deleteOne(obj));
+        let [err, response] = await to(new Promise((resolve, reject)=>{
+            this.col.deleteOne(obj, ()=>{
+                resolve(true);
+            })
+        }));
         console.log(response);
         if(err) {
             return Promise.reject(err);

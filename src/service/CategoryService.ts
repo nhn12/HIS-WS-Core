@@ -78,6 +78,19 @@ export class CategoryServiceImpl implements CategoryService {
                     foreignField: "specialization_id",
                     as: "specialization_tbl"
                 }];
+            case 'schedule_tbl':
+                return [{
+                    from: 'specialization_tbl',
+                    localField: "specialization_id",
+                    foreignField: "id",
+                    as: "specialization_tbl"
+                },
+                {
+                    from: 'ward_tbl',
+                    localField: "ward_id",
+                    foreignField: "id",
+                    as: "ward_tbl"
+                }];
             
         }
         return null;
@@ -89,6 +102,11 @@ export class CategoryServiceImpl implements CategoryService {
                 return ParseUtils.mappingField(data, 'specialization_tbl', 'name', 'specialization_name', false);
             case 'blueprint_schedule_tbl':
                 data = ParseUtils.mappingField(data, 'specialization_tbl', 'name', 'specialization_name', false);
+                return ParseUtils.mappingField(data, 'ward_tbl', 'name', 'ward_name', false);
+            case 'schedule_tbl':
+                data = ParseUtils.mappingField(data, 'specialization_tbl', 'name', 'specialization_name', false);
+                data = ParseUtils.mappingDateToHoursString(data, 'start_time', 'start_time_string');
+                data = ParseUtils.mappingDateToHoursString(data, 'end_time', 'end_time_string');
                 return ParseUtils.mappingField(data, 'ward_tbl', 'name', 'ward_name', false);
         }
         return data;

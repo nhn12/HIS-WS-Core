@@ -13,6 +13,9 @@ export class ScheduleDto {
     public relational_code: string;
     public relational_name: string;
 
+    public ward_id:  Number;
+    public specialization_id: Number;
+
     //audit tbl
     public created_by: String;
     public created_date: Date;

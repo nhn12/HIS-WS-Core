@@ -7,7 +7,7 @@ import 'reflect-metadata';
 import to from '../util/promise-utils'
 
 export interface CounterRepository {
-    getNextSequenceValue(sequenceName): Promise<number>;
+    getNextSequenceValue(sequenceName, quantity?: number): Promise<number>;
 }
 
 @injectable()
@@ -18,12 +18,17 @@ export class CounterRepositoryImpl implements CounterRepository {
         this.col = mongoose.model('counters_tbl', CounterSchema, 'counters_tbl');
     }
 
-    async getNextSequenceValue(sequenceName: any): Promise<number> {
+    public async getNextSequenceValue(sequenceName: any, quantity?: Number): Promise<number> {
+        if(quantity == null || quantity == undefined) {
+            quantity = 1;
+        }
+
         var seq = await this.col.findOneAndUpdate(
             { _id: sequenceName },
-            { $inc: { sequence_value: 1 } },
+            { $inc: { sequence_value: quantity } },
             { new: true, upsert: true }
         );
+
         return seq.sequence_value;
     }
 
