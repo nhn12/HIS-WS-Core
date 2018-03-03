@@ -3,4 +3,5 @@ export class ProvinceDto {
     public code: String;
     public name: String;
     public is_interval: boolean; //create interval
+    public district_id: Number;
 }

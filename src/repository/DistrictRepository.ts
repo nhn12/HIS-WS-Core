@@ -34,8 +34,11 @@ export class DistrictRepositoryImpl implements DistrictRepository {
     public async insert(obj: any[]): Promise<DistrictDto[]> {
         for(var i = 0; i < obj.length; i++)
         {
-            let count = await this.counterRepository.getNextSequenceValue('district_tbl');
-            obj[i].id = count;
+            if(obj[i].id == null)
+            {
+                let count = await this.counterRepository.getNextSequenceValue('district_tbl');
+                obj[i].id = count;
+            }
         }     
         console.log(obj);
         let [err, data] = await to(this.col.insertMany(obj));

@@ -35,8 +35,12 @@ export class ConfigRepositoryImpl implements ConfigRepository {
     public async insert(obj: any[]): Promise<ConfigDto[]> {
         for(var i = 0; i < obj.length; i++)
         {
-            let count = await this.counterRepository.getNextSequenceValue('config_tbl');
-            obj[i].id = count;
+            console.log(obj[i].id);
+            if(obj[i].id == null)
+            {
+                let count = await this.counterRepository.getNextSequenceValue('config_tbl');
+                obj[i].id = count;
+            }
         }     
         console.log(obj);
         let [err, data] = await to(this.col.insertMany(obj));

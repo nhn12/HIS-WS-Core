@@ -5,7 +5,8 @@ export var ProvinceSchema: Schema = new Schema({
     code: String,
     name: String,
     is_interval: Boolean, //create interval
-
+    district_id: Number,
+    
     has_sync: { type: Boolean, default: false },
     //audit tbl
     created_by: String,

@@ -7,9 +7,10 @@ import { ResponseModel, Status } from '../model/ResponseDto';
 import to from '../util/promise-utils';
 import { DistrictDto } from '../model/DistrictDto';
 import { DistrictRepository } from '../repository/DistrictRepository';
+import { ProvinceRepository } from '../repository/ProvinceRepository';
 
 export interface DistrictService {
-    insert(obj: any): Promise<ResponseModel<any>>;
+    insert(obj: DistrictDto): Promise<any>;
     delete(obj: DistrictDto): Promise<ResponseModel<any>>;
     update(obj: DistrictDto): Promise<ResponseModel<any>>;
 }
@@ -18,20 +19,22 @@ export interface DistrictService {
 export class DistrictServiceImpl implements DistrictService {
     @inject(TYPES.DistrictRepository)
     private DistrictRepository: DistrictRepository;
+    @inject(TYPES.ProvinceRepository)
+    private ProvinceRepository: ProvinceRepository;
 
 
-    public async insert(obj: any): Promise<ResponseModel<any>> {
-        console.log("Service");
-        if(!obj) {
-            return new ResponseModel(Status._400, "lack of data");
+    public async insert(obj: DistrictDto): Promise<any> {
+        console.log(obj.id);
+        if(obj.id != null && obj.province_id != null)
+        {
+            obj.province_id.forEach(element => {
+                element.district_id = obj.id;
+            });
         }
-        console.log(obj);
-        let [err, result] = await to(this.DistrictRepository.insert(obj));
-        if(err) {
-            return new ResponseModel(Status._500, "err");
-        }
-
-        return new ResponseModel(Status._200, "success", result);
+        await this.ProvinceRepository.insert(obj.province_id);                           
+        //await this.specializationPriceRepository.insert(obj[0].price);
+        console.log("after");
+        return await this.DistrictRepository.insert([obj]);
     }
 
     public async delete(obj: DistrictDto): Promise<ResponseModel<any>>{

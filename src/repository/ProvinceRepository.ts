@@ -32,10 +32,14 @@ export class ProvinceRepositoryImpl implements ProvinceRepository {
     }
 
     public async insert(obj: any[]): Promise<ProvinceDto[]> {
+        console.log(obj);
         for(var i = 0; i < obj.length; i++)
         {
-            let count = await this.counterRepository.getNextSequenceValue('province_tbl');
-            obj[i].id = count;
+            if(obj[i].id == null)
+            {
+                let count = await this.counterRepository.getNextSequenceValue('province_tbl');
+                obj[i].id = count;
+            }
         }     
         console.log(obj);
         let [err, data] = await to(this.col.insertMany(obj));
