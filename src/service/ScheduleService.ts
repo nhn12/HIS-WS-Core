@@ -55,7 +55,7 @@ export class ScheduleServiceImpl implements ScheduleService {
                 tempSchedule = tempSchedule.map(value=>{
                     value.specialization_id = blueList[i].specialization_id;
                     value.ward_id = blueList[i].ward_id;
-                    value.period = value.period.valueOf()/1000;
+                    value.period = value.period.valueOf()/60000;
                     return value;
                 });
 
@@ -64,7 +64,7 @@ export class ScheduleServiceImpl implements ScheduleService {
         }
 
         console.log(scheduleList);
-        this.scheduleRepository.insert(scheduleList);
+        await this.scheduleRepository.insert(scheduleList);
         return new ResponseModel(Status._200, "lack of data"); 
     }
 
