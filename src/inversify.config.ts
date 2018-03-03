@@ -38,6 +38,12 @@ import { ConfigController } from './controller/ConfigController';
 import { ProvinceService, ProvinceServiceImpl } from './service/ProvinceService';
 import { ProvinceRepository, ProvinceRepositoryImpl } from './repository/ProvinceRepository';
 import { ProvinceController } from './controller/ProvinceController';
+import { DistrictService, DistrictServiceImpl } from './service/DistrictService';
+import { DistrictRepository, DistrictRepositoryImpl } from './repository/DistrictRepository';
+import { DistrictController } from './controller/DistrictController';
+import { CommuneService, CommuneServiceImpl } from './service/CommuneService';
+import { CommuneRepository, CommuneRepositoryImpl } from './repository/CommuneRepository';
+import { CommuneController } from './controller/CommuneController';
 
 const container = new Container();
 container.bind<RegistrableController>(TYPES.Controller).to(MedicalRegistrationController);
@@ -51,6 +57,8 @@ container.bind<RegistrableController>(TYPES.Controller).to(SpecializationPriceCo
 container.bind<RegistrableController>(TYPES.Controller).to(TypeController);
 container.bind<RegistrableController>(TYPES.Controller).to(ConfigController);
 container.bind<RegistrableController>(TYPES.Controller).to(ProvinceController);
+container.bind<RegistrableController>(TYPES.Controller).to(DistrictController);
+container.bind<RegistrableController>(TYPES.Controller).to(CommuneController);
 
 
 container.bind<AddressService>(TYPES.AddressService).to(AddressServiceImpl);
@@ -96,7 +104,15 @@ container.bind<ConfigRepository>(TYPES.ConfigRepository).to(ConfigRepositoryImpl
 
 //province
 container.bind<ProvinceService>(TYPES.ProvinceService).to(ProvinceServiceImpl);
-container.bind<ProvinceRepository>(TYPES.ProvinceService).to(ProvinceRepositoryImpl);
+container.bind<ProvinceRepository>(TYPES.ProvinceRepository).to(ProvinceRepositoryImpl);
+
+//district
+container.bind<DistrictService>(TYPES.DistrictService).to(DistrictServiceImpl);
+container.bind<DistrictRepository>(TYPES.DistrictRepository).to(DistrictRepositoryImpl);
+
+//commune
+container.bind<CommuneService>(TYPES.CommuneService).to(CommuneServiceImpl);
+container.bind<CommuneRepository>(TYPES.CommuneRepository).to(CommuneRepositoryImpl);
 
 //counter 
 container.bind<CounterRepository>(TYPES.CounterRepository).to(CounterRepositoryImpl)

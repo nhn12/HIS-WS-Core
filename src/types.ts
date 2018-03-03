@@ -45,6 +45,14 @@ const TYPES = {
     ProvinceRepository:Symbol("ProvinceRepository"),
     ProvinceService:Symbol("ProvinceService"),
 
+    //District
+    DistrictRepository:Symbol("DistrictRepository"),
+    DistrictService:Symbol("DistrictService"),
+
+    //Commune
+    CommuneRepository:Symbol("CommuneRepository"),
+    CommuneService:Symbol("CommuneService"),
+
     //utils section
     ResponseUtil: Symbol('ResponseUtil'),
 
