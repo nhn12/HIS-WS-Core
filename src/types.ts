@@ -1,3 +1,4 @@
+import { SyncService } from './service/SyncService';
 import { ScheduleRepository } from './repository/ScheduleRepository';
 const TYPES = {
     AddressRepository: Symbol('AddressRepository'),
@@ -58,6 +59,9 @@ const TYPES = {
 
     //counter
     CounterRepository: Symbol('CounterRepository'),
+
+    //sync
+    SyncService: Symbol('SyncService'),
 
     Controller: Symbol('Controller')
 };

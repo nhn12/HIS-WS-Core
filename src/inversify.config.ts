@@ -1,3 +1,4 @@
+import { SyncService, SyncServiceImpl } from './service/SyncService';
 import { BlueprintScheduleRepository, BlueprintScheduleRepositoryImpl } from './repository/BlueprintScheduleRepository';
 import { SpecializationRepositoryImpl, SpecializationRepository } from './repository/SpecializationRepository';
 import { SpecializationServiceImpl, SpecializationService } from './service/SpecializationService';
@@ -120,5 +121,8 @@ container.bind<CounterRepository>(TYPES.CounterRepository).to(CounterRepositoryI
 
 // utils section
 container.bind<ResponseUtil>(TYPES.ResponseUtil).to(ResponseUtilImp);
+
+// sync service
+container.bind<SyncService>(TYPES.SyncService).to(SyncServiceImpl);
 
 export default container;
