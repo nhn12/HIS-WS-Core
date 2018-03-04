@@ -6,4 +6,5 @@ export class CommuneDto {
     public code: String;
     public is_interval: boolean; //create interval
     public district_id: DistrictDto[];
+    public updated_date: Number;
 }

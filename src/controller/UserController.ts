@@ -40,6 +40,18 @@ export class UserController implements RegistrableController {
                 res.json(new ResponseModel<any>(Status._200, "success", addresses));
             });
 
+        app.route('/api/user/update')
+        .post(async(req: express.Request, res: express.Response, next: express.NextFunction) => {
+            var addresses = await this.userService.update(req.body).catch(err => next(err));
+            res.json(new ResponseModel<any>(Status._200, "success", addresses));
+        });
+
+        app.route('/api/user/delete')
+        .post(async(req: express.Request, res: express.Response, next: express.NextFunction) => {
+            var addresses = await this.userService.delete(req.body).catch(err => next(err));
+            res.json(new ResponseModel<any>(Status._200, "success", addresses));
+        });
+
         app.route("/api/loginRequired")
             .post(async(req: express.Request, res: express.Response, next: express.NextFunction) => {
                 // const addresses = await this.registartionService.getAllRegistration().catch(err => next(err));

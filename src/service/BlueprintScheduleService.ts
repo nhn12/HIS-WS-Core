@@ -5,12 +5,13 @@ import 'reflect-metadata';
 import * as _ from 'lodash';
 import { ResponseModel, Status } from '../model/ResponseDto';
 import to from '../util/promise-utils';
+import { BlueprintScheduleDto } from '../model/BlueprintScheduleDto';
 
 
 export interface BlueprintScheduleService {
-    insert(obj: any): Promise<any>;
-    update(obj: any): Promise<any>;
-    delete(obj: any): Promise<any>;
+    insert(obj: any): Promise<ResponseModel<any>>;
+    delete(obj: BlueprintScheduleDto): Promise<ResponseModel<any>>;
+    update(obj: BlueprintScheduleDto): Promise<ResponseModel<any>>;
 }
 
 @injectable()
@@ -19,16 +20,43 @@ export class BlueprintScheduleServiceImpl implements BlueprintScheduleService {
     private scheduleRepository: BlueprintScheduleRepository;
 
 
-    public async insert(obj: any): Promise<any> {
-        return await this.scheduleRepository.insert([obj]);
+    public async insert(obj: any): Promise<ResponseModel<any>> {
+        if(!obj) {
+            return new ResponseModel(Status._400, "lack of data");
+        }
+        console.log(obj);
+        let [err, result] = await to(this.scheduleRepository.insert(obj));
+        if(err) {
+            return new ResponseModel(Status._500, "err");
+        }
+
+        return new ResponseModel(Status._200, "success", result);
     }
 
-    public async update(obj: any): Promise<any> {
-        throw new Error("Method not implemented.");
+    public async delete(obj: BlueprintScheduleDto): Promise<ResponseModel<any>>{
+        if(!obj) {
+            return new ResponseModel(Status._400, "lack of data");
+        }
+        console.log(obj);
+        let [err, result] = await to(this.scheduleRepository.delete(obj));
+        if(err) {
+            return new ResponseModel(Status._500, "err");
+        }
+
+        return new ResponseModel(Status._200, "success", result);
     }
 
-    public async delete(obj: any): Promise<any> {
-        return await this.scheduleRepository.delete(obj);
+    public async update(obj: BlueprintScheduleDto): Promise<ResponseModel<any>> {
+        if(!obj) {
+            return new ResponseModel(Status._400, "lack of data");
+        }
+        console.log(obj);
+        let [err, result] = await to(this.scheduleRepository.update(obj));
+        if(err) {
+            return new ResponseModel(Status._500, "err");
+        }
+
+        return new ResponseModel(Status._200, "success", result);
     }
 
     // private insertAbsolute(obj:ScheduleAbsoluteDto): ScheduleDto[] {

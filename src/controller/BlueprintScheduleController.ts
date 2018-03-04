@@ -29,6 +29,15 @@ export class BlueprintScheduleController implements RegistrableController {
                 res.json(new ResponseModel(Status._200, "success", addresses));
         })
 
+        app.route('/api/blueprint_schedule/update')
+        .post(async(req: express.Request, res: express.Response, next: express.NextFunction) => {
+            const [err, addresses] = await to(this.scheduleService.update(req.body));
+            if(err) {
+                res.json(this.responseUtils.buildErrorData(err));
+            }
+            res.json(new ResponseModel(Status._200, "success", addresses));
+    })
+
         app.route('/api/blueprint_schedule/delete')
             .post(async(req: express.Request, res: express.Response, next: express.NextFunction) => {
                 const [err, addresses] = await to(this.scheduleService.delete(req.body));

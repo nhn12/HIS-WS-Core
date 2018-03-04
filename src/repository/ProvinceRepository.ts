@@ -35,13 +35,9 @@ export class ProvinceRepositoryImpl implements ProvinceRepository {
         console.log(obj);
         for(var i = 0; i < obj.length; i++)
         {
-            if(obj[i].id == null)
-            {
-                let count = await this.counterRepository.getNextSequenceValue('province_tbl');
-                obj[i].id = count;
-            }
-        }     
-        console.log(obj);
+            let count = await this.counterRepository.getNextSequenceValue('province_tbl');
+            obj[i].id = count;           
+        }
         let [err, data] = await to(this.col.insertMany(obj));
         
         if(err) {
@@ -64,6 +60,7 @@ export class ProvinceRepositoryImpl implements ProvinceRepository {
 
     public async update(obj: ProvinceDto): Promise<ProvinceDto[]>
     {
+        obj.updated_date = Date.now();
         console.log(obj);
         let [err, data] = await to(this.col.updateMany({id : obj.id},  { $set:  obj }))
         if(err) {

@@ -8,6 +8,7 @@ import to from '../util/promise-utils';
 import { DistrictDto } from '../model/DistrictDto';
 import { DistrictRepository } from '../repository/DistrictRepository';
 import { ProvinceRepository } from '../repository/ProvinceRepository';
+import { CounterRepository } from '../repository/CounterRepository';
 
 export interface DistrictService {
     insert(obj: DistrictDto): Promise<any>;
@@ -21,14 +22,17 @@ export class DistrictServiceImpl implements DistrictService {
     private DistrictRepository: DistrictRepository;
     @inject(TYPES.ProvinceRepository)
     private ProvinceRepository: ProvinceRepository;
+    @inject(TYPES.CounterRepository)
+    private counterRepository: CounterRepository;
 
 
     public async insert(obj: DistrictDto): Promise<any> {
-        console.log(obj.id);
-        if(obj.id != null && obj.province_id != null)
-        {
+        let count = await this.counterRepository.getNextSequenceValue('district_tbl');
+        obj.id = count;
+        if(obj.province_id != null)
+        {           
             obj.province_id.forEach(element => {
-                element.district_id = obj.id;
+                element.district_id = count;
             });
         }
         await this.ProvinceRepository.insert(obj.province_id);                           
@@ -55,6 +59,12 @@ export class DistrictServiceImpl implements DistrictService {
             return new ResponseModel(Status._400, "lack of data");
         }
         console.log(obj);
+        if(obj.province_id != null)
+        {
+            obj.province_id.forEach(element => {
+                this.ProvinceRepository.update(element);
+            });
+        }
         let [err, result] = await to(this.DistrictRepository.update(obj));
         if(err) {
             return new ResponseModel(Status._500, "err");
