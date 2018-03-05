@@ -37,6 +37,8 @@ export class CategoryServiceImpl implements CategoryService {
             obj.offset = AppConstants.DEFAULT_OFFSET_RECORD_SEARCH;
         }
 
+        obj.filter.deleted_flag = false;
+
         var re = await this.registrationRepo.query(obj.resource, obj.filter, this.getJoinTable(obj.resource), obj.sort,  obj.limit, obj.offset).then(result=>{
             if(result && result.length > 0)
              {

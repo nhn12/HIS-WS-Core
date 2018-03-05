@@ -30,15 +30,13 @@ export class SpecializationServiceImpl implements SpecializationService {
     public async insert(obj: SpecializationDto): Promise<any> {
         let count = await this.counterRepository.getNextSequenceValue('specialization_tbl');
         obj.id = count;
-        if(obj.price != null)
+        if(obj.prices != null)
         {
-            obj.price.forEach(element => {
+            obj.prices.forEach(element => {
                 element.specialization_id = count;
             });
         }
-        await this.specializationPriceRepository.insert(obj.price);                           
-        //await this.specializationPriceRepository.insert(obj[0].price);
-        console.log("after");
+        await this.specializationPriceRepository.insert(obj.prices);                           
         return await this.scheduleRepository.insert([obj]);
     }
 
@@ -60,9 +58,9 @@ export class SpecializationServiceImpl implements SpecializationService {
             return new ResponseModel(Status._400, "lack of data");
         }
         console.log(obj);
-        if(obj.price != null)
+        if(obj.prices != null)
         {
-            obj.price.forEach(element => {
+            obj.prices.forEach(element => {
                 this.specializationPriceRepository.update(element);
             });
         }
