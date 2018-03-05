@@ -11,6 +11,8 @@ import to from './../util/promise-utils';
 export interface WardRepository {
     findAll(): Promise<WardDto[]>;
     insert(obj: any[]): Promise<WardDto[]>;
+    delete(obj: WardDto): Promise<WardDto[]>; 
+    update(obj: WardDto): Promise<WardDto[]>;  
 }
 
 @injectable()
@@ -42,6 +44,29 @@ export class WardRepositoryImpl implements WardRepository {
         obj.id = count;
         let [err, data] = await to(this.col.insertMany([obj]));
         
+        if(err) {
+            return Promise.reject(err);
+        }
+
+        let result: WardDto[] = [];
+        return Object.assign<WardDto[], mongoose.Document[]>(result, data);
+    }
+
+    public async delete(obj: WardDto): Promise<WardDto[]> {
+        let [err, data] = await to(this.col.updateMany({id : obj.id},  { $set: { "deleted_flag" : true }}))
+        if(err) {
+            return Promise.reject(err);
+        }
+
+        let result: WardDto[] = [];
+        return Object.assign<WardDto[], mongoose.Document[]>(result, data);
+    }
+
+    public async update(obj: WardDto): Promise<WardDto[]>
+    {
+        obj.updated_date = Date.now();
+        console.log(obj);
+        let [err, data] = await to(this.col.updateMany({id : obj.id},  { $set:  obj }))
         if(err) {
             return Promise.reject(err);
         }

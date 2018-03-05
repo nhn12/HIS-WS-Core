@@ -7,12 +7,14 @@ import { ResponseModel, Status } from '../model/ResponseDto';
 import to from '../util/promise-utils';
 import { SpecializationRepository } from '../repository/SpecializationRepository';
 import { SpecializationPriceRepository } from '../repository/SpecializationPriceRepository';
+import { CounterRepository } from '../repository/CounterRepository';
 import { SpecializationDto } from '../model/SpecializationDto';
 
 
 export interface SpecializationService {
     insert(obj: SpecializationDto): Promise<any>;
-    update(obj: any): Promise<ResponseModel<any>>;
+    delete(obj: SpecializationDto): Promise<ResponseModel<any>>;
+    update(obj: SpecializationDto): Promise<ResponseModel<any>>;
 }
 
 @injectable()   
@@ -21,14 +23,17 @@ export class SpecializationServiceImpl implements SpecializationService {
     private scheduleRepository: SpecializationRepository;
     @inject(TYPES.SpecializationPriceRepository)
     private specializationPriceRepository: SpecializationPriceRepository;
+    @inject(TYPES.CounterRepository)
+    private counterRepository: CounterRepository;
 
 
     public async insert(obj: SpecializationDto): Promise<any> {
-        console.log(obj.id);
-        if(obj.id != null && obj.price != null)
+        let count = await this.counterRepository.getNextSequenceValue('specialization_tbl');
+        obj.id = count;
+        if(obj.price != null)
         {
             obj.price.forEach(element => {
-                element.specialization_id = obj.id;
+                element.specialization_id = count;
             });
         }
         await this.specializationPriceRepository.insert(obj.price);                           
@@ -37,8 +42,36 @@ export class SpecializationServiceImpl implements SpecializationService {
         return await this.scheduleRepository.insert([obj]);
     }
 
-    public async update(obj: any): Promise<ResponseModel<any>> {
-        throw new Error("Method not implemented.");
+    public async delete(obj: SpecializationDto): Promise<ResponseModel<any>>{
+        if(!obj) {
+            return new ResponseModel(Status._400, "lack of data");
+        }
+        console.log(obj);
+        let [err, result] = await to(this.scheduleRepository.delete(obj));
+        if(err) {
+            return new ResponseModel(Status._500, "err");
+        }
+
+        return new ResponseModel(Status._200, "success", result);
+    }
+
+    public async update(obj: SpecializationDto): Promise<ResponseModel<any>> {
+        if(!obj) {
+            return new ResponseModel(Status._400, "lack of data");
+        }
+        console.log(obj);
+        if(obj.price != null)
+        {
+            obj.price.forEach(element => {
+                this.specializationPriceRepository.update(element);
+            });
+        }
+        let [err, result] = await to(this.scheduleRepository.update(obj));
+        if(err) {
+            return new ResponseModel(Status._500, "err");
+        }
+
+        return new ResponseModel(Status._200, "success", result);
     }
 
   

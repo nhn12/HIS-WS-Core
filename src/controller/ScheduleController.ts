@@ -27,5 +27,23 @@ export class ScheduleController implements RegistrableController {
                 }
                 res.json(addresses);
             })
+
+        app.route('/api/schedule/update')
+        .post(async(req: express.Request, res: express.Response, next: express.NextFunction) => {
+            const [err, addresses] = await to(this.scheduleService.update(req.body));
+            if(err) {
+                return res.json(this.responseUtils.buildErrorData(JSON.stringify(err)));
+            }
+            res.json(addresses);
+        })
+
+        app.route('/api/schedule/delete')
+        .post(async(req: express.Request, res: express.Response, next: express.NextFunction) => {
+            const [err, addresses] = await to(this.scheduleService.delete(req.body));
+            if(err) {
+                return res.json(this.responseUtils.buildErrorData(JSON.stringify(err)));
+            }
+            res.json(addresses);
+        })
     }
 }

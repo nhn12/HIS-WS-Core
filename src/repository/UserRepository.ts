@@ -1,7 +1,10 @@
 import { UserSchema } from './../model/UserModel';
-import {injectable} from 'inversify';
+import { injectable, inject } from 'inversify';
 import * as mongoose from 'mongoose';
+import { CounterRepository } from './CounterRepository';
 import { RegistrationDto } from '../model/RegistrationDto';
+import TYPES from '../types';
+import to from './../util/promise-utils';
 import { UserDto } from '../model/UserDto';
 import * as bcrypt from 'bcrypt';
 import config from '../../config/config';
@@ -11,10 +14,15 @@ import config from '../../config/config';
 export interface UserRepository {
     addUser(user: UserDto): Promise<UserDto>;
     findOneBy(user: UserDto): Promise<UserDto>;
+    delete(obj: UserDto): Promise<UserDto[]>; 
+    update(obj: UserDto): Promise<UserDto[]>;  
 }
 
 @injectable()
 export class UserRepositoryImpl implements UserRepository {
+    @inject(TYPES.CounterRepository)
+    private counterRepository: CounterRepository;
+
     col: mongoose.Model<any>;
     
     constructor() {
@@ -45,6 +53,9 @@ export class UserRepositoryImpl implements UserRepository {
     }
 
     public async addUser(user: UserDto): Promise<UserDto> {
+        let count = await this.counterRepository.getNextSequenceValue('user_tbls');
+        user.id = count;           
+        
         user.hash_password = bcrypt.hashSync(user.password, 10);
 
         var doc: mongoose.Document = new this.col(user);
@@ -59,5 +70,28 @@ export class UserRepositoryImpl implements UserRepository {
                 reject(err);
             });
         });
+    }
+
+    public async delete(obj: UserDto): Promise<UserDto[]> {
+        let [err, data] = await to(this.col.updateMany({id : obj.id},  { $set: { "deleted_flag" : true }}))
+        if(err) {
+            return Promise.reject(err);
+        }
+
+        let result: UserDto[] = [];
+        return Object.assign<UserDto[], mongoose.Document[]>(result, data);
+    }
+
+    public async update(obj: UserDto): Promise<UserDto[]>
+    {
+        obj.updated_date = Date.now();
+        console.log(obj);
+        let [err, data] = await to(this.col.updateMany({id : obj.id},  { $set:  obj }))
+        if(err) {
+            return Promise.reject(err);
+        }
+
+        let result: UserDto[] = [];
+        return Object.assign<UserDto[], mongoose.Document[]>(result, data);
     }
 }

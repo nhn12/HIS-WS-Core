@@ -10,6 +10,8 @@ import  to  from '../util/promise-utils';
 export interface MedicalRegistrationService {
     getAllRegistration();
     insert(mabv: string, obj: RegistrationDto): Promise<ResponseModel<any>>;
+    delete(obj: RegistrationDto): Promise<ResponseModel<any>>;
+    update(obj: RegistrationDto): Promise<ResponseModel<any>>;
 }
 
 @injectable()
@@ -36,7 +38,7 @@ export class MedicalRegistrationServiceImpl implements MedicalRegistrationServic
                 return;
             }
 
-            obj.created_date = obj.updated_date = new Date();
+            obj.created_date = obj.updated_date =  Date.now();
             obj.deleted_flag = false;
             obj.mabv = mabv;
             const [err, response] = await to(this.registrationRepo.insert(obj));
@@ -53,5 +55,29 @@ export class MedicalRegistrationServiceImpl implements MedicalRegistrationServic
         })
     }
 
- 
+    public async delete(obj: RegistrationDto): Promise<ResponseModel<any>>{
+        if(!obj) {
+            return new ResponseModel(Status._400, "lack of data");
+        }
+        console.log(obj);
+        let [err, result] = await to(this.registrationRepo.delete(obj));
+        if(err) {
+            return new ResponseModel(Status._500, "err");
+        }
+
+        return new ResponseModel(Status._200, "success", result);
+    }
+
+    public async update(obj: RegistrationDto): Promise<ResponseModel<any>> {
+        if(!obj) {
+            return new ResponseModel(Status._400, "lack of data");
+        }
+        console.log(obj);
+        let [err, result] = await to(this.registrationRepo.update(obj));
+        if(err) {
+            return new ResponseModel(Status._500, "err");
+        }
+
+        return new ResponseModel(Status._200, "success", result);
+    }
 }

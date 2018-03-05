@@ -6,4 +6,5 @@ export class WardDto {
     public specialization_id: Number;
     public hospital_id: Number;
     public hospital_name: String;
+    public updated_date: Number;
 }

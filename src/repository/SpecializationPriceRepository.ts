@@ -62,6 +62,7 @@ export class SpecializationPriceRepositoryImpl implements SpecializationPriceRep
 
     public async update(obj: SpecializationPriceDto): Promise<SpecializationPriceDto[]>
     {
+        obj.updated_date = Date.now();
         console.log(obj);
         let [err, data] = await to(this.col.updateMany({id : obj.id},  { $set:  obj }))
         if(err) {

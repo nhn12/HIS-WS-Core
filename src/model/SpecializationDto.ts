@@ -7,5 +7,5 @@ export class SpecializationDto {
     public hospital_name: string;
     public hospital_id: number;
     public price: SpecializationPriceDto[];
-    public updated_date: Date;
+    public updated_date: Number;
 }

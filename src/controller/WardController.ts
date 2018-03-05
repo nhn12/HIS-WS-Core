@@ -27,5 +27,23 @@ export class WardController implements RegistrableController {
                 }
                 res.json(new ResponseModel(Status._200, "success", addresses));
             })
+
+            app.route('/api/ward/update')
+            .post(async(req: express.Request, res: express.Response, next: express.NextFunction) => {
+                const [err, addresses] = await to(this.wardService.update(req.body));
+                if(err) {
+                    res.json(this.responseUtils.buildErrorData(err));
+                }
+                res.json(new ResponseModel(Status._200, "success", addresses));
+            })
+
+            app.route('/api/ward/delete')
+            .post(async(req: express.Request, res: express.Response, next: express.NextFunction) => {
+                const [err, addresses] = await to(this.wardService.delete(req.body));
+                if(err) {
+                    res.json(this.responseUtils.buildErrorData(err));
+                }
+                res.json(new ResponseModel(Status._200, "success", addresses));
+            })
     }
 }

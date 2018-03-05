@@ -2,6 +2,7 @@ import { Schema, model } from "mongoose";
 var bcrypt =  require('bcrypt');
 
 export var UserSchema = new Schema({
+    id: Number,
     fullname: {
         type: String,
         trim: true,
@@ -21,7 +22,9 @@ export var UserSchema = new Schema({
     created: {
         type: Date,
         default: Date.now
-    }
+    },
+    updated_date: { type: Date, default: Date.now },
+    deleted_flag: { type: Boolean, default: false }
 });
 
 UserSchema.methods.comparePassword = function(password) {

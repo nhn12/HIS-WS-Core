@@ -15,7 +15,8 @@ import { ParseUtils } from '../util/parse-utils';
 
 export interface ScheduleService {
     insert(obj: any): Promise<ResponseModel<any>>;
-    update(obj: any): Promise<ResponseModel<any>>;
+    delete(obj: ScheduleDto): Promise<ResponseModel<any>>;
+    update(obj: ScheduleDto): Promise<ResponseModel<any>>;
 }
 
 @injectable()
@@ -68,8 +69,30 @@ export class ScheduleServiceImpl implements ScheduleService {
         return new ResponseModel(Status._200, "lack of data"); 
     }
 
-    public async update(obj: any): Promise<ResponseModel<any>> {
-        throw new Error("Method not implemented.");
+    public async delete(obj: ScheduleDto): Promise<ResponseModel<any>>{
+        if(!obj) {
+            return new ResponseModel(Status._400, "lack of data");
+        }
+        console.log(obj);
+        let [err, result] = await to(this.scheduleRepository.delete(obj));
+        if(err) {
+            return new ResponseModel(Status._500, "err");
+        }
+
+        return new ResponseModel(Status._200, "success", result);
+    }
+
+    public async update(obj: ScheduleDto): Promise<ResponseModel<any>> {
+        if(!obj) {
+            return new ResponseModel(Status._400, "lack of data");
+        }
+        console.log(obj);
+        let [err, result] = await to(this.scheduleRepository.update(obj));
+        if(err) {
+            return new ResponseModel(Status._500, "err");
+        }
+
+        return new ResponseModel(Status._200, "success", result);
     }
 
     private insertAbsolute(obj: ScheduleAbsoluteDto): ScheduleDto[] {

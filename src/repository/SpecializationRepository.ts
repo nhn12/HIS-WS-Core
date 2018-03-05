@@ -11,6 +11,8 @@ import to from './../util/promise-utils';
 export interface SpecializationRepository {
     findAll(): Promise<SpecializationDto[]>;
     insert(obj: any[]): Promise<SpecializationDto[]>;
+    delete(obj: SpecializationDto): Promise<SpecializationDto[]>; 
+    update(obj: SpecializationDto): Promise<SpecializationDto[]>;  
 }
 
 @injectable()
@@ -38,18 +40,41 @@ export class SpecializationRepositoryImpl implements SpecializationRepository {
     }
 
     public async insert(obj: any[]): Promise<SpecializationDto[]> {
-        for(var i = 0; i < obj.length; i++)
-        {
-            if(obj[i].id == null)
-            {
-                let count = await this.counterRepository.getNextSequenceValue('specialization_tbl');
-                obj[i].id = count;
-            }
+        // for(var i = 0; i < obj.length; i++)
+        // {
+        //     if(obj[i].id == null)
+        //     {
+        //         let count = await this.counterRepository.getNextSequenceValue('specialization_tbl');
+        //         obj[i].id = count;
+        //     }
 
-        }     
+        // }     
         console.log(obj);
         let [err, data] = await to(this.col.insertMany(obj));
         
+        if(err) {
+            return Promise.reject(err);
+        }
+
+        let result: SpecializationDto[] = [];
+        return Object.assign<SpecializationDto[], mongoose.Document[]>(result, data);
+    }
+
+    public async delete(obj: SpecializationDto): Promise<SpecializationDto[]> {
+        let [err, data] = await to(this.col.updateMany({id : obj.id},  { $set: { "deleted_flag" : true }}))
+        if(err) {
+            return Promise.reject(err);
+        }
+
+        let result: SpecializationDto[] = [];
+        return Object.assign<SpecializationDto[], mongoose.Document[]>(result, data);
+    }
+
+    public async update(obj: SpecializationDto): Promise<SpecializationDto[]>
+    {
+        obj.updated_date = Date.now();
+        console.log(obj);
+        let [err, data] = await to(this.col.updateMany({id : obj.id},  { $set:  obj }))
         if(err) {
             return Promise.reject(err);
         }

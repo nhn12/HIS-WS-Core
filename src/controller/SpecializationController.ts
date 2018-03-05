@@ -29,5 +29,17 @@ export class SpecializationController implements RegistrableController {
                 res.json(new ResponseModel(Status._200, "success", addresses));
                 return;
             })
+
+            app.route('/api/specialization/delete')
+            .post(async(req: express.Request, res: express.Response, next: express.NextFunction) => {
+                var addresses = await this.specializationService.delete(req.body).catch(err => next(err));
+                res.json(new ResponseModel<any>(Status._200, "success", addresses));
+            });
+    
+            app.route('/api/specialization/update')
+            .post(async(req: express.Request, res: express.Response, next: express.NextFunction) => {
+                var addresses = await this.specializationService.update(req.body).catch(err => next(err));
+                res.json(new ResponseModel<any>(Status._200, "success", addresses));
+            });
     }
 }

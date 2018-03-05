@@ -12,6 +12,6 @@ export class BlueprintScheduleDto {
     //audit tbl
     public created_by: String;
     public created_date: Date;
-    public updated_date: Date;
-    public deleted_flag: Date;
+    public updated_date: Number;
+    public deleted_flag: Boolean;
 }

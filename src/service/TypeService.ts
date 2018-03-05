@@ -31,15 +31,13 @@ export class TypeServiceImpl implements TypeService {
         if(err) {
             return new ResponseModel(Status._500, "err");
         }
-
         return new ResponseModel(Status._200, "success", result);
     }
 
     public async delete(obj: TypeDto): Promise<ResponseModel<any>>{
         if(!obj) {
             return new ResponseModel(Status._400, "lack of data");
-        }
-        console.log(obj);
+        }     
         let [err, result] = await to(this.TypeRepository.delete(obj));
         if(err) {
             return new ResponseModel(Status._500, "err");

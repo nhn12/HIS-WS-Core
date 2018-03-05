@@ -35,12 +35,8 @@ export class ConfigRepositoryImpl implements ConfigRepository {
     public async insert(obj: any[]): Promise<ConfigDto[]> {
         for(var i = 0; i < obj.length; i++)
         {
-            console.log(obj[i].id);
-            if(obj[i].id == null)
-            {
-                let count = await this.counterRepository.getNextSequenceValue('config_tbl');
-                obj[i].id = count;
-            }
+            let count = await this.counterRepository.getNextSequenceValue('config_tbl');
+            obj[i].id = count;
         }     
         console.log(obj);
         let [err, data] = await to(this.col.insertMany(obj));
@@ -66,6 +62,7 @@ export class ConfigRepositoryImpl implements ConfigRepository {
     public async update(obj: ConfigDto): Promise<ConfigDto[]>
     {
         console.log(obj);
+        obj.updated_date = Date.now();
         let [err, data] = await to(this.col.updateMany({id : obj.id},  { $set:  obj }))
         if(err) {
             return Promise.reject(err);

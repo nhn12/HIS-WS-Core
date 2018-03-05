@@ -1,4 +1,5 @@
 export class RegistrationDto {
+    public id: Number;
     public ngaydkkb: Date;
     public mabv: string;
 
@@ -53,6 +54,6 @@ export class RegistrationDto {
     public is_bvcancel: boolean;
 
     //audit tbl
-    public created_date: Date;
-    public updated_date: Date;
+    public created_date: Number;
+    public updated_date: Number;
 }

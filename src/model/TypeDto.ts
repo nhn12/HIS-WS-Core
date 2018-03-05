@@ -3,5 +3,6 @@ export class TypeDto {
         public name: String;
         public code: String;
         public class: String;
+        public updated_date : Number
     
 }

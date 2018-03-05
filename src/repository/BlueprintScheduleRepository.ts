@@ -12,7 +12,8 @@ import to from './../util/promise-utils';
 export interface BlueprintScheduleRepository {
     findAll(): Promise<Array<BlueprintScheduleDto>>;
     insert(obj: any[]): Promise<BlueprintScheduleDto[]>;
-    delete(obj: any): Promise<boolean>;
+    delete(obj: BlueprintScheduleDto): Promise<BlueprintScheduleDto[]>; 
+    update(obj: BlueprintScheduleDto): Promise<BlueprintScheduleDto[]>;
 }
 
 @injectable()
@@ -45,16 +46,26 @@ export class BlueprintScheduleRepositoryImpl implements BlueprintScheduleReposit
         return Object.assign<BlueprintScheduleDto[], mongoose.Document[]>(result, data);
     }
 
-    public async delete(obj: any): Promise<boolean> {
-        let [err, response] = await to(new Promise((resolve, reject)=>{
-            this.col.deleteOne(obj, ()=>{
-                resolve(true);
-            })
-        }));
-        console.log(response);
+    public async delete(obj: BlueprintScheduleDto): Promise<BlueprintScheduleDto[]> {
+        let [err, data] = await to(this.col.updateMany({id : obj.id},  { $set: { "deleted_flag" : true }}))
         if(err) {
             return Promise.reject(err);
         }
-        return true;
+
+        let result: BlueprintScheduleDto[] = [];
+        return Object.assign<BlueprintScheduleDto[], mongoose.Document[]>(result, data);
+    }
+
+    public async update(obj: BlueprintScheduleDto): Promise<BlueprintScheduleDto[]>
+    {
+        obj.updated_date = Date.now();
+        console.log(obj);
+        let [err, data] = await to(this.col.updateMany({id : obj.id},  { $set:  obj }))
+        if(err) {
+            return Promise.reject(err);
+        }
+
+        let result: BlueprintScheduleDto[] = [];
+        return Object.assign<BlueprintScheduleDto[], mongoose.Document[]>(result, data);
     }
 }

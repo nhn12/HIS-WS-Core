@@ -1,6 +1,7 @@
 import { Schema } from "mongoose";
 
 export var RegistrationSchema: Schema = new Schema({
+      id: Number,
       ngaydkkb: Date,
       mabv: String,
 

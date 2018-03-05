@@ -32,15 +32,15 @@ export class CommuneRepositoryImpl implements CommuneRepository {
     }
 
     public async insert(obj: any[]): Promise<CommuneDto[]> {
-        for(var i = 0; i < obj.length; i++)
-        {
-            if(obj[i].id == null)
-            {
-                let count = await this.counterRepository.getNextSequenceValue('commune_tbl');
-                obj[i].id = count;
-            }
+        // for(var i = 0; i < obj.length; i++)
+        // {
+        //     if(obj[i].id == null)
+        //     {
+        //         let count = await this.counterRepository.getNextSequenceValue('commune_tbl');
+        //         obj[i].id = count;
+        //     }
 
-        }     
+        // }     
         console.log(obj);
         let [err, data] = await to(this.col.insertMany(obj));
         
@@ -64,6 +64,7 @@ export class CommuneRepositoryImpl implements CommuneRepository {
 
     public async update(obj: CommuneDto): Promise<CommuneDto[]>
     {
+        obj.updated_date = Date.now();
         console.log(obj);
         let [err, data] = await to(this.col.updateMany({id : obj.id},  { $set:  obj }))
         if(err) {

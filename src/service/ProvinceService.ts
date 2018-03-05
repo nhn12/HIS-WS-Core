@@ -21,7 +21,6 @@ export class ProvinceServiceImpl implements ProvinceService {
 
 
     public async insert(obj: any): Promise<ResponseModel<any>> {
-        console.log("Service");
         if(!obj) {
             return new ResponseModel(Status._400, "lack of data");
         }
