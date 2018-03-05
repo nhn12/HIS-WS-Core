@@ -23,11 +23,9 @@ export class SpecializationPriceServiceImpl implements SpecializationPriceServic
 
 
     public async insert(obj: any): Promise<ResponseModel<any>> {
-        console.log("Service");
         if(!obj) {
             return new ResponseModel(Status._400, "lack of data");
         }
-        console.log(obj);
         let [err, result] = await to(this.SpecializationPriceRepository.insert(obj));
         if(err) {
             return new ResponseModel(Status._500, "err");
@@ -49,7 +47,6 @@ export class SpecializationPriceServiceImpl implements SpecializationPriceServic
         if(!obj) {
             return new ResponseModel(Status._400, "lack of data");
         }
-        console.log(obj);
         let [err, result] = await to(this.SpecializationPriceRepository.delete(obj));
         if(err) {
             return new ResponseModel(Status._500, "err");
@@ -62,7 +59,6 @@ export class SpecializationPriceServiceImpl implements SpecializationPriceServic
         if(!obj) {
             return new ResponseModel(Status._400, "lack of data");
         }
-        console.log(obj);
         let [err, result] = await to(this.SpecializationPriceRepository.update(obj));
         if(err) {
             return new ResponseModel(Status._500, "err");

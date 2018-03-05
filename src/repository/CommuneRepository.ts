@@ -25,7 +25,6 @@ export class CommuneRepositoryImpl implements CommuneRepository {
             var doc = this;
             var count = await self.counterRepository.getNextSequenceValue('commune_tbl');
             doc.id = count;
-            console.log('pre-save', count);
             next();
         });
         this.col = mongoose.model('commune_tbl', CommuneSchema, 'commune_tbl');
@@ -41,7 +40,6 @@ export class CommuneRepositoryImpl implements CommuneRepository {
         //     }
 
         // }     
-        console.log(obj);
         let [err, data] = await to(this.col.insertMany(obj));
         
         if(err) {
@@ -65,7 +63,6 @@ export class CommuneRepositoryImpl implements CommuneRepository {
     public async update(obj: CommuneDto): Promise<CommuneDto[]>
     {
         obj.updated_date = Date.now();
-        console.log(obj);
         let [err, data] = await to(this.col.updateMany({id : obj.id},  { $set:  obj }))
         if(err) {
             return Promise.reject(err);

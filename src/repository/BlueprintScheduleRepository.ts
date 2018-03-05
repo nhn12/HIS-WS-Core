@@ -59,7 +59,6 @@ export class BlueprintScheduleRepositoryImpl implements BlueprintScheduleReposit
     public async update(obj: BlueprintScheduleDto): Promise<BlueprintScheduleDto[]>
     {
         obj.updated_date = Date.now();
-        console.log(obj);
         let [err, data] = await to(this.col.updateMany({id : obj.id},  { $set:  obj }))
         if(err) {
             return Promise.reject(err);

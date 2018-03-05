@@ -24,7 +24,6 @@ export class ProvinceServiceImpl implements ProvinceService {
         if(!obj) {
             return new ResponseModel(Status._400, "lack of data");
         }
-        console.log(obj);
         let [err, result] = await to(this.ProvinceRepository.insert(obj));
         if(err) {
             return new ResponseModel(Status._500, "err");
@@ -37,7 +36,6 @@ export class ProvinceServiceImpl implements ProvinceService {
         if(!obj) {
             return new ResponseModel(Status._400, "lack of data");
         }
-        console.log(obj);
         let [err, result] = await to(this.ProvinceRepository.delete(obj));
         if(err) {
             return new ResponseModel(Status._500, "err");
@@ -50,7 +48,6 @@ export class ProvinceServiceImpl implements ProvinceService {
         if(!obj) {
             return new ResponseModel(Status._400, "lack of data");
         }
-        console.log(obj);
         let [err, result] = await to(this.ProvinceRepository.update(obj));
         if(err) {
             return new ResponseModel(Status._500, "err");

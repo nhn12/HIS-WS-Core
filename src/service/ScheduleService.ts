@@ -35,13 +35,10 @@ export class ScheduleServiceImpl implements ScheduleService {
 
         // Get list blueprint schedule
         let [errBlue, blueList] = await to<BlueprintScheduleDto[]>(this.bluePrintRepository.findAll());
-        console.log("list", blueList);
         if (!blueList || blueList.length <= 0) {
-            console.log("empty")
             return new ResponseModel(Status._500, "Blueprint schedule empty");
         }
 
-        console.log("54354378-",blueList.length);
         // Split each blueprint
         let scheduleList:ScheduleDto[] = [];
         for(var i=0;i<blueList.length;i++){
@@ -64,7 +61,6 @@ export class ScheduleServiceImpl implements ScheduleService {
             })
         }
 
-        console.log(scheduleList);
         await this.scheduleRepository.insert(scheduleList);
         return new ResponseModel(Status._200, "lack of data"); 
     }
@@ -73,7 +69,6 @@ export class ScheduleServiceImpl implements ScheduleService {
         if(!obj) {
             return new ResponseModel(Status._400, "lack of data");
         }
-        console.log(obj);
         let [err, result] = await to(this.scheduleRepository.delete(obj));
         if(err) {
             return new ResponseModel(Status._500, "err");
@@ -86,7 +81,6 @@ export class ScheduleServiceImpl implements ScheduleService {
         if(!obj) {
             return new ResponseModel(Status._400, "lack of data");
         }
-        console.log(obj);
         let [err, result] = await to(this.scheduleRepository.update(obj));
         if(err) {
             return new ResponseModel(Status._500, "err");

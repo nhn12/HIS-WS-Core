@@ -25,14 +25,12 @@ export class ProvinceRepositoryImpl implements ProvinceRepository {
             var doc = this;
             var count = await self.counterRepository.getNextSequenceValue('province_tbl');
             doc.id = count;
-            console.log('pre-save', count);
             next();
         });
         this.col = mongoose.model('province_tbl', ProvinceSchema, 'province_tbl');
     }
 
     public async insert(obj: any[]): Promise<ProvinceDto[]> {
-        console.log(obj);
         for(var i = 0; i < obj.length; i++)
         {
             let count = await this.counterRepository.getNextSequenceValue('province_tbl');
@@ -61,7 +59,6 @@ export class ProvinceRepositoryImpl implements ProvinceRepository {
     public async update(obj: ProvinceDto): Promise<ProvinceDto[]>
     {
         obj.updated_date = Date.now();
-        console.log(obj);
         let [err, data] = await to(this.col.updateMany({id : obj.id},  { $set:  obj }))
         if(err) {
             return Promise.reject(err);

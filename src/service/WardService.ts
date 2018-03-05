@@ -25,7 +25,6 @@ export class WardServiceImpl implements WardService {
         if(!obj) {
             return new ResponseModel(Status._400, "lack of data");
         }
-        console.log(obj);
         let [err, result] = await to(this.scheduleRepository.insert(obj));
         if(err) {
             return new ResponseModel(Status._500, "err");
@@ -38,7 +37,6 @@ export class WardServiceImpl implements WardService {
         if(!obj) {
             return new ResponseModel(Status._400, "lack of data");
         }
-        console.log(obj);
         let [err, result] = await to(this.scheduleRepository.update(obj));
         if(err) {
             return new ResponseModel(Status._500, "err");
@@ -51,7 +49,6 @@ export class WardServiceImpl implements WardService {
         if(!obj) {
             return new ResponseModel(Status._400, "lack of data");
         }
-        console.log(obj);
         let [err, result] = await to(this.scheduleRepository.delete(obj));
         if(err) {
             return new ResponseModel(Status._500, "err");

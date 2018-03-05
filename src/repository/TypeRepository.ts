@@ -26,7 +26,6 @@ export class TypeRepositoryImpl implements TypeRepository {
             var doc = this;
             var count = await self.counterRepository.getNextSequenceValue('type_tbl');
             doc.id = count;
-            console.log('pre-save', count);
             next();
         });
         this.col = mongoose.model('type_tbl', TypeSchema, 'type_tbl');
@@ -38,7 +37,6 @@ export class TypeRepositoryImpl implements TypeRepository {
             let count = await this.counterRepository.getNextSequenceValue('type_tbl');
             obj[i].id = count;           
         }     
-        console.log(obj);
         let [err, data] = await to(this.col.insertMany(obj));
         
         if(err) {
@@ -50,7 +48,6 @@ export class TypeRepositoryImpl implements TypeRepository {
     }
 
     public async delete(obj: TypeDto): Promise<TypeDto[]> {
-        console.log(obj.id);
         let [err, data] = await to(this.col.updateMany({id : obj.id},  { $set: { "deleted_flag" : true }}))
         if(err) {
             return Promise.reject(err);

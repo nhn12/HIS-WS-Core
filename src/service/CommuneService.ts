@@ -33,7 +33,6 @@ export class CommuneServiceImpl implements CommuneService {
         let countCommune = await this.counterRepository.getNextSequenceValue('commune_tbl');
         let countDistrict = await this.counterRepository.getNextSequenceValue('district_tbl');
         obj.id = countCommune;
-        console.log(obj);
         if(obj.district_id != null)
         {
             // obj.district_id.forEach(element => {
@@ -55,10 +54,8 @@ export class CommuneServiceImpl implements CommuneService {
                 }
             }
         }
-        console.log(obj.district_id);
         await this.DistrictRepository.insert(obj.district_id);                           
         //await this.specializationPriceRepository.insert(obj[0].price);
-        console.log("after");
         return await this.CommuneRepository.insert([obj]);
     }
 
@@ -66,7 +63,6 @@ export class CommuneServiceImpl implements CommuneService {
         if(!obj) {
             return new ResponseModel(Status._400, "lack of data");
         }
-        console.log(obj);
         let [err, result] = await to(this.CommuneRepository.delete(obj));
         if(err) {
             return new ResponseModel(Status._500, "err");
@@ -79,7 +75,6 @@ export class CommuneServiceImpl implements CommuneService {
         if(!obj) {
             return new ResponseModel(Status._400, "lack of data");
         }
-        console.log(obj);
         if(obj.district_id != null)
         {
             obj.district_id.forEach(element => {

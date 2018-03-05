@@ -26,7 +26,6 @@ export class ConfigRepositoryImpl implements ConfigRepository {
             var doc = this;
             var count = await self.counterRepository.getNextSequenceValue('config_tbl');
             doc.id = count;
-            console.log('pre-save', count);
             next();
         });
         this.col = mongoose.model('config_tbl', ConfigSchema, 'config_tbl');
@@ -38,7 +37,6 @@ export class ConfigRepositoryImpl implements ConfigRepository {
             let count = await this.counterRepository.getNextSequenceValue('config_tbl');
             obj[i].id = count;
         }     
-        console.log(obj);
         let [err, data] = await to(this.col.insertMany(obj));
         
         if(err) {
@@ -61,7 +59,6 @@ export class ConfigRepositoryImpl implements ConfigRepository {
 
     public async update(obj: ConfigDto): Promise<ConfigDto[]>
     {
-        console.log(obj);
         obj.updated_date = Date.now();
         let [err, data] = await to(this.col.updateMany({id : obj.id},  { $set:  obj }))
         if(err) {

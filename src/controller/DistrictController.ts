@@ -19,7 +19,6 @@ export class DistrictController implements RegistrableController {
     }
 
     public register(app: express.Application): void {
-        console.log("controller");
         app.route('/api/district/insert')
             .post(async(req: express.Request, res: express.Response, next: express.NextFunction) => {
                 const respone = await this.districtService.insert(req.body);

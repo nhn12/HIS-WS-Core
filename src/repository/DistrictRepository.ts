@@ -25,7 +25,6 @@ export class DistrictRepositoryImpl implements DistrictRepository {
             var doc = this;
             var count = await self.counterRepository.getNextSequenceValue('district_tbl');
             doc.id = count;
-            console.log('pre-save', count);
             next();
         });
         this.col = mongoose.model('district_tbl', DistrictSchema, 'district_tbl');
@@ -37,7 +36,6 @@ export class DistrictRepositoryImpl implements DistrictRepository {
         //     let count = await this.counterRepository.getNextSequenceValue('district_tbl');
         //     obj[i].id = count;
         // }     
-        console.log(obj);
         let [err, data] = await to(this.col.insertMany(obj));
         
         if(err) {
@@ -61,7 +59,6 @@ export class DistrictRepositoryImpl implements DistrictRepository {
     public async update(obj: DistrictDto): Promise<DistrictDto[]>
     {
         obj.updated_date = Date.now();
-        console.log(obj);
         let [err, data] = await to(this.col.updateMany({id : obj.id},  { $set:  obj }))
         if(err) {
             return Promise.reject(err);

@@ -31,7 +31,6 @@ export class UserRepositoryImpl implements UserRepository {
     }
 
     public async findOneBy(user: UserDto): Promise<UserDto> {
-        console.log("---------")
         return new Promise<UserDto>((resolve, reject)=>{
             this.col.findOne({
                 username: user.username
@@ -62,7 +61,6 @@ export class UserRepositoryImpl implements UserRepository {
 
         return new Promise<UserDto>((resolve, reject)=>{
             this.col.insertMany([doc]).then(result=>{
-                console.log(result);
                 var tempUser: any = result;
                 tempUser.hash_password = undefined;
                 resolve(tempUser);
@@ -85,7 +83,6 @@ export class UserRepositoryImpl implements UserRepository {
     public async update(obj: UserDto): Promise<UserDto[]>
     {
         obj.updated_date = Date.now();
-        console.log(obj);
         let [err, data] = await to(this.col.updateMany({id : obj.id},  { $set:  obj }))
         if(err) {
             return Promise.reject(err);

@@ -22,11 +22,9 @@ export class TypeServiceImpl implements TypeService {
 
 
     public async insert(obj: any): Promise<ResponseModel<any>> {
-        console.log("Service");
         if(!obj) {
             return new ResponseModel(Status._400, "lack of data");
         }
-        console.log(obj);
         let [err, result] = await to(this.TypeRepository.insert(obj));
         if(err) {
             return new ResponseModel(Status._500, "err");
@@ -50,7 +48,6 @@ export class TypeServiceImpl implements TypeService {
         if(!obj) {
             return new ResponseModel(Status._400, "lack of data");
         }
-        console.log(obj);
         let [err, result] = await to(this.TypeRepository.update(obj));
         if(err) {
             return new ResponseModel(Status._500, "err");

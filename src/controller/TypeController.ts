@@ -20,7 +20,6 @@ export class TypeController implements RegistrableController {
     }
 
     public register(app: express.Application): void {
-        console.log("controller");
         app.route('/api/type/insert')
             .post(async(req: express.Request, res: express.Response, next: express.NextFunction) => {
                 const respone = await this.typeService.insert(req.body);

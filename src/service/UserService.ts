@@ -55,7 +55,6 @@ export class UserServiceImpl implements UserService {
         if(!obj) {
             return new ResponseModel(Status._400, "lack of data");
         }
-        console.log(obj);
         let [err, result] = await to(this.userRepo.delete(obj));
         if(err) {
             return new ResponseModel(Status._500, "err");
@@ -68,7 +67,6 @@ export class UserServiceImpl implements UserService {
         if(!obj) {
             return new ResponseModel(Status._400, "lack of data");
         }
-        console.log(obj);
         let [err, result] = await to(this.userRepo.update(obj));
         if(err) {
             return new ResponseModel(Status._500, "err");

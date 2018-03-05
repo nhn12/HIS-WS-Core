@@ -5,7 +5,6 @@ export class ParseUtils {
         }
 
         arrays.forEach(element=>{
-            console.log(element[objKey]);
 
             if(element[objKey] && element[objKey].length > 0) {
 
@@ -74,7 +73,6 @@ export class ParseUtils {
         date2.setHours(0, 0, 0 ,0);
 
         if(date1.getTime() == date2.getTime()) {
-            console.log(date1);
             return [date1];
         }
 

@@ -37,7 +37,6 @@ export class DistrictServiceImpl implements DistrictService {
         }
         await this.ProvinceRepository.insert(obj.province_id);                           
         //await this.specializationPriceRepository.insert(obj[0].price);
-        console.log("after");
         return await this.DistrictRepository.insert([obj]);
     }
 
@@ -45,7 +44,6 @@ export class DistrictServiceImpl implements DistrictService {
         if(!obj) {
             return new ResponseModel(Status._400, "lack of data");
         }
-        console.log(obj);
         let [err, result] = await to(this.DistrictRepository.delete(obj));
         if(err) {
             return new ResponseModel(Status._500, "err");
@@ -58,7 +56,6 @@ export class DistrictServiceImpl implements DistrictService {
         if(!obj) {
             return new ResponseModel(Status._400, "lack of data");
         }
-        console.log(obj);
         if(obj.province_id != null)
         {
             obj.province_id.forEach(element => {

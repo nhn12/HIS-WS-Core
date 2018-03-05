@@ -43,7 +43,6 @@ export class ScheduleRepositoryImpl implements ScheduleRepository {
             element.id = seq++;
         })
 
-        console.log(obj);
         let data = await this.col.insertMany(obj);
 
 
@@ -63,7 +62,6 @@ export class ScheduleRepositoryImpl implements ScheduleRepository {
     public async update(obj: ScheduleDto): Promise<ScheduleDto[]>
     {
         obj.updated_date = Date.now();
-        console.log(obj);
         let [err, data] = await to(this.col.updateMany({id : obj.id},  { $set:  obj }))
         if(err) {
             return Promise.reject(err);

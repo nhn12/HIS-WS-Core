@@ -27,7 +27,6 @@ export class WardRepositoryImpl implements WardRepository {
             var doc = this;
             var count = await self.counterRepository.getNextSequenceValue('ward_tbl');
             doc.id = count;
-            console.log('pre-save', count);
             next();
         });
         this.col = mongoose.model('ward_tbl', WardSchema, 'ward_tbl');
@@ -65,7 +64,6 @@ export class WardRepositoryImpl implements WardRepository {
     public async update(obj: WardDto): Promise<WardDto[]>
     {
         obj.updated_date = Date.now();
-        console.log(obj);
         let [err, data] = await to(this.col.updateMany({id : obj.id},  { $set:  obj }))
         if(err) {
             return Promise.reject(err);

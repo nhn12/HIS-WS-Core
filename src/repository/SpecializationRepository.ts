@@ -27,7 +27,6 @@ export class SpecializationRepositoryImpl implements SpecializationRepository {
             var doc = this;
             var count = await self.counterRepository.getNextSequenceValue('specialization_tbl');
             doc.id = count;
-            console.log('pre-save', count);
             next();
         });
         this.col = mongoose.model('specialization_tbl', SpecializationSchema, 'specialization_tbl');
@@ -49,7 +48,6 @@ export class SpecializationRepositoryImpl implements SpecializationRepository {
         //     }
 
         // }     
-        console.log(obj);
         let [err, data] = await to(this.col.insertMany(obj));
         
         if(err) {
@@ -73,7 +71,6 @@ export class SpecializationRepositoryImpl implements SpecializationRepository {
     public async update(obj: SpecializationDto): Promise<SpecializationDto[]>
     {
         obj.updated_date = Date.now();
-        console.log(obj);
         let [err, data] = await to(this.col.updateMany({id : obj.id},  { $set:  obj }))
         if(err) {
             return Promise.reject(err);

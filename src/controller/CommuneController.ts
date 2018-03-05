@@ -19,7 +19,6 @@ export class CommuneController implements RegistrableController {
     }
 
     public register(app: express.Application): void {
-        console.log("controller");
         app.route('/api/commune/insert')
             .post(async(req: express.Request, res: express.Response, next: express.NextFunction) => {
                 const respone = await this.communeService.insert(req.body);

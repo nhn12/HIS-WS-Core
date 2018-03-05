@@ -44,7 +44,6 @@ export class SpecializationServiceImpl implements SpecializationService {
         if(!obj) {
             return new ResponseModel(Status._400, "lack of data");
         }
-        console.log(obj);
         let [err, result] = await to(this.scheduleRepository.delete(obj));
         if(err) {
             return new ResponseModel(Status._500, "err");
@@ -57,7 +56,6 @@ export class SpecializationServiceImpl implements SpecializationService {
         if(!obj) {
             return new ResponseModel(Status._400, "lack of data");
         }
-        console.log(obj);
         if(obj.prices != null)
         {
             obj.prices.forEach(element => {

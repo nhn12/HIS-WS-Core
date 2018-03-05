@@ -19,7 +19,6 @@ export class SpecializationPriceController implements RegistrableController {
     }
 
     public register(app: express.Application): void {
-        console.log("controller");
         app.route('/api/specializationPrice/insert')
             .post(async(req: express.Request, res: express.Response, next: express.NextFunction) => {
                 const respone = await this.specializationPriceService.insert(req.body);

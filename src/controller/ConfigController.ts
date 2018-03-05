@@ -19,7 +19,6 @@ export class ConfigController implements RegistrableController {
     }
 
     public register(app: express.Application): void {
-        console.log("controller");
         app.route('/api/config/insert')
             .post(async(req: express.Request, res: express.Response, next: express.NextFunction) => {
                 const respone = await this.configService.insert(req.body);

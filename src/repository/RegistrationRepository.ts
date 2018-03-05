@@ -50,7 +50,6 @@ export class RegistrationRepositoryImpl implements RegistrationRepository {
     public async update(obj: RegistrationDto): Promise<RegistrationDto[]>
     {
         obj.updated_date = Date.now();
-        console.log(obj);
         let [err, data] = await to(this.col.updateMany({id : obj.id},  { $set:  obj }))
         if(err) {
             return Promise.reject(err);

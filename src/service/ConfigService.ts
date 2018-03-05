@@ -22,11 +22,9 @@ export class ConfigServiceImpl implements ConfigService {
 
 
     public async insert(obj: any): Promise<ResponseModel<any>> {
-        console.log("Service");
         if(!obj) {
             return new ResponseModel(Status._400, "lack of data");
         }
-        console.log(obj);
         let [err, result] = await to(this.ConfigRepository.insert(obj));
         if(err) {
             return new ResponseModel(Status._500, "err");
@@ -39,7 +37,6 @@ export class ConfigServiceImpl implements ConfigService {
         if(!obj) {
             return new ResponseModel(Status._400, "lack of data");
         }
-        console.log(obj);
         let [err, result] = await to(this.ConfigRepository.delete(obj));
         if(err) {
             return new ResponseModel(Status._500, "err");
@@ -52,7 +49,6 @@ export class ConfigServiceImpl implements ConfigService {
         if(!obj) {
             return new ResponseModel(Status._400, "lack of data");
         }
-        console.log(obj);
         let [err, result] = await to(this.ConfigRepository.update(obj));
         if(err) {
             return new ResponseModel(Status._500, "err");
