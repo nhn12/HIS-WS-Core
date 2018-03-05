@@ -4,7 +4,7 @@ export var TypeSchema: Schema = new Schema({
     id: Number,
     name: String,
     code: String,
-
+    class: String,
     has_sync: { type: Boolean, default: false },
     //audit tbl
     created_by: String,
