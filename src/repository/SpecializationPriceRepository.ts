@@ -6,6 +6,7 @@ import * as mongoose from 'mongoose';
 import 'reflect-metadata';
 import TYPES from '../types';
 import to from './../util/promise-utils';
+import { SyncService } from '../service/SyncService';
 
 
 export interface SpecializationPriceRepository {
@@ -13,15 +14,19 @@ export interface SpecializationPriceRepository {
     delete(obj: SpecializationPriceDto): Promise<SpecializationPriceDto[]>; 
     update(obj: SpecializationPriceDto): Promise<SpecializationPriceDto[]>;  
     findOneBy(id: string): Promise<SpecializationPriceDto>;
+    convertToSyncDTO(object: SpecializationPriceDto);
+    insertSyncDTO(obj: Object, url: string, optional?: any);
 }
 
 @injectable()
 export class SpecializationPriceRepositoryImpl implements SpecializationPriceRepository {
     @inject(TYPES.CounterRepository)
     private counterRepository: CounterRepository;
+    private syncService: SyncService;
 
     col: mongoose.Model<any>;
-    constructor() {
+    constructor(@inject(TYPES.SyncService) _syncService: SyncService) {
+        this.syncService = _syncService;
         let self = this;
         SpecializationPriceSchema.pre('save', async function (next, doc) {
             var doc = this;
@@ -39,6 +44,10 @@ export class SpecializationPriceRepositoryImpl implements SpecializationPriceRep
             obj[i].id = count;
         }     
         let [err, data] = await to(this.col.insertMany(obj));
+        obj.forEach(element => {
+            var tmpSyncDTO = this.convertToSyncDTO(element);
+            this.insertSyncDTO(tmpSyncDTO, "HISRoom/HealthCareMapping", null);
+        });
         
         if(err) {
             return Promise.reject(err);
@@ -87,6 +96,20 @@ export class SpecializationPriceRepositoryImpl implements SpecializationPriceRep
                 }
             });
         });
+    }
+
+    public convertToSyncDTO(object: SpecializationPriceDto)
+    {        
+        var SyncDTO = {
+                    HisRoomId: object.id.toString(),
+                    HisHealthCareId: object.specialization_id.toString(),
+                      };
+        return SyncDTO;
+    }
+
+    public insertSyncDTO(obj: Object, url: string, optional?: any)
+    {
+        this.syncService.sync(obj, url, null);
     }
 
 }

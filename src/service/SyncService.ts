@@ -13,6 +13,10 @@ export interface SyncService {
 @injectable()
 export class SyncServiceImpl implements SyncService {
     public async sync(obj: any, url: string, optional?: any): Promise<ResponseModel<any>> {
+        var baseUrl = "http://api.vkhs.vn/api/";
+        var fullUrl = baseUrl + url;
+        console.log(fullUrl);
+        console.log(obj);
         return new ResponseModel(Status._200, "sync success");
     }
         

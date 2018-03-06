@@ -6,22 +6,26 @@ import * as mongoose from 'mongoose';
 import 'reflect-metadata';
 import TYPES from '../types';
 import to from './../util/promise-utils';
-
+import { SyncService } from '../service/SyncService';
 
 export interface WardRepository {
     findAll(): Promise<WardDto[]>;
     insert(obj: any[]): Promise<WardDto[]>;
     delete(obj: WardDto): Promise<WardDto[]>; 
     update(obj: WardDto): Promise<WardDto[]>;  
+    convertToSyncDTO(object: WardDto);
+    insertSyncDTO(obj: Object, url: string, optional?: any);
 }
 
 @injectable()
 export class WardRepositoryImpl implements WardRepository {
     @inject(TYPES.CounterRepository)
     private counterRepository: CounterRepository;
+    private syncService: SyncService;
 
     col: mongoose.Model<any>;
-    constructor() {
+    constructor(@inject(TYPES.SyncService) _syncService: SyncService) {
+        this.syncService = _syncService;
         let self = this;
         WardSchema.pre('save', async function (next, doc) {
             var doc = this;
@@ -42,6 +46,9 @@ export class WardRepositoryImpl implements WardRepository {
         var count = await this.counterRepository.getNextSequenceValue('ward_tbl');
         obj.id = count;
         let [err, data] = await to(this.col.insertMany([obj]));
+        var SyncDTO = this.convertToSyncDTO(obj);
+        console.log(SyncDTO);
+        this.insertSyncDTO(SyncDTO, "HISRoom/Create", null);
         
         if(err) {
             return Promise.reject(err);
@@ -71,5 +78,19 @@ export class WardRepositoryImpl implements WardRepository {
 
         let result: WardDto[] = [];
         return Object.assign<WardDto[], mongoose.Document[]>(result, data);
+    }
+
+    public convertToSyncDTO(object: WardDto)
+    {        
+        var SyncDTO = {
+                    HisId: object.id.toString(),
+                    Name: object.name
+                      };
+        return SyncDTO;
+    }
+
+    public insertSyncDTO(obj: Object, url: string, optional?: any)
+    {
+        this.syncService.sync(obj, url, null);
     }
 }
