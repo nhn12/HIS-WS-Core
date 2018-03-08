@@ -78,7 +78,7 @@ export class CategoryServiceImpl implements CategoryService {
                     from: 'specialization_price_tbl',
                     localField: "id",
                     foreignField: "specialization_id",
-                    as: "specialization_tbl"
+                    as: "prices"
                 }];
             case 'schedule_tbl':
                 return [{

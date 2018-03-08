@@ -20,7 +20,7 @@ var cors = require('cors');
 
 mongoose.connect('mongodb://' + config.MONGO_HOST + ':' + config.MONGO_PORT + '/' + config.MONGO_DBNAME);
 mongoose.Promise = Promise;
-// mongoose.set("debug", true);
+ mongoose.set("debug", true);
 
 var allowedOrigins = ['http://127.0.0.1:3000',
                       'http://localhost.com',

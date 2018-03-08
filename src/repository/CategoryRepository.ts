@@ -25,6 +25,12 @@ export class CategoryRepositoryImpl implements CategoryRepository {
             objFilter.push({ $match: filterBuilder });
         }
 
+        if(joinTable && joinTable.length > 0) {
+            objFilter.push(...joinTable.map(value=>{
+                return {$lookup: value}
+            }));
+        }
+
         if(sort) {
             objFilter.push({$sort: sort});
         }
@@ -35,12 +41,6 @@ export class CategoryRepositoryImpl implements CategoryRepository {
 
         if(limit != undefined && limit != null) {
             objFilter.push({$limit : limit});
-        }
-
-        if(joinTable && joinTable.length > 0) {
-            objFilter.push(...joinTable.map(value=>{
-                return {$lookup: value}
-            }));
         }
 
         // [{ $match: filterBuilder }, {$sort: sort}, {$skip: offset}, {$limit : limit}, {$lookup: {from: "specialization_tbl",

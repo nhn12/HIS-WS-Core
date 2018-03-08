@@ -24,9 +24,9 @@ export class BlueprintScheduleServiceImpl implements BlueprintScheduleService {
         if(!obj) {
             return new ResponseModel(Status._400, "lack of data");
         }
-        let [err, result] = await to(this.scheduleRepository.insert(obj));
+        let [err, result] = await to(this.scheduleRepository.insert([obj]));
         if(err) {
-            return new ResponseModel(Status._500, "err");
+            return new ResponseModel(Status._500, JSON.stringify(err));
         }
 
         return new ResponseModel(Status._200, "success", result);

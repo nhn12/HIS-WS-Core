@@ -28,16 +28,25 @@ export class SpecializationServiceImpl implements SpecializationService {
 
 
     public async insert(obj: SpecializationDto): Promise<any> {
-        let count = await this.counterRepository.getNextSequenceValue('specialization_tbl');
-        obj.id = count;
-        if(obj.prices != null)
-        {
-            obj.prices.forEach(element => {
-                element.specialization_id = count;
-            });
+        let prices = obj.prices;
+        obj.prices = undefined;
+        let [err, response] = await to(this.scheduleRepository.insert([obj]));
+        if(err || !response || response.length <= 0) {
+            return new ResponseModel(Status._500, JSON.stringify(err));
         }
-        await this.specializationPriceRepository.insert(obj.prices);                           
-        return await this.scheduleRepository.insert([obj]);
+
+        if(prices != null && prices.length > 0)
+        {
+            prices.forEach(element => {
+                element.specialization_id = response[0].id;
+            });
+            let [err, responseP] = await to(this.specializationPriceRepository.insert(prices));  
+            if(err) {
+                return new ResponseModel(Status._500, JSON.stringify(err));;
+            }                         
+        }
+
+        return new ResponseModel(Status._200, "Success", response);
     }
 
     public async delete(obj: SpecializationDto): Promise<ResponseModel<any>>{
@@ -56,12 +65,13 @@ export class SpecializationServiceImpl implements SpecializationService {
         if(!obj) {
             return new ResponseModel(Status._400, "lack of data");
         }
-        if(obj.prices != null)
+        if(obj.prices != null && obj.prices.length > 0)
         {
             obj.prices.forEach(element => {
                 this.specializationPriceRepository.update(element);
             });
         }
+        
         let [err, result] = await to(this.scheduleRepository.update(obj));
         if(err) {
             return new ResponseModel(Status._500, "err");
@@ -69,11 +79,4 @@ export class SpecializationServiceImpl implements SpecializationService {
 
         return new ResponseModel(Status._200, "success", result);
     }
-
-  
-
-
-
-
- 
 }

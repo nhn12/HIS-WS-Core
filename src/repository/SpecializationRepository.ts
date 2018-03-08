@@ -44,16 +44,15 @@ export class SpecializationRepositoryImpl implements SpecializationRepository {
     }
 
     public async insert(obj: any[]): Promise<SpecializationDto[]> {
-        // for(var i = 0; i < obj.length; i++)
-        // {
-        //     if(obj[i].id == null)
-        //     {
-        //         let count = await this.counterRepository.getNextSequenceValue('specialization_tbl');
-        //         obj[i].id = count;
-        //     }
+        // generate
+        let count = await this.counterRepository.getNextSequenceValue("specialization_tbl", obj.length);
 
-        // }     
+        obj.forEach(element=>{
+            element.id = count++;
+        })
+
         let [err, data] = await to(this.col.insertMany(obj));
+        
         var SyncDTO = this.convertToSyncDTO(obj[0]);
         this.insertSyncDTO(SyncDTO, "HISHealthCare/Create", null);
         
@@ -61,8 +60,7 @@ export class SpecializationRepositoryImpl implements SpecializationRepository {
             return Promise.reject(err);
         }
 
-        let result: SpecializationDto[] = [];
-        return Object.assign<SpecializationDto[], mongoose.Document[]>(result, data);
+        return data;
     }
 
     public async delete(obj: SpecializationDto): Promise<SpecializationDto[]> {
@@ -93,7 +91,7 @@ export class SpecializationRepositoryImpl implements SpecializationRepository {
                     HisId: object.id.toString(),
                     Name: object.name,
                     Code: object.id.toString(),
-                    Type: object.prices[0].type
+                    //Type: object.prices[0].type
                       };
         return SyncDTO;
     }
