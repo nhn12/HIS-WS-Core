@@ -9,12 +9,17 @@ import { SpecializationRepository } from '../repository/SpecializationRepository
 import { SpecializationPriceRepository } from '../repository/SpecializationPriceRepository';
 import { CounterRepository } from '../repository/CounterRepository';
 import { SpecializationDto } from '../model/SpecializationDto';
+import { SpecializationPriceDto } from './../model/SpecializationPriceDto';
+import { SyncService } from '../service/SyncService';
 
 
 export interface SpecializationService {
     insert(obj: SpecializationDto): Promise<any>;
     delete(obj: SpecializationDto): Promise<ResponseModel<any>>;
     update(obj: SpecializationDto): Promise<ResponseModel<any>>;
+    convertToSyncSpecializationPriceDTO(object: SpecializationPriceDto);
+    convertToSyncSpecializationDTO(object: SpecializationDto); 
+    insertSync(obj: Object, url: string, optional?: any);
 }
 
 @injectable()   
@@ -25,33 +30,43 @@ export class SpecializationServiceImpl implements SpecializationService {
     private specializationPriceRepository: SpecializationPriceRepository;
     @inject(TYPES.CounterRepository)
     private counterRepository: CounterRepository;
+    private syncService: SyncService;
 
+    constructor( @inject(TYPES.SyncService) _syncService: SyncService) {
+        this.syncService = _syncService;
+    }
 
     public async insert(obj: SpecializationDto): Promise<any> {
-        let prices = obj.prices;
-        obj.prices = undefined;
-        let [err, response] = await to(this.scheduleRepository.insert([obj]));
-        if(err || !response || response.length <= 0) {
-            return new ResponseModel(Status._500, JSON.stringify(err));
-        }
-
-        if(prices != null && prices.length > 0)
+        let count = await this.counterRepository.getNextSequenceValue('specialization_tbl');
+        obj.id = count;
+        if(obj.prices != null)
         {
-            prices.forEach(element => {
-                element.specialization_id = response[0].id;
+            obj.prices.forEach(element => {
+                element.specialization_id = count;
             });
-            let [err, responseP] = await to(this.specializationPriceRepository.insert(prices));  
-            if(err) {
-                return new ResponseModel(Status._500, JSON.stringify(err));;
-            }                         
         }
+        await this.specializationPriceRepository.insert(obj.prices);
 
-        return new ResponseModel(Status._200, "Success", response);
+        obj.prices.forEach(element => {
+            var tmpSyncDTO = this.convertToSyncSpecializationPriceDTO(element);
+            this.insertSync(tmpSyncDTO, "HISRoom/HealthCareMapping", null);
+        });
+         await this.scheduleRepository.insert([obj]);
+
+         var SyncDTO = this.convertToSyncSpecializationDTO(obj);
+         return this.insertSync(SyncDTO, "HISHealthCare/Create", null);
+
     }
 
     public async delete(obj: SpecializationDto): Promise<ResponseModel<any>>{
         if(!obj) {
             return new ResponseModel(Status._400, "lack of data");
+        }
+        if(obj.prices != null)
+        {
+            obj.prices.forEach(element => {
+                this.specializationPriceRepository.delete(element);
+            });
         }
         let [err, result] = await to(this.scheduleRepository.delete(obj));
         if(err) {
@@ -65,18 +80,42 @@ export class SpecializationServiceImpl implements SpecializationService {
         if(!obj) {
             return new ResponseModel(Status._400, "lack of data");
         }
-        if(obj.prices != null && obj.prices.length > 0)
+        if(obj.prices != null)
         {
             obj.prices.forEach(element => {
                 this.specializationPriceRepository.update(element);
             });
         }
-        
         let [err, result] = await to(this.scheduleRepository.update(obj));
         if(err) {
             return new ResponseModel(Status._500, "err");
         }
 
         return new ResponseModel(Status._200, "success", result);
+    }
+
+    public convertToSyncSpecializationPriceDTO(object: SpecializationPriceDto)
+    {        
+        var SyncDTO = {
+                    HisRoomId: object.id.toString(),
+                    HisHealthCareId: object.specialization_id.toString(),
+                      };
+        return SyncDTO;
+    }
+
+    public convertToSyncSpecializationDTO(object: SpecializationDto)
+    {        
+        var SyncDTO = {
+                    HisId: object.id.toString(),
+                    Name: object.name,
+                    Code: object.id.toString(),
+                    Type: object.prices[0].type
+                      };
+        return SyncDTO;
+    }
+
+    public insertSync(obj: Object, url: string, optional?: any)
+    {
+        this.syncService.sync(obj, url, null);
     }
 }

@@ -6,27 +6,21 @@ import * as mongoose from 'mongoose';
 import 'reflect-metadata';
 import TYPES from '../types';
 import to from './../util/promise-utils';
-import { SyncService } from '../service/SyncService';
-
 
 export interface SpecializationRepository {
     findAll(): Promise<SpecializationDto[]>;
     insert(obj: any[]): Promise<SpecializationDto[]>;
     delete(obj: SpecializationDto): Promise<SpecializationDto[]>; 
     update(obj: SpecializationDto): Promise<SpecializationDto[]>; 
-    convertToSyncDTO(object: SpecializationDto); 
-    insertSyncDTO(obj: Object, url: string, optional?: any); 
 }
 
 @injectable()
 export class SpecializationRepositoryImpl implements SpecializationRepository {
     @inject(TYPES.CounterRepository)
     private counterRepository: CounterRepository;
-    private syncService: SyncService;
 
     col: mongoose.Model<any>;
-    constructor( @inject(TYPES.SyncService) _syncService: SyncService) {
-        this.syncService = _syncService;
+    constructor() {
         let self = this;
         SpecializationSchema.pre('save', async function (next, doc) {
             var doc = this;
@@ -44,17 +38,9 @@ export class SpecializationRepositoryImpl implements SpecializationRepository {
     }
 
     public async insert(obj: any[]): Promise<SpecializationDto[]> {
-        // generate
-        let count = await this.counterRepository.getNextSequenceValue("specialization_tbl", obj.length);
 
-        obj.forEach(element=>{
-            element.id = count++;
-        })
-
-        let [err, data] = await to(this.col.insertMany(obj));
-        
-        var SyncDTO = this.convertToSyncDTO(obj[0]);
-        this.insertSyncDTO(SyncDTO, "HISHealthCare/Create", null);
+        // }     
+        let [err, data] = await to(this.col.insertMany(obj));       
         
         if(err) {
             return Promise.reject(err);
@@ -85,19 +71,4 @@ export class SpecializationRepositoryImpl implements SpecializationRepository {
         return Object.assign<SpecializationDto[], mongoose.Document[]>(result, data);
     }
 
-    public convertToSyncDTO(object: SpecializationDto)
-    {        
-        var SyncDTO = {
-                    HisId: object.id.toString(),
-                    Name: object.name,
-                    Code: object.id.toString(),
-                    //Type: object.prices[0].type
-                      };
-        return SyncDTO;
-    }
-
-    public insertSyncDTO(obj: Object, url: string, optional?: any)
-    {
-        this.syncService.sync(obj, url, null);
-    }
 }
