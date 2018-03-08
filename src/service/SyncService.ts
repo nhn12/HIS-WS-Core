@@ -4,6 +4,8 @@ import { injectable, inject } from "inversify";
 import TYPES from "../types";
 import 'reflect-metadata';
 import * as _ from 'lodash';
+import axios from 'axios';
+import { AxiosRequestConfig, AxiosPromise } from 'axios';
 
 
 export interface SyncService {
@@ -12,12 +14,24 @@ export interface SyncService {
 
 @injectable()
 export class SyncServiceImpl implements SyncService {
+    
     public async sync(obj: any, url: string, optional?: any): Promise<ResponseModel<any>> {
-        var baseUrl = "http://api.vkhs.vn/api/";
-        var fullUrl = baseUrl + url;
-        console.log(fullUrl);
-        console.log(obj);
+        
         return new ResponseModel(Status._200, "sync success");
+    }
+
+    private prepareSync(): Promise<string> {
+        //TO_DO
+        return null;
+    }
+
+    private loginWs(): Promise<string> {
+        //TO_DO
+        return null;
+    }
+
+    private runSync() {
+        //TO_DO
     }
         
 

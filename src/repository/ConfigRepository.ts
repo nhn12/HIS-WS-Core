@@ -6,67 +6,23 @@ import TYPES from '../types';
 import to from './../util/promise-utils';
 import { ConfigDto } from '../model/ConfigDto';
 import { ConfigSchema } from '../model/ConfigSchema';
+import { CoreRepository } from '../core/CoreRepository';
 
 
 export interface ConfigRepository {
     insert(obj: any[]): Promise<ConfigDto[]>;
     delete(obj: ConfigDto): Promise<ConfigDto[]>; 
     update(obj: ConfigDto): Promise<ConfigDto[]>;  
+    findOne(obj: any): Promise<ConfigDto>;
+    upsert(obj, condition?: any): Promise<ConfigDto>;
 }
 
 @injectable()
-export class ConfigRepositoryImpl implements ConfigRepository {
-    @inject(TYPES.CounterRepository)
-    private counterRepository: CounterRepository;
-
-    col: mongoose.Model<any>;
-    constructor() {
-        let self = this;
-        ConfigSchema.pre('save', async function (next, doc) {
-            var doc = this;
-            var count = await self.counterRepository.getNextSequenceValue('config_tbl');
-            doc.id = count;
-            next();
-        });
-        this.col = mongoose.model('config_tbl', ConfigSchema, 'config_tbl');
+export class ConfigRepositoryImpl extends CoreRepository<ConfigDto> implements ConfigRepository {
+    public setPrimaryTable(): string {
+        return 'config_tbl'
     }
-
-    public async insert(obj: any[]): Promise<ConfigDto[]> {
-        for(var i = 0; i < obj.length; i++)
-        {
-            let count = await this.counterRepository.getNextSequenceValue('config_tbl');
-            obj[i].id = count;
-        }     
-        let [err, data] = await to(this.col.insertMany(obj));
-        
-        if(err) {
-            return Promise.reject(err);
-        }
-
-        let result: ConfigDto[] = [];
-        return Object.assign<ConfigDto[], mongoose.Document[]>(result, data);
+    public setSchema(): mongoose.Schema {
+        return ConfigSchema;
     }
-
-    public async delete(obj: ConfigDto): Promise<ConfigDto[]> {
-        let [err, data] = await to(this.col.updateMany({id : obj.id},  { $set: { "deleted_flag" : true }}))
-        if(err) {
-            return Promise.reject(err);
-        }
-
-        let result: ConfigDto[] = [];
-        return Object.assign<ConfigDto[], mongoose.Document[]>(result, data);
-    }
-
-    public async update(obj: ConfigDto): Promise<ConfigDto[]>
-    {
-        obj.updated_date = Date.now();
-        let [err, data] = await to(this.col.updateMany({id : obj.id},  { $set:  obj }))
-        if(err) {
-            return Promise.reject(err);
-        }
-
-        let result: ConfigDto[] = [];
-        return Object.assign<ConfigDto[], mongoose.Document[]>(result, data);
-    }
-
 }

@@ -11,7 +11,7 @@ import { CoreRepository } from './CoreRepository';
 export abstract class CoreService<D, R extends CoreRepository<any>> {
     
     public abstract setMainRepository(): any;
-    
+
     public async insert(obj: D): Promise<any> {
         let[err, response] = await to(this.setMainRepository().insert([obj]));
 

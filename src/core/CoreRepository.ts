@@ -9,6 +9,50 @@ import { inject, injectable } from 'inversify';
 export abstract class CoreRepository<D> {
     col: mongoose.Model<any>;
 
+    public async upsert(obj: D, condition?: any): Promise<D> {
+        if(!obj) {
+            return  Promise.reject("Empty data");
+        }
+
+        if(obj['id'] ==undefined || obj['id'] == null) {
+            let [err1, response1] = await to(this.insert([obj]));
+            if(err1 || !response1) {
+                return Promise.reject(err1);
+            }
+            return response1[0];
+        }
+
+        if(!condition) {
+            condition = {id: obj["id"]};
+        }
+
+        let [err, response] = await to(this.findOne(condition));
+        if(err) {
+            return Promise.reject(err);
+        }
+
+        if(!response) {
+            let [err1, response1] = await to(this.insert([obj]));
+            if(err1 || !response1) {
+                return Promise.reject(err1);
+            }
+            return response1[0];
+        }
+
+         return this.update(obj);
+    }
+    
+    public async findOne(condition: any) {
+        let [err, response] = await to(this.col.findOne(condition));
+
+        if(err) {
+            return Promise.reject(err);
+        }
+
+        return response;
+    }
+    
+
     @inject(TYPES.CounterRepository)
     protected counterRepository: CounterRepository;
     

@@ -57,6 +57,10 @@ const TYPES = {
     //Doctor
     DoctorService: Symbol("DoctorService"),
     DoctorRepository: Symbol("DoctorRepository"),
+
+    //Log
+    LogService: Symbol("LogService"),
+    LogRepository: Symbol("LogRepository"),
     
     //utils section
     ResponseUtil: Symbol('ResponseUtil'),
