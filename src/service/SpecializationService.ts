@@ -37,24 +37,45 @@ export class SpecializationServiceImpl implements SpecializationService {
     }
 
     public async insert(obj: SpecializationDto): Promise<any> {
-        let count = await this.counterRepository.getNextSequenceValue('specialization_tbl');
-        obj.id = count;
-        if(obj.prices != null)
-        {
-            obj.prices.forEach(element => {
-                element.specialization_id = count;
-            });
+
+        let prices = obj.prices;
+
+        obj.prices = undefined;
+
+        let [err, response] = await to(this.scheduleRepository.insert([obj]));
+
+        //response array
+        if(err || !response) {
+            return new ResponseModel(Status._500, JSON.stringify(err), null);
         }
-        await this.specializationPriceRepository.insert(obj.prices);
 
-        obj.prices.forEach(element => {
-            var tmpSyncDTO = this.convertToSyncSpecializationPriceDTO(element);
-            this.insertSync(tmpSyncDTO, "HISRoom/HealthCareMapping", null);
-        });
-         await this.scheduleRepository.insert([obj]);
+        if(prices && prices.length > 0) {
+            let idSpecialization = response[0].id;
+            prices.forEach(element=>{
+                element.specialization_id = idSpecialization;
+            })
 
-         var SyncDTO = this.convertToSyncSpecializationDTO(obj);
-         return this.insertSync(SyncDTO, "HISHealthCare/Create", null);
+            let [errPrice, responsePrice] = await to(this.specializationPriceRepository.insert(prices));
+            if(errPrice) {
+                return new ResponseModel(Status._500, JSON.stringify(errPrice), null);
+            }
+
+            response.prices = responsePrice;
+        }
+
+        // sync
+        //syncS()
+
+        return new ResponseModel(Status._200, "Success", response);
+
+        // obj.prices.forEach(element => {
+        //     var tmpSyncDTO = this.convertToSyncSpecializationPriceDTO(element);
+        //     this.insertSync(tmpSyncDTO, "HISRoom/HealthCareMapping", null);
+        // });
+         //await this.scheduleRepository.insert([obj]);
+
+        //  var SyncDTO = this.convertToSyncSpecializationDTO(obj);
+        //  return this.insertSync(SyncDTO, "HISHealthCare/Create", null);
 
     }
 

@@ -39,7 +39,8 @@ export class SpecializationRepositoryImpl implements SpecializationRepository {
 
     public async insert(obj: any[]): Promise<SpecializationDto[]> {
 
-        // }     
+        let count = obj.length;
+        
         let [err, data] = await to(this.col.insertMany(obj));       
         
         if(err) {
