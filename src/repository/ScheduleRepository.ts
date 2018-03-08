@@ -15,6 +15,7 @@ export interface ScheduleRepository {
     insert(obj: any[]): Promise<ScheduleDto[]>;
     delete(obj: ScheduleDto): Promise<ScheduleDto[]>; 
     update(obj: ScheduleDto): Promise<ScheduleDto[]>;
+    findOne(id: String): Promise<ScheduleDto>;
 }
 
 @injectable()
@@ -69,5 +70,12 @@ export class ScheduleRepositoryImpl implements ScheduleRepository {
 
         let result: ScheduleDto[] = [];
         return Object.assign<ScheduleDto[], mongoose.Document[]>(result, data);
+    }
+
+    public async findOne(id: String): Promise<ScheduleDto>
+    {
+        var tmp = await to(this.col.findOne({id: id}));
+        console.log(tmp);
+        return null;
     }
 }

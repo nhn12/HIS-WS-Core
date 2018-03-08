@@ -25,13 +25,13 @@ export class MedicalRegistrationController implements RegistrableController {
                 res.json(this.responseUtils.buildListData<any>(Status._200, "success", addresses, addresses.length));
         })
 
-        app.route('/api/registration/create')
+        app.route('/api/MedicalRegistration/create')
             .post(async(req: express.Request, res: express.Response, next: express.NextFunction) => {
                 const [err, response] = await to(this.registartionService.insert(req.params["mabv"], req.body));
                 res.json(response);
         })
 
-        app.route('/api/registration/update')
+        app.route('/api/MedicalRegistration/UpdatePayment')
         .post(async(req: express.Request, res: express.Response, next: express.NextFunction) => {
             const [err, response] = await to(this.registartionService.update(req.body));
             res.json(response);
