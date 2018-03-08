@@ -62,21 +62,7 @@ export class SpecializationServiceImpl implements SpecializationService {
 
             response.prices = responsePrice;
         }
-
-        // sync
-        //syncS()
-
         return new ResponseModel(Status._200, "Success", response);
-
-        // obj.prices.forEach(element => {
-        //     var tmpSyncDTO = this.convertToSyncSpecializationPriceDTO(element);
-        //     this.insertSync(tmpSyncDTO, "HISRoom/HealthCareMapping", null);
-        // });
-         //await this.scheduleRepository.insert([obj]);
-
-        //  var SyncDTO = this.convertToSyncSpecializationDTO(obj);
-        //  return this.insertSync(SyncDTO, "HISHealthCare/Create", null);
-
     }
 
     public async delete(obj: SpecializationDto): Promise<ResponseModel<any>>{

@@ -1,3 +1,5 @@
+import { DoctorController } from './controller/DoctorController';
+import { DoctorRepository, DoctorRepositoryImpl } from './repository/DoctorRepository';
 import { SyncService, SyncServiceImpl } from './service/SyncService';
 import { BlueprintScheduleRepository, BlueprintScheduleRepositoryImpl } from './repository/BlueprintScheduleRepository';
 import { SpecializationRepositoryImpl, SpecializationRepository } from './repository/SpecializationRepository';
@@ -45,6 +47,7 @@ import { DistrictController } from './controller/DistrictController';
 import { CommuneService, CommuneServiceImpl } from './service/CommuneService';
 import { CommuneRepository, CommuneRepositoryImpl } from './repository/CommuneRepository';
 import { CommuneController } from './controller/CommuneController';
+import { DoctorService, DoctorServiceImpl } from './service/DoctorService';
 
 const container = new Container();
 container.bind<RegistrableController>(TYPES.Controller).to(MedicalRegistrationController);
@@ -60,6 +63,8 @@ container.bind<RegistrableController>(TYPES.Controller).to(ConfigController);
 container.bind<RegistrableController>(TYPES.Controller).to(ProvinceController);
 container.bind<RegistrableController>(TYPES.Controller).to(DistrictController);
 container.bind<RegistrableController>(TYPES.Controller).to(CommuneController);
+container.bind<RegistrableController>(TYPES.Controller).to(DoctorController);
+
 
 
 container.bind<AddressService>(TYPES.AddressService).to(AddressServiceImpl);
@@ -114,6 +119,10 @@ container.bind<DistrictRepository>(TYPES.DistrictRepository).to(DistrictReposito
 //commune
 container.bind<CommuneService>(TYPES.CommuneService).to(CommuneServiceImpl);
 container.bind<CommuneRepository>(TYPES.CommuneRepository).to(CommuneRepositoryImpl);
+
+//Doctor
+container.bind<DoctorService>(TYPES.DoctorService).to(DoctorServiceImpl);
+container.bind<DoctorRepository>(TYPES.DoctorRepository).to(DoctorRepositoryImpl);
 
 //counter 
 container.bind<CounterRepository>(TYPES.CounterRepository).to(CounterRepositoryImpl)

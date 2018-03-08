@@ -1,7 +1,7 @@
 import { Schema } from "mongoose";
 
 export var SpecializationPriceSchema: Schema = new Schema({
-    id: Number,
+    id: {type: Number, required: true},
     specialization_id: Number,
     type: Number,
     price: Number,

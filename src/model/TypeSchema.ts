@@ -1,7 +1,7 @@
 import { Schema } from "mongoose";
 
 export var TypeSchema: Schema = new Schema({
-    id: Number,
+    id: {type: Number, required: true},
     name: String,
     code: String,
     class: String,

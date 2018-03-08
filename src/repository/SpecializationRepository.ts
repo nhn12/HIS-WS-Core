@@ -40,12 +40,25 @@ export class SpecializationRepositoryImpl implements SpecializationRepository {
     public async insert(obj: any[]): Promise<SpecializationDto[]> {
 
         let count = obj.length;
-        
+
+        let [errCount, seq] = await to(this.counterRepository.getNextSequenceValue("specialization_tbl", count));
+
+        if(errCount) {
+            return Promise.reject(errCount);
+        }
+
+        console.log(seq);
+        obj.forEach(element=>{
+            element.id = seq++;
+        })
+
         let [err, data] = await to(this.col.insertMany(obj));       
         
         if(err) {
             return Promise.reject(err);
         }
+
+        console.log(obj);
 
         return data;
     }

@@ -54,6 +54,10 @@ const TYPES = {
     CommuneRepository:Symbol("CommuneRepository"),
     CommuneService:Symbol("CommuneService"),
 
+    //Doctor
+    DoctorService: Symbol("DoctorService"),
+    DoctorRepository: Symbol("DoctorRepository"),
+    
     //utils section
     ResponseUtil: Symbol('ResponseUtil'),
 

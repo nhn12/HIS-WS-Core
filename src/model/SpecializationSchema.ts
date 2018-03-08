@@ -1,7 +1,7 @@
 import { Schema } from "mongoose";
 
 export var SpecializationSchema: Schema = new Schema({
-    id: Number,
+    id: {type: Number, required: true},
     specialization_code: Schema.Types.ObjectId,
     name: String,
     hospital_id: Number,

@@ -5,7 +5,7 @@ export class DoctorDto {
     public firstname: String;
     public lastname: String;
     public gender: Number;
-    public  birthday: String;
+    public birthday: String;
 
     public address: String;
     public province_id: Number;
@@ -13,4 +13,6 @@ export class DoctorDto {
     public commune_id: Number;
 
     public specialization_id: Number;
+
+    public updated_date: Number;
 }

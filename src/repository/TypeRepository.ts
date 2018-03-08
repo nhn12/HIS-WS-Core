@@ -32,11 +32,13 @@ export class TypeRepositoryImpl implements TypeRepository {
     }
 
     public async insert(obj: any[]): Promise<TypeDto[]> {
-        for(var i = 0; i < obj.length; i++)
-        {
-            let count = await this.counterRepository.getNextSequenceValue('type_tbl');
-            obj[i].id = count;           
-        }     
+        let count = obj.length;
+        let seq = await this.counterRepository.getNextSequenceValue('type_tbl', count);
+        obj.forEach(element=>{
+            element.id = seq++;
+        })
+        
+        
         let [err, data] = await to(this.col.insertMany(obj));
         
         if(err) {

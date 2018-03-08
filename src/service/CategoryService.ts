@@ -25,10 +25,6 @@ export class CategoryServiceImpl implements CategoryService {
             obj.filter = {};
         }
 
-        if(!obj.sort) {
-            obj.sort = {};
-        }
-
         if(obj.limit == undefined || obj.limit == null) {
             obj.limit = AppConstants.DEFAULT_LIMIT_RECORD_SEARCH;
         }
