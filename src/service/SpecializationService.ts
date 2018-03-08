@@ -19,7 +19,6 @@ export interface SpecializationService {
     update(obj: SpecializationDto): Promise<ResponseModel<any>>;
     convertToSyncSpecializationPriceDTO(object: SpecializationPriceDto);
     convertToSyncSpecializationDTO(object: SpecializationDto); 
-    insertSync(obj: Object, url: string, optional?: any);
 }
 
 @injectable()   
@@ -43,7 +42,7 @@ export class SpecializationServiceImpl implements SpecializationService {
         obj.prices = undefined;
 
         let [err, response] = await to(this.scheduleRepository.insert([obj]));
-
+        
         //response array
         if(err || !response) {
             return new ResponseModel(Status._500, JSON.stringify(err), null);
@@ -61,6 +60,9 @@ export class SpecializationServiceImpl implements SpecializationService {
             }
 
             response.prices = responsePrice;
+            console.log(response);
+            //only sync when have price
+            this.Sync(response);
         }
         return new ResponseModel(Status._200, "Success", response);
     }
@@ -101,28 +103,37 @@ export class SpecializationServiceImpl implements SpecializationService {
         return new ResponseModel(Status._200, "success", result);
     }
 
-    public convertToSyncSpecializationPriceDTO(object: SpecializationPriceDto)
+    public convertToSyncSpecializationPriceDTO(object: any)
     {        
         var SyncDTO = {
-                    HisRoomId: object.id.toString(),
-                    HisHealthCareId: object.specialization_id.toString(),
+                    HisRoomId: object[0].id.toString(),
+                    HisHealthCareId: object.prices[0].specialization_id.toString(),
                       };
         return SyncDTO;
     }
 
-    public convertToSyncSpecializationDTO(object: SpecializationDto)
+    public convertToSyncSpecializationDTO(object: any)
     {        
         var SyncDTO = {
-                    HisId: object.id.toString(),
-                    Name: object.name,
-                    Code: object.id.toString(),
+                    HisId: object[0].id.toString(),
+                    Name: object[0].name,
+                    Code: object[0].id.toString(),
                     Type: object.prices[0].type
                       };
         return SyncDTO;
     }
 
-    public insertSync(obj: Object, url: string, optional?: any)
+    public Sync(obj: any)
     {
-        this.syncService.sync(obj, url, null);
+        console.log(obj[0].id);
+        console.log(obj[0].name);
+        console.log(obj.prices[0].type);
+        var SyncSpecializationDTO = this.convertToSyncSpecializationDTO(obj);
+        this.syncService.sync(SyncSpecializationDTO, "HISHealthCare/Create", null);
+
+            var SyncSpecializationPriceDTO = this.convertToSyncSpecializationPriceDTO(obj);
+            console.log(SyncSpecializationPriceDTO);
+            this.syncService.sync(SyncSpecializationPriceDTO, "HISPriceHistory/Create", null);
+        
     }
 }

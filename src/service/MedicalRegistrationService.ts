@@ -3,6 +3,7 @@ import TYPES from '../types';
 import 'reflect-metadata';
 import * as _ from 'lodash';
 import { RegistrationRepository } from '../repository/RegistrationRepository';
+import { ScheduleRepository } from '../repository/ScheduleRepository';
 import { RegistrationDto } from '../model/RegistrationDto';
 import { ResponseModel, Status } from '../model/ResponseDto';
 import  to  from '../util/promise-utils';
@@ -18,6 +19,8 @@ export interface MedicalRegistrationService {
 export class MedicalRegistrationServiceImpl implements MedicalRegistrationService {
     @inject(TYPES.RegistrationRepository)
     private registrationRepo: RegistrationRepository;
+    @inject(TYPES.ScheduleRepository)
+    private scheduleRepository: ScheduleRepository;
 
 
     public async getAllRegistration(): Promise<Array<RegistrationDto>> {
@@ -41,6 +44,9 @@ export class MedicalRegistrationServiceImpl implements MedicalRegistrationServic
             obj.created_date = obj.updated_date =  Date.now();
             obj.deleted_flag = false;
             obj.mabv = mabv;
+            
+            this.scheduleRepository.findOne(obj.malichkb.toString());
+
             const [err, response] = await to(this.registrationRepo.insert(obj));
             if(err) {
                 resolve(new ResponseModel(Status._0, "error"));

@@ -27,7 +27,7 @@ export class ScheduleServiceImpl implements ScheduleService {
     @inject(TYPES.BlueprintScheduleRepository)
     private bluePrintRepository: BlueprintScheduleRepository;
 
-    public async insert(obj: any): Promise<ResponseModel<any>> {
+    public async insert(obj: any): Promise<ResponseModel<any>> {        
         if (!obj) {
             return new ResponseModel(Status._400, "lack of data");
         }
@@ -36,6 +36,7 @@ export class ScheduleServiceImpl implements ScheduleService {
         // Get list blueprint schedule
         let [errBlue, blueList] = await to<BlueprintScheduleDto[]>(this.bluePrintRepository.findAll());
         if (!blueList || blueList.length <= 0) {
+            console.log(obj);
             return new ResponseModel(Status._500, "Blueprint schedule empty");
         }
 
@@ -60,7 +61,7 @@ export class ScheduleServiceImpl implements ScheduleService {
                 scheduleList.push(...tempSchedule);
             })
         }
-
+        console.log(scheduleList);
         await this.scheduleRepository.insert(scheduleList);
         return new ResponseModel(Status._200, "lack of data"); 
     }
