@@ -16,7 +16,6 @@ export interface WardService {
     update(obj: WardDto): Promise<ResponseModel<any>>;
     delete(obj: WardDto): Promise<ResponseModel<any>>;
     convertToSyncDTO(object: WardDto);
-    insertSyncDTO(obj: Object, url: string, optional?: any);
 }
 
 @injectable()
@@ -32,21 +31,17 @@ export class WardServiceImpl implements WardService {
     }
 
     public async insert(obj: any): Promise<any> {
-        if(!obj) {
-            return new ResponseModel(Status._400, "lack of data");
-        }
-        var count = await this.counterRepository.getNextSequenceValue('ward_tbl');
-        obj.id = count;
-        let [err, result] = await to(this.scheduleRepository.insert(obj));
+        let [err, response] = await to(this.scheduleRepository.insert(obj));
 
-        var SyncDTO = this.convertToSyncDTO(obj);
-        this.insertSyncDTO(SyncDTO, "HISRoom/Create", null);
-
-        if(err) {
-            return new ResponseModel(Status._500, "err");
+        //response array
+        if(err || !response) {
+            return new ResponseModel(Status._500, JSON.stringify(err), null);
         }
 
-        return new ResponseModel(Status._200, "success", result);
+        console.log(response);
+
+        this.Sync(response);
+        return new ResponseModel(Status._200, "Success", response);
     }
 
     public async update(obj: WardDto): Promise<ResponseModel<any>> {
@@ -82,9 +77,15 @@ export class WardServiceImpl implements WardService {
         return SyncDTO;
     }
 
-    public insertSyncDTO(obj: Object, url: string, optional?: any)
+    public Sync(obj: any)
     {
-        this.syncService.sync(obj, url, null);
+        console.log("sync");
+
+        obj.forEach(element => {
+            let wardSync = this.convertToSyncDTO(element);
+            this.syncService.sync(wardSync, "HISRoom/Create", null);
+        });
+     
     }
  
 }

@@ -17,7 +17,6 @@ export interface SpecializationService {
     insert(obj: SpecializationDto): Promise<any>;
     delete(obj: SpecializationDto): Promise<ResponseModel<any>>;
     update(obj: SpecializationDto): Promise<ResponseModel<any>>;
-    convertToSyncSpecializationPriceDTO(object: SpecializationPriceDto);
     convertToSyncSpecializationDTO(object: SpecializationDto); 
 }
 
@@ -103,37 +102,32 @@ export class SpecializationServiceImpl implements SpecializationService {
         return new ResponseModel(Status._200, "success", result);
     }
 
-    public convertToSyncSpecializationPriceDTO(object: any)
-    {        
-        var SyncDTO = {
-                    HisRoomId: object[0].id.toString(),
-                    HisHealthCareId: object.prices[0].specialization_id.toString(),
-                      };
-        return SyncDTO;
-    }
-
     public convertToSyncSpecializationDTO(object: any)
     {        
+        var prices = new Array();
+        object.prices.forEach(element => {
+            var price = {
+                        Price: element.price,
+                        Type: element.type,
+                        EffectiveDate: element.created_date
+                        };
+            prices.push(price);
+        });
+
         var SyncDTO = {
                     HisId: object[0].id.toString(),
                     Name: object[0].name,
                     Code: object[0].id.toString(),
-                    Type: object.prices[0].type
+                    Prices: prices
                       };
         return SyncDTO;
     }
 
     public Sync(obj: any)
     {
-        console.log(obj[0].id);
-        console.log(obj[0].name);
-        console.log(obj.prices[0].type);
-        var SyncSpecializationDTO = this.convertToSyncSpecializationDTO(obj);
-        this.syncService.sync(SyncSpecializationDTO, "HISHealthCare/Create", null);
-
-            var SyncSpecializationPriceDTO = this.convertToSyncSpecializationPriceDTO(obj);
-            console.log(SyncSpecializationPriceDTO);
-            this.syncService.sync(SyncSpecializationPriceDTO, "HISPriceHistory/Create", null);
-        
+        console.log("sync");
+        var SyncSpecializationPriceDTO = this.convertToSyncSpecializationDTO(obj);          
+        this.syncService.sync(SyncSpecializationPriceDTO, "HISPriceHistory/Create", null);
+       
     }
 }

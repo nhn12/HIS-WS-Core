@@ -16,7 +16,7 @@ export interface SyncService {
 export class SyncServiceImpl implements SyncService {
     
     public async sync(obj: any, url: string, optional?: any): Promise<ResponseModel<any>> {
-        
+        console.log(obj);
         return new ResponseModel(Status._200, "sync success");
     }
 

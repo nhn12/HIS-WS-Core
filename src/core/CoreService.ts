@@ -1,4 +1,4 @@
-import { ResponseModel, Status } from './../../../HIS_Webservices/HIS-WebService/src/model/ResponseDto';
+import { ResponseModel, Status } from './../../../HIS-WebService/src/model/ResponseDto';
 import { CounterRepository } from './../repository/CounterRepository';
 import * as mongoose from 'mongoose';
 import { Schema } from 'mongoose';

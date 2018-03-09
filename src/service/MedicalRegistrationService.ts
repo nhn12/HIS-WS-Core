@@ -13,6 +13,7 @@ export interface MedicalRegistrationService {
     insert(mabv: string, obj: RegistrationDto): Promise<ResponseModel<any>>;
     delete(obj: RegistrationDto): Promise<ResponseModel<any>>;
     update(obj: RegistrationDto): Promise<ResponseModel<any>>;
+    cancel(obj: any): Promise<ResponseModel<any>>;
 }
 
 @injectable()
@@ -78,6 +79,19 @@ export class MedicalRegistrationServiceImpl implements MedicalRegistrationServic
             return new ResponseModel(Status._400, "lack of data");
         }
         let [err, result] = await to(this.registrationRepo.update(obj));
+        if(err) {
+            return new ResponseModel(Status._500, "err");
+        }
+
+        return new ResponseModel(Status._200, "success", result);
+    }
+
+    public async cancel(obj: any): Promise<ResponseModel<any>>{
+        if(!obj) {
+            return new ResponseModel(Status._400, "lack of data");
+        }
+
+        let [err, result] = await to(this.registrationRepo.cancel(obj));
         if(err) {
             return new ResponseModel(Status._500, "err");
         }

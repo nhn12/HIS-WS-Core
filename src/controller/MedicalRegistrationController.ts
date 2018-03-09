@@ -41,6 +41,12 @@ export class MedicalRegistrationController implements RegistrableController {
         .post(async(req: express.Request, res: express.Response, next: express.NextFunction) => {
             const [err, response] = await to(this.registartionService.delete(req.body));
             res.json(response);
-    })
+        })
+
+        app.route('/api/medicalregistration/cancel')
+        .post(async(req: express.Request, res: express.Response, next: express.NextFunction) => {
+            const [err, response] = await to(this.registartionService.cancel(req.body));
+            res.json(response);
+        })
     }
 }
