@@ -27,8 +27,25 @@ export class DoctorRepositoryImpl extends CoreRepository<DoctorDto> implements D
     public setPrimaryTable(): string {
         return 'doctor_tbl'
     }
+
     public setSchema(): mongoose.Schema {
         return DoctorSchema;
+    }
+    
+    public async insert(obj: DoctorDto[]): Promise<DoctorDto[]> {
+        if(obj) {
+            obj.forEach(element=>{
+                element.name = element.firstname + " " + element.lastname;
+            })
+        }
+        return super.insert(obj);
+
+    }
+
+    public async update(obj: DoctorDto): Promise<DoctorDto[]> {
+        obj.name = obj.firstname + " " + obj.lastname;
+        return super.update(obj);
+
     }
 
     

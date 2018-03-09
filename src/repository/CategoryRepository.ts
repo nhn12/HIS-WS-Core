@@ -9,6 +9,7 @@ export interface CategoryRepository {
 @injectable()
 export class CategoryRepositoryImpl implements CategoryRepository {
     constructor() {
+        
     }
 
     public async insert(resource: string, data: any) {

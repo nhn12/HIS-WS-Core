@@ -4,7 +4,7 @@ export class DoctorDto {
     public name: String;
     public firstname: String;
     public lastname: String;
-    public gender: Number;
+    public gender: String;
     public birthday: String;
 
     public address: String;
