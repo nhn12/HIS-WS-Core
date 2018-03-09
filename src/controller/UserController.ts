@@ -8,17 +8,23 @@ import { ResponseModel, Status } from '../model/ResponseDto';
 import { UserDto } from '../model/UserDto';
 import * as jsonwebtoken from 'jsonwebtoken';
 import config from '../../config/config';
+import { SyncService } from '../service/SyncService';
+import to from '../util/promise-utils';
 
 
 @injectable()
 export class UserController implements RegistrableController {
     private userService: UserService;
     private responseUtils: ResponseUtil;
+    private syncService: SyncService;
+
 
     constructor(@inject(TYPES.UserService) _userService: UserService,
-                @inject(TYPES.ResponseUtil) _responseUtils: ResponseUtil) {
+                @inject(TYPES.ResponseUtil) _responseUtils: ResponseUtil,
+                @inject(TYPES.SyncService) _syncServce: SyncService) {
         this.userService = _userService;
         this.responseUtils = _responseUtils;
+        this.syncService = _syncServce;
     }
 
     public register(app: express.Application): void {
@@ -32,6 +38,20 @@ export class UserController implements RegistrableController {
                  }).catch(err => {
                     res.json(this.responseUtils.buildAuthenticationFailed());
                  });
+            });
+
+            app.route('/api/test')
+            .post(async(req: express.Request, res: express.Response, next: express.NextFunction) => {
+               let [err, response] = await to(this.syncService.sync(req.body.data, req.body.url, null));
+
+               if(err) {
+                res.json(err);
+                return;
+               }
+
+               if(response) {
+                   res.json(response);
+               }
             });
         
         app.route('/api/register')

@@ -48,6 +48,7 @@ import { CommuneService, CommuneServiceImpl } from './service/CommuneService';
 import { CommuneRepository, CommuneRepositoryImpl } from './repository/CommuneRepository';
 import { CommuneController } from './controller/CommuneController';
 import { DoctorService, DoctorServiceImpl } from './service/DoctorService';
+import { LogRepositoryImpl, LogRepository } from './repository/LogRepository';
 
 const container = new Container();
 container.bind<RegistrableController>(TYPES.Controller).to(MedicalRegistrationController);
@@ -103,6 +104,9 @@ container.bind<SpecializationPriceRepository>(TYPES.SpecializationPriceRepositor
 //type
 container.bind<TypeService>(TYPES.TypeService).to(TypeServiceImpl);
 container.bind<TypeRepository>(TYPES.TypeRepository).to(TypeRepositoryImpl);
+
+//log 
+container.bind<LogRepository>(TYPES.LogRepository).to(LogRepositoryImpl);
 
 //config
 container.bind<ConfigService>(TYPES.ConfigService).to(ConfigServiceImpl);
