@@ -11,13 +11,13 @@ import { CounterRepository } from '../repository/CounterRepository';
 import { SpecializationDto } from '../model/SpecializationDto';
 import { SpecializationPriceDto } from './../model/SpecializationPriceDto';
 import { SyncService } from '../service/SyncService';
+import { ParseUtils } from '../util/parse-utils';
 
 
 export interface SpecializationService {
     insert(obj: SpecializationDto): Promise<any>;
     delete(obj: SpecializationDto): Promise<ResponseModel<any>>;
     update(obj: SpecializationDto): Promise<ResponseModel<any>>;
-    convertToSyncSpecializationPriceDTO(object: SpecializationPriceDto);
     convertToSyncSpecializationDTO(object: SpecializationDto); 
 }
 
@@ -103,37 +103,57 @@ export class SpecializationServiceImpl implements SpecializationService {
         return new ResponseModel(Status._200, "success", result);
     }
 
-    public convertToSyncSpecializationPriceDTO(object: any)
-    {        
-        var SyncDTO = {
-                    HisRoomId: object[0].id.toString(),
-                    HisHealthCareId: object.prices[0].specialization_id.toString(),
-                      };
-        return SyncDTO;
-    }
-
     public convertToSyncSpecializationDTO(object: any)
     {        
+        var prices = new Array();
+        object.prices.forEach(element => {
+            var price = {
+                        "Price": element.price.toString(),
+                        "Type": element.type.toString(),
+                        "EffectiveDate": ParseUtils.convertToFormatDateSync(element.to_date)
+                        };
+            prices.push(price);
+        });
+
         var SyncDTO = {
-                    HisId: object[0].id.toString(),
-                    Name: object[0].name,
-                    Code: object[0].id.toString(),
-                    Type: object.prices[0].type
+                    "HisId": object[0].id.toString(),
+                    "Name": object[0].name,
+                    "Code": object[0].id.toString(),
+                    "Prices": prices
                       };
         return SyncDTO;
     }
 
-    public Sync(obj: any)
-    {
-        console.log(obj[0].id);
-        console.log(obj[0].name);
-        console.log(obj.prices[0].type);
-        var SyncSpecializationDTO = this.convertToSyncSpecializationDTO(obj);
-        this.syncService.sync(SyncSpecializationDTO, "HISHealthCare/Create", null);
 
-            var SyncSpecializationPriceDTO = this.convertToSyncSpecializationPriceDTO(obj);
-            console.log(SyncSpecializationPriceDTO);
-            this.syncService.sync(SyncSpecializationPriceDTO, "HISPriceHistory/Create", null);
-        
+
+    public async Sync(obj: any)
+    {
+        console.log("sync");
+        console.log(obj);
+        let check = false;
+        obj.prices.forEach(element => {
+            if(new Date(element.to_date) > new Date())
+            {
+                check = true;
+            }
+            else
+            {
+                check = false;
+            }
+        });
+
+        if(check = true)
+        {
+            var SyncSpecializationPriceDTO = this.convertToSyncSpecializationDTO(obj);   
+            console.log(SyncSpecializationPriceDTO);       
+            return this.syncService.sync(SyncSpecializationPriceDTO, "HISHealthCare/Create", null);
+        }
+        else
+        {
+            return Promise.reject("Date Effect can not before current date");
+        }
+
+
+       
     }
 }

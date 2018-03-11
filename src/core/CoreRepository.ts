@@ -41,7 +41,6 @@ export abstract class CoreRepository<D> {
 
          return this.update(obj);
     }
-
     
     public async findOne(condition: any) {
         let [err, response] = await to(this.col.findOne(condition));

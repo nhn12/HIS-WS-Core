@@ -8,6 +8,7 @@ import * as _ from 'lodash';
 import { ResponseModel, Status } from '../model/ResponseDto';
 import to from '../util/promise-utils';
 import { CoreService } from '../core/CoreService';
+import { SyncService } from '../service/SyncService';
 
 
 export interface DoctorService {
@@ -21,8 +22,53 @@ export class DoctorServiceImpl extends CoreService<DoctorDto, any> implements Do
 
     @inject(TYPES.DoctorRepository)
     protected mainRepository: DoctorRepository;
+    @inject(TYPES.SyncService)
+    private syncService: SyncService;
 
     public setMainRepository() {
         return this.mainRepository;
     }
+
+    public async insert(obj: DoctorDto): Promise<any> {
+        let [err, response] = await to(super.insert(obj));
+        //response array
+        if(err || !response) {
+            return new ResponseModel(Status._500, JSON.stringify(err), null);
+        }
+
+        console.log(response);
+
+        this.Sync(response);
+        return new ResponseModel(Status._200, "Success", response);
+
+    }
+
+    public convertToSyncDTO(object: any)
+    {      
+        var Gender  
+        if(object.data[0].gender == 0)
+        {
+            Gender = true;
+        }
+        else
+        {
+            Gender = false;
+        }
+
+        var SyncDTO = {
+                    HisId: object.data[0].id,
+                    Code: object.data[0].id,
+                    FullName: object.data[0].firstname + object.data[0].lastname,
+                    Gender: Gender
+                      };
+        return SyncDTO;
+    }
+
+    public Sync(obj: any)
+    {
+        let tmp =  this.convertToSyncDTO(obj)
+        this.syncService.sync(tmp, "HISDoctor/Create", null);
+     
+    }
+    
 }

@@ -54,18 +54,23 @@ export class SyncServiceImpl implements SyncService {
     }
 
     private async runSync(obj, method, url, token, tryAgain: number) {
+        
         if(tryAgain == 6) {
             return Promise.reject("Timeout");
         }
 
         this.logRepository.insert([this.generateLogSync(JSON.stringify({"PRE_SYNC": url, "data": obj}), 'INFO')]);
 
+        //console.log(obj, method, url, token);
         let [err, response] = await to(axios({
             headers: {'X-Custom-Header': 'foobar', "Content-Type": "application/x-www-form-urlencoded", 'Authorization': token},
             data: JSON.stringify(obj),
             method: method,
             baseURL: url}));
-            console.log(err.response.status);
+            //console.log(err.response.status);
+            // console.log(err);
+            // console.log("abcaslk");
+            // console.log(response);
         
         if(err) {
             if(err.response && err.response.status == 401) {

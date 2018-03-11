@@ -5,6 +5,7 @@ import { RegistrationDto } from '../model/RegistrationDto';
 import { SchedulerSchema } from '../model/ScheduleSchema';
 import { ScheduleDto } from '../model/ScheduleDto';
 import to from './../util/promise-utils';
+import { ResponseModel, Status } from '../model/ResponseDto';
 import { Schema } from 'mongoose';
 import { CounterRepository } from './CounterRepository';
 import TYPES from '../types';
@@ -15,7 +16,7 @@ export interface ScheduleRepository {
     insert(obj: any[]): Promise<ScheduleDto[]>;
     delete(obj: ScheduleDto): Promise<ScheduleDto[]>; 
     update(obj: ScheduleDto): Promise<ScheduleDto[]>;
-    findOne(id: String): Promise<ScheduleDto>;
+    findOne(id: String): Promise<any>;
 }
 
 @injectable()
@@ -72,10 +73,13 @@ export class ScheduleRepositoryImpl implements ScheduleRepository {
         return Object.assign<ScheduleDto[], mongoose.Document[]>(result, data);
     }
 
-    public async findOne(id: String): Promise<ScheduleDto>
+    public async findOne(id: String): Promise<any>
     {
-        var tmp = await to(this.col.findOne({id: id}));
-        console.log(tmp);
-        return null;
+        let [err, data] = await to(this.col.find({ "id": id}));
+        if(err) {
+            return new ResponseModel(Status._500, JSON.stringify(err), null);
+        }
+        else
+            return data
     }
 }

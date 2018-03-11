@@ -9,7 +9,7 @@ import to from './../util/promise-utils';
 
 export interface WardRepository {
     findAll(): Promise<WardDto[]>;
-    insert(obj: any[]): Promise<WardDto[]>;
+    insert(obj: any): Promise<WardDto[]>;
     delete(obj: WardDto): Promise<WardDto[]>; 
     update(obj: WardDto): Promise<WardDto[]>;  
 
@@ -39,14 +39,28 @@ export class WardRepositoryImpl implements WardRepository {
     }
 
     public async insert(obj: any): Promise<WardDto[]> {
-        let [err, data] = await to(this.col.insertMany([obj]));
+        let count = obj.length;
+
+        let [errCount, seq] = await to(this.counterRepository.getNextSequenceValue("ward_tbl", count));
+
+        if(errCount) {
+            return Promise.reject(errCount);
+        }
+
+        console.log(seq);
+        obj.forEach(element=>{
+            element.id = seq++;
+        })
+
+        let [err, data] = await to(this.col.insertMany(obj));       
         
         if(err) {
             return Promise.reject(err);
         }
 
-        let result: WardDto[] = [];
-        return Object.assign<WardDto[], mongoose.Document[]>(result, data);
+        console.log(obj);
+
+        return data;
     }
 
     public async delete(obj: WardDto): Promise<WardDto[]> {
