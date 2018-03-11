@@ -7,7 +7,7 @@ export var DoctorSchema: Schema = new Schema({
     name: String,
     firstname: String,
     lastname: String,
-    gender: Number,
+    gender: String,
     birthday: String,
 
     address: String,

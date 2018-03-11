@@ -27,7 +27,7 @@ export class MedicalRegistrationController implements RegistrableController {
 
         app.route('/api/MedicalRegistration/create')
             .post(async(req: express.Request, res: express.Response, next: express.NextFunction) => {
-                const [err, response] = await to(this.registartionService.insert(req.params["mabv"], req.body));
+                const [err, response] = await to(this.registartionService.insert(req.body));
                 res.json(response);
         })
 

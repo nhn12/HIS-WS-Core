@@ -89,4 +89,22 @@ export class ParseUtils {
         return results;
         
     }
+
+    public static convertToFormatDateSync(object: any)
+    {
+
+        console.log(object);
+        if(!object) {
+            return object;
+        }
+        if(object instanceof String || (typeof object) == 'string') {
+            object = new Date(object);
+        }
+        var day = object.getDate() < 10 ? "0" + object.getDate() : object.getDate();
+        var month = object.getMonth() + 1< 10 ? "0" + object.getMonth() + 1 : object.getMonth() + 1;
+        var year = object.getFullYear();
+      
+        return year+ "" + month + ""+ day;
+        
+    }
 }

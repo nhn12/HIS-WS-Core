@@ -41,7 +41,7 @@ export class SpecializationRepositoryImpl implements SpecializationRepository {
 
         let count = obj.length;
 
-        let [errCount, seq] = await to(this.counterRepository.getNextSequenceValue("specialization_tbl", count));
+        let [errCount, seq] = await to(this.counterRepository.getNextSequenceValue("specialization_tbl", obj.length));
 
         if(errCount) {
             return Promise.reject(errCount);

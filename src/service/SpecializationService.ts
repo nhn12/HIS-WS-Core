@@ -11,6 +11,7 @@ import { CounterRepository } from '../repository/CounterRepository';
 import { SpecializationDto } from '../model/SpecializationDto';
 import { SpecializationPriceDto } from './../model/SpecializationPriceDto';
 import { SyncService } from '../service/SyncService';
+import { ParseUtils } from '../util/parse-utils';
 
 
 export interface SpecializationService {
@@ -107,27 +108,52 @@ export class SpecializationServiceImpl implements SpecializationService {
         var prices = new Array();
         object.prices.forEach(element => {
             var price = {
-                        Price: element.price,
-                        Type: element.type,
-                        EffectiveDate: element.created_date
+                        "Price": element.price.toString(),
+                        "Type": element.type.toString(),
+                        "EffectiveDate": ParseUtils.convertToFormatDateSync(element.to_date)
                         };
             prices.push(price);
         });
 
         var SyncDTO = {
-                    HisId: object[0].id.toString(),
-                    Name: object[0].name,
-                    Code: object[0].id.toString(),
-                    Prices: prices
+                    "HisId": object[0].id.toString(),
+                    "Name": object[0].name,
+                    "Code": object[0].id.toString(),
+                    "Prices": prices
                       };
         return SyncDTO;
     }
 
-    public Sync(obj: any)
+
+
+    public async Sync(obj: any)
     {
         console.log("sync");
-        var SyncSpecializationPriceDTO = this.convertToSyncSpecializationDTO(obj);          
-        this.syncService.sync(SyncSpecializationPriceDTO, "HISPriceHistory/Create", null);
+        console.log(obj);
+        let check = false;
+        obj.prices.forEach(element => {
+            if(new Date(element.to_date) > new Date())
+            {
+                check = true;
+            }
+            else
+            {
+                check = false;
+            }
+        });
+
+        if(check = true)
+        {
+            var SyncSpecializationPriceDTO = this.convertToSyncSpecializationDTO(obj);   
+            console.log(SyncSpecializationPriceDTO);       
+            return this.syncService.sync(SyncSpecializationPriceDTO, "HISHealthCare/Create", null);
+        }
+        else
+        {
+            return Promise.reject("Date Effect can not before current date");
+        }
+
+
        
     }
 }

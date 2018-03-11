@@ -1,4 +1,4 @@
-import {injectable, inject} from 'inversify';
+import { injectable, inject } from 'inversify';
 import TYPES from '../types';
 import 'reflect-metadata';
 import * as _ from 'lodash';
@@ -17,32 +17,30 @@ export class CategoryServiceImpl implements CategoryService {
     private registrationRepo: CategoryRepository;
 
     public async query(obj: RequestQueryDto): Promise<Array<any>> {
-        if(!obj.resource) {
+        if (!obj.resource) {
             return null;
         }
 
-        if(!obj.filter) {
+        if (!obj.filter) {
             obj.filter = {};
         }
 
-        if(obj.limit == undefined || obj.limit == null) {
+        if (obj.limit == undefined || obj.limit == null) {
             obj.limit = AppConstants.DEFAULT_LIMIT_RECORD_SEARCH;
         }
 
-        if(obj.offset == undefined || obj.offset == null) {
+        if (obj.offset == undefined || obj.offset == null) {
             obj.offset = AppConstants.DEFAULT_OFFSET_RECORD_SEARCH;
         }
 
         obj.filter.deleted_flag = false;
 
-        var re = await this.registrationRepo.query(obj.resource, obj.filter, this.getJoinTable(obj.resource), obj.sort,  obj.limit, obj.offset).then(result=>{
-            if(result && result.length > 0)
-             {
-                //  if(result.)
+        var re = await this.registrationRepo.query(obj.resource, obj.filter, this.getJoinTable(obj.resource), obj.sort, obj.limit, obj.offset).then(result => {
+            if (result && result.length > 0) {
                 result[0].data = this.parseObj(result[0].data, obj.resource);
                 return result[0];
-             }
-             return result;
+            }
+            return result;
         });
         return re;
     }
@@ -89,7 +87,19 @@ export class CategoryServiceImpl implements CategoryService {
                     foreignField: "id",
                     as: "ward_tbl"
                 }];
-            
+            case 'doctor_tbl':
+                return [{
+                    from: 'type_tbl',
+                    localField: "code",
+                    foreignField: "gender",
+                   // pipeline: [{ $match: { class: "GENDER" } }],
+                    as: "gender_type"
+                }, {
+                    from: 'specialization_tbl',
+                    localField: "specialization_id",
+                    foreignField: "id",
+                    as: "specialization_tbl"
+                }]
         }
         return null;
     }
@@ -106,6 +116,9 @@ export class CategoryServiceImpl implements CategoryService {
                 data = ParseUtils.mappingDateToHoursString(data, 'start_time', 'start_time_string');
                 data = ParseUtils.mappingDateToHoursString(data, 'end_time', 'end_time_string');
                 return ParseUtils.mappingField(data, 'ward_tbl', 'name', 'ward_name', false);
+            case 'doctor_tbl':
+                data = ParseUtils.mappingField(data, 'gender_type', 'name', 'gender_name', false);
+                return data = ParseUtils.mappingField(data, 'specialization_tbl', 'name', 'specialization_name', false);
         }
         return data;
 
@@ -113,5 +126,5 @@ export class CategoryServiceImpl implements CategoryService {
 
 
 
- 
+
 }
