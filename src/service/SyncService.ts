@@ -62,7 +62,7 @@ export class SyncServiceImpl implements SyncService {
 
         let [err, response] = await to(axios({
             headers: {'X-Custom-Header': 'foobar', "Content-Type": "application/x-www-form-urlencoded", 'Authorization': token},
-            data: obj,
+            data: JSON.stringify(obj),
             method: method,
             baseURL: url}));
             console.log(err.response.status);

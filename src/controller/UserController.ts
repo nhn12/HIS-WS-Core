@@ -1,3 +1,4 @@
+import { ParseUtils } from './../util/parse-utils';
 import * as express from 'express';
 import {injectable, inject} from 'inversify';
 import TYPES from '../types';
@@ -42,16 +43,7 @@ export class UserController implements RegistrableController {
 
             app.route('/api/test')
             .post(async(req: express.Request, res: express.Response, next: express.NextFunction) => {
-               let [err, response] = await to(this.syncService.sync(req.body.data, req.body.url, null));
-
-               if(err) {
-                res.json(err);
-                return;
-               }
-
-               if(response) {
-                   res.json(response);
-               }
+              console.log(ParseUtils.convertToDateSync(new Date().toISOString()));
             });
         
         app.route('/api/register')
