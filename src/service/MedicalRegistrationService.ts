@@ -50,18 +50,35 @@ export class MedicalRegistrationServiceImpl implements MedicalRegistrationServic
             if(errSchedule) {
             return new ResponseModel(Status._500, JSON.stringify(errSchedule), null);
             }
-            console.log(dataSchedule);
-
-            const [err, response] = await to(this.registrationRepo.insert(obj));
-            if(err) {
-                resolve(new ResponseModel(Status._0, "error"));
-                return;
+            
+            if(dataSchedule[0].reserve == false)
+            {
+                dataSchedule[0].reserve = true;
+                console.log(dataSchedule[0]);
+                let [err, result] = await to(this.scheduleRepository.update(dataSchedule[0]));
+                if(err) 
+                {
+                    return new ResponseModel(Status._500, "err");
+                }
+                else
+                {
+                    const [errRegis, response] = await to(this.registrationRepo.insert(obj));
+                    if(errRegis) {
+                        resolve(new ResponseModel(Status._500, "error"));
+                        return;
+                    }
+    
+                    if(response) {
+                        resolve(new ResponseModel(Status._200, "success"));
+                        return;
+                    }
+                }
             }
-
-            if(response) {
-                resolve(new ResponseModel(Status._1, "success"));
-                return;
+            else
+            {
+                //to do find scheduler 
             }
+            
             
         })
     }

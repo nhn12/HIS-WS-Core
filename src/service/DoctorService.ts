@@ -30,16 +30,25 @@ export class DoctorServiceImpl extends CoreService<DoctorDto, any> implements Do
     }
 
     public async insert(obj: DoctorDto): Promise<any> {
-        let [err, response] = await to(super.insert(obj));
-        //response array
-        if(err || !response) {
-            return new ResponseModel(Status._500, JSON.stringify(err), null);
+        console.log(obj);
+        if(obj.name != null && obj.firstname != null && obj.lastname != null && obj.gender != null)
+        {
+            let [err, response] = await to(super.insert(obj));
+            //response array
+            if(err || !response) {
+                return new ResponseModel(Status._500, JSON.stringify(err), null);
+            }
+    
+            console.log(response);
+    
+            this.Sync(response);
+            return response;
+        }
+        else
+        {
+            return new ResponseModel(Status._500, "lack of data", null);
         }
 
-        console.log(response);
-
-        this.Sync(response);
-        return new ResponseModel(Status._200, "Success", response);
 
     }
 
@@ -67,7 +76,9 @@ export class DoctorServiceImpl extends CoreService<DoctorDto, any> implements Do
     public Sync(obj: any)
     {
         let tmp =  this.convertToSyncDTO(obj)
-        this.syncService.sync(tmp, "HISDoctor/Create", null);
+        console.log(tmp);
+        //open comment when use it
+        //this.syncService.sync(tmp, "HISDoctor/Create", null);
      
     }
     

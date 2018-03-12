@@ -31,17 +31,25 @@ export class WardServiceImpl implements WardService {
     }
 
     public async insert(obj: any): Promise<any> {
-        let [err, response] = await to(this.scheduleRepository.insert(obj));
+        if(obj[0].name != null && obj[0].specialization_id != null)
+        {
+            let [err, response] = await to(this.scheduleRepository.insert(obj));
 
-        //response array
-        if(err || !response) {
-            return new ResponseModel(Status._500, JSON.stringify(err), null);
+            //response array
+            if(err || !response) {
+                return new ResponseModel(Status._500, JSON.stringify(err), null);
+            }
+    
+            console.log(response);
+    
+            this.Sync(response);
+            return response
+        }
+        else
+        {
+            return Promise.reject("lack of data");
         }
 
-        console.log(response);
-
-        this.Sync(response);
-        return new ResponseModel(Status._200, "Success", response);
     }
 
     public async update(obj: WardDto): Promise<ResponseModel<any>> {
@@ -72,7 +80,16 @@ export class WardServiceImpl implements WardService {
     {        
         var SyncDTO = {
                     HisId: object.id.toString(),
-                    Name: object.name
+                    Name: object.name.toString()
+                      };
+        return SyncDTO;
+    }
+
+    public convertToSyncSpeciDTO(object: WardDto)
+    {        
+        var SyncDTO = {
+                    HisRoomId: object.id.toString(),
+                    HisHealthCareId: object.specialization_id.toString()
                       };
         return SyncDTO;
     }
@@ -83,7 +100,12 @@ export class WardServiceImpl implements WardService {
 
         obj.forEach(element => {
             let wardSync = this.convertToSyncDTO(element);
-            this.syncService.sync(wardSync, "HISRoom/Create", null);
+            let wardSpeciSync = this.convertToSyncSpeciDTO(element);
+            console.log(wardSync);
+            console.log(wardSpeciSync);
+            //open comment when use it
+            //this.syncService.sync(wardSync, "HISRoom/Create", null);
+            //this.syncService.sync(wardSpeciSync, "HISRoom/HealthCareMapping", null);
         });
      
     }

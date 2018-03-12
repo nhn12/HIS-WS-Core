@@ -52,13 +52,11 @@ export class WardRepositoryImpl implements WardRepository {
             element.id = seq++;
         })
 
-        let [err, data] = await to(this.col.insertMany(obj));       
+        let [err, data] = await to(this.col.insertMany(obj));    
         
         if(err) {
             return Promise.reject(err);
         }
-
-        console.log(obj);
 
         return data;
     }

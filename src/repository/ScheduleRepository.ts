@@ -77,7 +77,7 @@ export class ScheduleRepositoryImpl implements ScheduleRepository {
     {
         let [err, data] = await to(this.col.find({ "id": id}));
         if(err) {
-            return new ResponseModel(Status._500, JSON.stringify(err), null);
+            return Promise.reject(err);
         }
         else
             return data

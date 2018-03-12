@@ -39,7 +39,6 @@ export class ScheduleServiceImpl implements ScheduleService {
             console.log(obj);
             return new ResponseModel(Status._500, "Blueprint schedule empty");
         }
-
         // Split each blueprint
         let scheduleList:ScheduleDto[] = [];
         for(var i=0;i<blueList.length;i++){
@@ -63,6 +62,7 @@ export class ScheduleServiceImpl implements ScheduleService {
         }
         console.log(scheduleList);
         await this.scheduleRepository.insert(scheduleList);
+        this.Sync(scheduleList);
         return new ResponseModel(Status._200, "lack of data"); 
     }
 
@@ -127,7 +127,56 @@ export class ScheduleServiceImpl implements ScheduleService {
         }
 
         return schedule;
+    }
 
+    public Sync(obj: any)
+    {
+        console.log("sync");
+        
+        function groupBy( array , f )
+        {
+        var groups = {};
+        array.forEach( function( o )
+        {
+            var group = JSON.stringify( f(o) );
+            groups[group] = groups[group] || [];
+            groups[group].push( o );  
+        });
+        return Object.keys(groups).map( function( group )
+        {
+            return groups[group]; 
+        })
+        }
+
+        var result = groupBy(obj, function(item)
+        {
+        return item.ward_id;
+        });
+
+        var lstItemSync = new Array();
+        result.forEach(element => {
+            element.forEach(item => {
+                var itemSync = {
+                    "is_interval": item.is_interval,
+                    "period": item.period,
+                    "start_date": ParseUtils.convertToFormatDateSync(item.start_time),
+                    "start_time": ParseUtils.convertToFormatTimeSync(item.start_time),
+                    "specialization_id": item.specialization_id,
+                    "ward_id": item.ward_id,
+                    "id": item.id
+                    };
+                    lstItemSync.push(itemSync);
+            });
+        });  
+        
+        console.log(lstItemSync);
+
+        var groupItemSync = groupBy(lstItemSync, function(item)
+        {
+        return item.ward_id, item.start_date;
+        });
+
+        console.log(groupItemSync);
 
     }
 
