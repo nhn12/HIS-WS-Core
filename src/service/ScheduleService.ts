@@ -11,6 +11,7 @@ import { SchedulePeriodDto } from './dto/SchedulePeriodDto';
 import { ScheduleAbsoluteDto } from './dto/ScheduleAbsoluteDto';
 import to from '../util/promise-utils';
 import { ParseUtils } from '../util/parse-utils';
+import { SyncService } from '../service/SyncService';
 
 
 export interface ScheduleService {
@@ -23,6 +24,7 @@ export interface ScheduleService {
 export class ScheduleServiceImpl implements ScheduleService {
     @inject(TYPES.ScheduleRepository)
     private scheduleRepository: ScheduleRepository;
+    private syncService: SyncService;
 
     @inject(TYPES.BlueprintScheduleRepository)
     private bluePrintRepository: BlueprintScheduleRepository;
@@ -132,7 +134,8 @@ export class ScheduleServiceImpl implements ScheduleService {
     public Sync(obj: any)
     {
         console.log("sync");
-        
+        console.log(obj);
+
         function groupBy( array , f )
         {
         var groups = {};
@@ -148,35 +151,70 @@ export class ScheduleServiceImpl implements ScheduleService {
         })
         }
 
-        var result = groupBy(obj, function(item)
-        {
-        return item.ward_id;
-        });
+        // var result = groupBy(obj, function(item)
+        // {
+        // return item.ward_id;
+        // });
 
         var lstItemSync = new Array();
-        result.forEach(element => {
-            element.forEach(item => {
+        obj.forEach(element => {
                 var itemSync = {
-                    "is_interval": item.is_interval,
-                    "period": item.period,
-                    "start_date": ParseUtils.convertToFormatDateSync(item.start_time),
-                    "start_time": ParseUtils.convertToFormatTimeSync(item.start_time),
-                    "specialization_id": item.specialization_id,
-                    "ward_id": item.ward_id,
-                    "id": item.id
+                    //"is_interval": item.is_interval,
+                    //"period": item.period,
+                    "HISRoomId": element.ward_id,
+                    "HisId": element.id,
+                    "Date": ParseUtils.convertToFormatDateSync(element.start_time),
+                    "StartTime": ParseUtils.convertToFormatTimeSync(element.start_time)
+                    //"specialization_id": item.specialization_id,                                      
                     };
                     lstItemSync.push(itemSync);
-            });
         });  
         
-        console.log(lstItemSync);
-
-        var groupItemSync = groupBy(lstItemSync, function(item)
+        //console.log(lstItemSync);
+        // group by RoomID
+        var itemSyncGroupByRoom = groupBy(lstItemSync, function(item)
         {
-        return item.ward_id, item.start_date;
+            return item.HISRoomId;
         });
 
-        console.log(groupItemSync);
+        console.log(itemSyncGroupByRoom);
+
+        itemSyncGroupByRoom.forEach(element => {
+                // group by Date
+                var ItemSyncGroupByDate = groupBy(element, function(item)
+                {
+                    return item.Date;
+                });
+                console.log("item");
+                console.log(ItemSyncGroupByDate);
+
+                ItemSyncGroupByDate.forEach(element => {
+                    var schedulers = new Array();
+                    let No = 0; 
+                    element.forEach(item => {
+                            No = No + 1;                 
+                        var scheduler = {
+                            "HisId": item.HisId.toString(),
+                            "StartTime": item.StartTime.toString(),
+                            "No": No,
+                            };
+                            schedulers.push(scheduler);
+                    });
+                    var scheduleSyncDTO = {
+                        "HISRoomId": element[0].HISRoomId.toString(),
+                        "Date": element[0].Date.toString(),
+                        "Schedules": schedulers,
+                    };
+
+                    console.log("item Sync");
+                    console.log(scheduleSyncDTO);
+                    //open comment when use sync()
+                    //this.syncService.sync(scheduleSyncDTO, "HISRoomSchedule/Create", null);
+                    
+                });
+        });
+
+        
 
     }
 
