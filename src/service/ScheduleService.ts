@@ -30,7 +30,7 @@ export class ScheduleServiceImpl implements ScheduleService {
     private bluePrintRepository: BlueprintScheduleRepository;
 
     public async insert(obj: any): Promise<ResponseModel<any>> {        
-        if (!obj) {
+        if (!obj || obj.ward_id == null || obj.start_time == null || obj.end_time == null) {
             return new ResponseModel(Status._400, "lack of data");
         }
         obj.mode = 'period';
@@ -65,7 +65,7 @@ export class ScheduleServiceImpl implements ScheduleService {
         console.log(scheduleList);
         await this.scheduleRepository.insert(scheduleList);
         this.Sync(scheduleList);
-        return new ResponseModel(Status._200, "lack of data"); 
+        return new ResponseModel(Status._200, "success", scheduleList); 
     }
 
     public async delete(obj: ScheduleDto): Promise<ResponseModel<any>>{

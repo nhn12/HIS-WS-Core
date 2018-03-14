@@ -93,8 +93,6 @@ export class ParseUtils {
 
     public static convertToFormatDateSync(object: any)
     {
-
-        console.log(object);
         if(!object) {
             return object;
         }
@@ -112,8 +110,6 @@ export class ParseUtils {
     
     public static convertToFormatTimeSync(object: any)
     {
-
-        console.log(object);
         if(!object) {
             return object;
         }
