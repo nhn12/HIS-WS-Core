@@ -43,7 +43,7 @@ export class UserController implements RegistrableController {
 
             app.route('/api/test')
             .post(async(req: express.Request, res: express.Response, next: express.NextFunction) => {
-              console.log(ParseUtils.convertToDateSync(new Date().toISOString()));
+            //   console.log(ParseUtils.convertToDateSync(new Date().toISOString()));
             });
         
         app.route('/api/register')
