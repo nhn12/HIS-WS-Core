@@ -12,8 +12,8 @@ import { ResponseUtil, ResponseUtilImp } from './util/ResponseUtils';
 import { MedicalRegistrationService, MedicalRegistrationServiceImpl } from './service/MedicalRegistrationService';
 import {Container} from 'inversify';
 import TYPES from './types';
-import {AddressService, AddressServiceImpl} from './service/AddressService';
-import {AddressRepository, AddressRepositoryImplMongo, AddressRepositoryImplDb} from './repository/AddressRepository';
+// import {AddressService, AddressServiceImpl} from './service/AddressService';
+// import {AddressRepository, AddressRepositoryImplMongo, AddressRepositoryImplDb} from './repository/AddressRepository';
 import {RegistrableController} from './controller/RegisterableController';
 import { RegistrationRepositoryImpl, RegistrationRepository } from './repository/RegistrationRepository';
 import { MedicalRegistrationController } from './controller/MedicalRegistrationController';
@@ -68,9 +68,9 @@ container.bind<RegistrableController>(TYPES.Controller).to(DoctorController);
 
 
 
-container.bind<AddressService>(TYPES.AddressService).to(AddressServiceImpl);
-container.bind<AddressRepository>(TYPES.AddressRepository).to(AddressRepositoryImplMongo);
-container.bind<AddressRepository>(TYPES.AddressRepository2).to(AddressRepositoryImplDb);
+// container.bind<AddressService>(TYPES.AddressService).to(AddressServiceImpl);
+// container.bind<AddressRepository>(TYPES.AddressRepository).to(AddressRepositoryImplMongo);
+// container.bind<AddressRepository>(TYPES.AddressRepository2).to(AddressRepositoryImplDb);
 container.bind<RegistrationRepository>(TYPES.RegistrationRepository).to(RegistrationRepositoryImpl);
 container.bind<MedicalRegistrationService>(TYPES.MedicalRegistrationService).to(MedicalRegistrationServiceImpl);
 container.bind<UserRepository>(TYPES.UserRepository).to(UserRepositoryImpl);
