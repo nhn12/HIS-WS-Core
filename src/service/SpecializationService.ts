@@ -62,7 +62,7 @@ export class SpecializationServiceImpl implements SpecializationService {
             response.prices = responsePrice;
             console.log(response);
             //only sync when have price
-            this.Sync(response);
+            await this.Sync(response);
         }
         return new ResponseModel(Status._200, "Success", response);
     }
@@ -128,8 +128,6 @@ export class SpecializationServiceImpl implements SpecializationService {
 
     public async Sync(obj: any)
     {
-        console.log("sync");
-        console.log(obj);
         let check = false;
         obj.prices.forEach(element => {
             if(new Date(element.to_date) > new Date())

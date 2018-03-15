@@ -62,15 +62,12 @@ export class SyncServiceImpl implements SyncService {
         this.logRepository.insert([this.generateLogSync(JSON.stringify({"PRE_SYNC": url, "data": obj}), 'INFO')]);
 
         //console.log(obj, method, url, token);
+        console.log(obj);
         let [err, response] = await to(axios({
-            headers: {'X-Custom-Header': 'foobar', "Content-Type": "application/x-www-form-urlencoded", 'Authorization': token},
-            data: JSON.stringify(obj),
+            headers: {"Content-Type": "application/json", 'Authorization': token},
+            data: obj,
             method: method,
             baseURL: url}));
-            //console.log(err.response.status);
-            // console.log(err);
-            // console.log("abcaslk");
-            // console.log(response);
         
         if(err) {
             if(err.response && err.response.status == 401) {
