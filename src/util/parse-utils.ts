@@ -43,6 +43,7 @@ export class ParseUtils {
         }
         result.setHours(parseInt(abc[0]));
         result.setMinutes(parseInt(abc[1]));
+        console.log(result);
         return result;
     }
 
@@ -92,8 +93,6 @@ export class ParseUtils {
 
     public static convertToFormatDateSync(object: any)
     {
-
-        console.log(object);
         if(!object) {
             return object;
         }
@@ -101,10 +100,26 @@ export class ParseUtils {
             object = new Date(object);
         }
         var day = object.getDate() < 10 ? "0" + object.getDate() : object.getDate();
-        var month = object.getMonth() + 1< 10 ? "0" + object.getMonth() + 1 : object.getMonth() + 1;
+        var month = object.getMonth() + 1 < 10 ? "0" + (object.getMonth() + 1) : object.getMonth() + 1;
         var year = object.getFullYear();
       
         return year+ "" + month + ""+ day;
+        
+    }
+
+    
+    public static convertToFormatTimeSync(object: any)
+    {
+        if(!object) {
+            return object;
+        }
+        if(object instanceof String || (typeof object) == 'string') {
+            object = new Date(object);
+        }
+        var minute = object.getMinutes() < 10 ? "0" + object.getMinutes() : object.getMinutes();
+        var hour = object.getHours() < 10 ? "0" + (object.getHours() + 1) : object.getHours() + 1;
+    
+        return hour+ ":" + minute+"";
         
     }
 }

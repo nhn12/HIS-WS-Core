@@ -11,6 +11,7 @@ import { SchedulePeriodDto } from './dto/SchedulePeriodDto';
 import { ScheduleAbsoluteDto } from './dto/ScheduleAbsoluteDto';
 import to from '../util/promise-utils';
 import { ParseUtils } from '../util/parse-utils';
+import { SyncService } from '../service/SyncService';
 
 
 export interface ScheduleService {
@@ -23,12 +24,13 @@ export interface ScheduleService {
 export class ScheduleServiceImpl implements ScheduleService {
     @inject(TYPES.ScheduleRepository)
     private scheduleRepository: ScheduleRepository;
+    private syncService: SyncService;
 
     @inject(TYPES.BlueprintScheduleRepository)
     private bluePrintRepository: BlueprintScheduleRepository;
 
     public async insert(obj: any): Promise<ResponseModel<any>> {        
-        if (!obj) {
+        if (!obj || obj.ward_id == null || obj.start_time == null || obj.end_time == null) {
             return new ResponseModel(Status._400, "lack of data");
         }
         obj.mode = 'period';
@@ -39,7 +41,6 @@ export class ScheduleServiceImpl implements ScheduleService {
             console.log(obj);
             return new ResponseModel(Status._500, "Blueprint schedule empty");
         }
-
         // Split each blueprint
         let scheduleList:ScheduleDto[] = [];
         for(var i=0;i<blueList.length;i++){
@@ -63,7 +64,8 @@ export class ScheduleServiceImpl implements ScheduleService {
         }
         console.log(scheduleList);
         await this.scheduleRepository.insert(scheduleList);
-        return new ResponseModel(Status._200, "lack of data"); 
+        this.Sync(scheduleList);
+        return new ResponseModel(Status._200, "success", scheduleList); 
     }
 
     public async delete(obj: ScheduleDto): Promise<ResponseModel<any>>{
@@ -127,7 +129,92 @@ export class ScheduleServiceImpl implements ScheduleService {
         }
 
         return schedule;
+    }
 
+    public Sync(obj: any)
+    {
+        console.log("sync");
+        console.log(obj);
+
+        function groupBy( array , f )
+        {
+        var groups = {};
+        array.forEach( function( o )
+        {
+            var group = JSON.stringify( f(o) );
+            groups[group] = groups[group] || [];
+            groups[group].push( o );  
+        });
+        return Object.keys(groups).map( function( group )
+        {
+            return groups[group]; 
+        })
+        }
+
+        // var result = groupBy(obj, function(item)
+        // {
+        // return item.ward_id;
+        // });
+
+        var lstItemSync = new Array();
+        obj.forEach(element => {
+                var itemSync = {
+                    //"is_interval": item.is_interval,
+                    //"period": item.period,
+                    "HISRoomId": element.ward_id,
+                    "HisId": element.id,
+                    "Date": ParseUtils.convertToFormatDateSync(element.start_time),
+                    "StartTime": ParseUtils.convertToFormatTimeSync(element.start_time)
+                    //"specialization_id": item.specialization_id,                                      
+                    };
+                    lstItemSync.push(itemSync);
+        });  
+        
+        //console.log(lstItemSync);
+        // group by RoomID
+        var itemSyncGroupByRoom = groupBy(lstItemSync, function(item)
+        {
+            return item.HISRoomId;
+        });
+
+        console.log(itemSyncGroupByRoom);
+
+        itemSyncGroupByRoom.forEach(element => {
+                // group by Date
+                var ItemSyncGroupByDate = groupBy(element, function(item)
+                {
+                    return item.Date;
+                });
+                console.log("item");
+                console.log(ItemSyncGroupByDate);
+
+                ItemSyncGroupByDate.forEach(element => {
+                    var schedulers = new Array();
+                    let No = 0; 
+                    element.forEach(item => {
+                            No = No + 1;                 
+                        var scheduler = {
+                            "HisId": item.HisId.toString(),
+                            "StartTime": item.StartTime.toString(),
+                            "No": No,
+                            };
+                            schedulers.push(scheduler);
+                    });
+                    var scheduleSyncDTO = {
+                        "HISRoomId": element[0].HISRoomId.toString(),
+                        "Date": element[0].Date.toString(),
+                        "Schedules": schedulers,
+                    };
+
+                    console.log("item Sync");
+                    console.log(scheduleSyncDTO);
+                    //open comment when use sync()
+                    //this.syncService.sync(scheduleSyncDTO, "HISRoomSchedule/Create", null);
+                    
+                });
+        });
+
+        
 
     }
 
