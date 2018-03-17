@@ -10,6 +10,7 @@ import { CoreService } from '../core/CoreService';
 
 export interface DistrictService {
     insert(obj: DistrictDto): Promise<any>;
+    insertMany(obj: DistrictDto[]): Promise<any>;
     delete(obj: DistrictDto): Promise<ResponseModel<any>>;
     update(obj: DistrictDto): Promise<ResponseModel<any>>;
 }

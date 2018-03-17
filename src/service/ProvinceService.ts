@@ -10,6 +10,7 @@ import { CoreService } from '../core/CoreService';
 
 export interface ProvinceService {
     insert(obj: ProvinceDto): Promise<any>;
+    insertMany(obj: ProvinceDto[]): Promise<any>;
     delete(obj: ProvinceDto): Promise<ResponseModel<any>>;
     update(obj: ProvinceDto): Promise<ResponseModel<any>>;
 }

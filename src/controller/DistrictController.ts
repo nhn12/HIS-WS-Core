@@ -24,6 +24,12 @@ export class DistrictController implements RegistrableController {
                 const respone = await this.districtService.insert(req.body);
                 res.json(respone);
             })
+        
+            app.route('/api/district/insertmany')
+            .post(async(req: express.Request, res: express.Response, next: express.NextFunction) => {
+                const respone = await this.districtService.insertMany(req.body);
+                res.json(respone);
+            })
 
         app.route('/api/district/delete')
         .post(async(req: express.Request, res: express.Response, next: express.NextFunction) => {

@@ -23,7 +23,7 @@ export class CategoryController implements RegistrableController {
         .post(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
             const [err, addresses] = await to(this.categoryService.query(req.body));
             if (err) {
-                res.json(this.responseUtils.buildErrorData("Cannot get data from database"));
+                res.json(JSON.stringify(err));
             }
 
             if (addresses && addresses.totalRecords && addresses.totalRecords.length > 0) {

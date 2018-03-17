@@ -24,6 +24,12 @@ export class CommuneController implements RegistrableController {
                 const respone = await this.communeService.insert(req.body);
                 res.json(respone);
             })
+        
+            app.route('/api/commune/insertmany')
+            .post(async(req: express.Request, res: express.Response, next: express.NextFunction) => {
+                const respone = await this.communeService.insertMany(req.body);
+                res.json(respone);
+            })
 
         app.route('/api/commune/delete')
         .post(async(req: express.Request, res: express.Response, next: express.NextFunction) => {

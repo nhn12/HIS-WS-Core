@@ -8,6 +8,7 @@ import { inject, injectable } from 'inversify';
 @injectable()
 export abstract class CoreRepository<D> {
     col: mongoose.Model<any>;
+    
 
     public async upsert(obj: D, condition?: any): Promise<D> {
         if(!obj) {

@@ -1,7 +1,7 @@
 import { DoctorRepository } from './../repository/DoctorRepository';
 import { DoctorDto } from './../model/DoctorDto';
 import { ScheduleDto } from './../model/ScheduleDto';
-import {injectable, inject} from 'inversify';
+import { injectable, inject } from 'inversify';
 import TYPES from '../types';
 import 'reflect-metadata';
 import * as _ from 'lodash';
@@ -30,56 +30,44 @@ export class DoctorServiceImpl extends CoreService<DoctorDto, any> implements Do
     }
 
     public async insert(obj: DoctorDto): Promise<any> {
-        console.log(obj);
-        if(obj.name != null && obj.firstname != null && obj.lastname != null && obj.gender != null)
-        {
-            let [err, response] = await to(super.insert(obj));
-            //response array
-            if(err || !response) {
-                return new ResponseModel(Status._500, JSON.stringify(err), null);
-            }
-    
-            console.log(response);
-    
-            this.Sync(response);
-            return response;
-        }
-        else
-        {
-            return new ResponseModel(Status._500, "lack of data", null);
+
+        let [err, response] = await to(super.insert(obj));
+        //response array
+        if (err || !response) {
+            return new ResponseModel(Status._500, JSON.stringify(err), null);
         }
 
+        console.log(response);
+
+        this.Sync(response);
+        return response;
 
     }
 
-    public convertToSyncDTO(object: any)
-    {      
-        var Gender  
-        if(object.data[0].gender == 0)
-        {
+    public convertToSyncDTO(object: any) {
+        var Gender
+        if (object.data[0].gender == 0) {
             Gender = true;
         }
-        else
-        {
+        else {
             Gender = false;
         }
 
         var SyncDTO = {
-                    HisId: object.data[0].id,
-                    Code: object.data[0].id,
-                    FullName: object.data[0].firstname + object.data[0].lastname,
-                    Gender: Gender
-                      };
+            HisId: object.data[0].id,
+            Code: object.data[0].id,
+            FullName: object.data[0].firstname + object.data[0].lastname,
+            Gender: Gender
+        };
         return SyncDTO;
     }
 
-    public Sync(obj: any)
-    {
-        let tmp =  this.convertToSyncDTO(obj)
+    public Sync(obj: any) {
+        let tmp = this.convertToSyncDTO(obj)
         console.log(tmp);
         //open comment when use it
         //this.syncService.sync(tmp, "HISDoctor/Create", null);
-     
+
     }
-    
+
 }

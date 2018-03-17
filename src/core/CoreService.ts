@@ -12,6 +12,16 @@ export abstract class CoreService<D, R extends CoreRepository<any>> {
     
     public abstract setMainRepository(): any;
 
+    public async insertMany(obj: D[]) {
+        let[err, response] = await to(this.setMainRepository().insert(obj));
+
+        if(err) {
+            return new ResponseModel(Status._500, JSON.stringify(err), null);
+        }
+
+        return new ResponseModel(Status._200, 'Success', response);
+    }
+
     public async insert(obj: D): Promise<any> {
         let[err, response] = await to(this.setMainRepository().insert([obj]));
 

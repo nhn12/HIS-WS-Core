@@ -10,6 +10,7 @@ import { CoreService } from '../core/CoreService';
 
 export interface CommuneService {
     insert(obj: CommuneDto): Promise<any>;
+    insertMany(obj: CommuneDto[]): Promise<any>;
     delete(obj: CommuneDto): Promise<ResponseModel<any>>;
     update(obj: CommuneDto): Promise<ResponseModel<any>>;
 }

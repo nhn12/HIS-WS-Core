@@ -6,6 +6,7 @@ import { CategoryRepository } from '../repository/CategoryRepository';
 import { RequestQueryDto } from '../model/RequestQueryDto';
 import AppConstants from "../util/AppConstant"
 import { ParseUtils } from '../util/parse-utils';
+import to from '../util/promise-utils';
 
 export interface CategoryService {
     query(obj: RequestQueryDto);
@@ -17,6 +18,7 @@ export class CategoryServiceImpl implements CategoryService {
     private registrationRepo: CategoryRepository;
 
     public async query(obj: RequestQueryDto): Promise<Array<any>> {
+        let ext = [];
         if (!obj.resource) {
             return null;
         }
@@ -35,17 +37,20 @@ export class CategoryServiceImpl implements CategoryService {
 
         obj.filter.deleted_flag = false;
 
-        var re = await this.registrationRepo.query(obj.resource, obj.filter, this.getJoinTable(obj.resource), obj.sort, obj.limit, obj.offset).then(result => {
-            if (result && result.length > 0) {
-                result[0].data = this.parseObj(result[0].data, obj.resource);
-                return result[0];
-            }
-            return result;
-        });
+        var [error, re] = await to(this.registrationRepo.query(obj.resource, obj.filter, this.getJoinTable(obj.resource, ext), ext, obj.sort, obj.limit, obj.offset));
+
+        if(error) {
+            return Promise.reject(error);
+        }
+
+        if (re && re.length > 0) {
+            re[0].data = this.parseObj(re[0].data, obj.resource);
+            return re[0];
+        }
         return re;
     }
 
-    private getJoinTable(resource: string) {
+    private getJoinTable(resource: string, ext: any[]) {
         switch (resource) {
             case 'ward_tbl':
                 return [{
@@ -88,18 +93,11 @@ export class CategoryServiceImpl implements CategoryService {
                     as: "ward_tbl"
                 }];
             case 'doctor_tbl':
-                return [{
-                    from: 'type_tbl',
-                    localField: "code",
-                    foreignField: "gender",
-                   // pipeline: [{ $match: { class: "GENDER" } }],
-                    as: "gender_type"
-                }, {
-                    from: 'specialization_tbl',
-                    localField: "specialization_id",
-                    foreignField: "id",
-                    as: "specialization_tbl"
-                }]
+                return [
+                    this.generateSubQueries('type_tbl', 'gender', 'code', 'gender_name', ext,  [{$eq:['$class', 'GENDER']}], 'name')
+                    ,
+                    this.generateSubQueries('specialization_tbl', 'specialization_id', 'id', 'specialization_name', ext, null, 'name') 
+                    ]
         }
         return null;
     }
@@ -117,10 +115,44 @@ export class CategoryServiceImpl implements CategoryService {
                 data = ParseUtils.mappingDateToHoursString(data, 'end_time', 'end_time_string');
                 return ParseUtils.mappingField(data, 'ward_tbl', 'name', 'ward_name', false);
             case 'doctor_tbl':
-                data = ParseUtils.mappingField(data, 'gender_type', 'name', 'gender_name', false);
-                return data = ParseUtils.mappingField(data, 'specialization_tbl', 'name', 'specialization_name', false);
+                // data = ParseUtils.mappingField(data, 'gender_type', 'name', 'gender_name', false);
+                // return data = ParseUtils.mappingField(data, 'specialization_tbl', 'name', 'specialization_name', false);
         }
         return data;
+
+    }
+
+    private generateSubQueries(tableJoin: string, parentFieldName: string, subField: string, outputField, ext: any[],  extCondition?: Object[], nameViewInSub?: string) {
+        let result: any = {};
+        result.from = tableJoin;
+        result['let'] = {};
+        result['let'][parentFieldName] = '$' + parentFieldName;
+        
+
+        //
+        result['pipeline'] = [];
+        
+        // extra subcondition
+        let subQueries = {$match: {$expr: {$and: []}}};
+        subQueries.$match.$expr.$and.push({$eq: ['$'+subField, '$$'+parentFieldName]});
+
+        if(extCondition) {
+            extCondition.forEach(element=>{
+                subQueries.$match.$expr.$and.push(element);
+            })
+        }
+        result['pipeline'].push(subQueries);
+        result['as'] = outputField;
+
+        let replaceEle = {};
+        replaceEle[outputField] = { $mergeObjects: [ { $arrayElemAt: [ "$"+outputField, 0 ] }] } ;
+       ext.push({$addFields : replaceEle});
+
+        let reaplce2 = {};
+        reaplce2[outputField] = '$' + outputField + '.' + nameViewInSub
+        ext.push({$addFields : reaplce2});
+
+        return result;
 
     }
 

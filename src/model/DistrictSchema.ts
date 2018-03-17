@@ -6,6 +6,7 @@ export var DistrictSchema: Schema = new Schema({
     name: String,
     has_sync: { type: Boolean, default: false },
     province_id: Number,
+    province_code: String,
     //audit tbl
     created_by: String,
     created_date: { type: Date, default: Date.now },

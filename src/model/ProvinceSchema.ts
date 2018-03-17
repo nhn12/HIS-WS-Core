@@ -2,7 +2,7 @@ import { Schema } from "mongoose";
 
 export var ProvinceSchema: Schema = new Schema({
     id: Number,
-    code: String,
+    code: {type: String, required : true},
     name: String,
     district_id: Number,
     

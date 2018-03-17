@@ -7,4 +7,5 @@ export class DistrictDto {
     public code: String;
     public updated_date: Number;
     public province_id: Number;
+    public province_code: String;
 }

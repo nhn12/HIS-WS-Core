@@ -19,6 +19,12 @@ export class ProvinceController implements RegistrableController {
     }
 
     public register(app: express.Application): void {
+        app.route('/api/province/insertmany')
+            .post(async(req: express.Request, res: express.Response, next: express.NextFunction) => {
+                const respone = await this.provinceService.insertMany(req.body);
+                res.json(respone);
+            })
+
         app.route('/api/province/insert')
             .post(async(req: express.Request, res: express.Response, next: express.NextFunction) => {
                 const respone = await this.provinceService.insert(req.body);
