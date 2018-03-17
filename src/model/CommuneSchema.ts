@@ -4,7 +4,7 @@ export var CommuneSchema: Schema = new Schema({
     id: Number,
     code: String,
     name: String,
-    is_interval: Boolean,
+    district_id: Boolean,
     
     has_sync: { type: Boolean, default: false },
     //audit tbl

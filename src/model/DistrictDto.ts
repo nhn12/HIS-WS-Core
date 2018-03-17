@@ -6,6 +6,5 @@ export class DistrictDto {
     public name: String;
     public code: String;
     public updated_date: Number;
-    public is_interval: boolean; //create interval
-    public province_id: ProvinceDto[];
+    public province_id: Number;
 }

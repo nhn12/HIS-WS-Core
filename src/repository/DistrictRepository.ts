@@ -1,11 +1,12 @@
-import { CounterRepository } from './CounterRepository';
+import { DistrictDto } from './../model/DistrictDto';
+import { DistrictSchema } from './../model/DistrictSchema';
 import { injectable, inject } from 'inversify';
 import * as mongoose from 'mongoose';
 import 'reflect-metadata';
 import TYPES from '../types';
 import to from './../util/promise-utils';
-import { DistrictDto } from '../model/DistrictDto';
-import { DistrictSchema } from '../model/DistrictSchema';
+import { CoreRepository } from '../core/CoreRepository';
+
 
 export interface DistrictRepository {
     insert(obj: any[]): Promise<DistrictDto[]>;
@@ -14,58 +15,11 @@ export interface DistrictRepository {
 }
 
 @injectable()
-export class DistrictRepositoryImpl implements DistrictRepository {
-    @inject(TYPES.CounterRepository)
-    private counterRepository: CounterRepository;
-
-    col: mongoose.Model<any>;
-    constructor() {
-        let self = this;
-        DistrictSchema.pre('save', async function (next, doc) {
-            var doc = this;
-            var count = await self.counterRepository.getNextSequenceValue('district_tbl');
-            doc.id = count;
-            next();
-        });
-        this.col = mongoose.model('district_tbl', DistrictSchema, 'district_tbl');
+export class DistrictRepositoryImpl extends CoreRepository<DistrictDto> implements DistrictRepository {
+    public setPrimaryTable(): string {
+        return 'district_tbl'
     }
-
-    public async insert(obj: any[]): Promise<DistrictDto[]> {
-        // for(var i = 0; i < obj.length; i++)
-        // {
-        //     let count = await this.counterRepository.getNextSequenceValue('district_tbl');
-        //     obj[i].id = count;
-        // }     
-        let [err, data] = await to(this.col.insertMany(obj));
-        
-        if(err) {
-            return Promise.reject(err);
-        }
-
-        let result: DistrictDto[] = [];
-        return Object.assign<DistrictDto[], mongoose.Document[]>(result, data);
+    public setSchema(): mongoose.Schema {
+        return DistrictSchema;
     }
-
-    public async delete(obj: DistrictDto): Promise<DistrictDto[]> {
-        let [err, data] = await to(this.col.updateMany({id : obj.id},  { $set: { "deleted_flag" : true }}))
-        if(err) {
-            return Promise.reject(err);
-        }
-
-        let result: DistrictDto[] = [];
-        return Object.assign<DistrictDto[], mongoose.Document[]>(result, data);
-    }
-
-    public async update(obj: DistrictDto): Promise<DistrictDto[]>
-    {
-        obj.updated_date = Date.now();
-        let [err, data] = await to(this.col.updateMany({id : obj.id},  { $set:  obj }))
-        if(err) {
-            return Promise.reject(err);
-        }
-
-        let result: DistrictDto[] = [];
-        return Object.assign<DistrictDto[], mongoose.Document[]>(result, data);
-    }
-
 }
