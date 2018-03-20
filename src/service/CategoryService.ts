@@ -94,10 +94,13 @@ export class CategoryServiceImpl implements CategoryService {
                 }];
             case 'doctor_tbl':
                 return [
-                    this.generateSubQueries('type_tbl', 'gender', 'code', 'gender_name', ext,  [{$eq:['$class', 'GENDER']}], 'name')
-                    ,
-                    this.generateSubQueries('specialization_tbl', 'specialization_id', 'id', 'specialization_name', ext, null, 'name') 
-                    ]
+                    this.generateSubQueries('type_tbl', 'gender', 'code', 'gender_name', ext,  [{$eq:['$class', 'GENDER']}], 'name'),
+                    this.generateSubQueries('specialization_tbl', 'specialization_id', 'id', 'specialization_name', ext, null, 'name') ]
+            case "registration_tbl":
+                return [
+                    // this.generateSubQueries('specialization_tbl', 'specialization_id', 'id', 'specialization_name', ext, null, 'name'),
+                    this.generateSubQueries('type_tbl', 'gioitinh', 'code', 'gender_name', ext,  [{$eq:['$class', 'GENDER']}], 'name'),
+                ]
         }
         return null;
     }
