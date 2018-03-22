@@ -22,7 +22,7 @@ export class MedicalRegistrationController implements RegistrableController {
 
         app.route('/api/MedicalRegistration/notify').post(async(req: express.Request, res: express.Response, next: express.NextFunction) => {
             const [err, response] = await to(this.registartionService.getone(req.body.madkkb));
-            io.emit('new_registration', {data: response});
+            io.emit('message', {data: response});
             res.json(response);
         });
 
