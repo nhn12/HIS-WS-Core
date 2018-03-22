@@ -59,9 +59,6 @@ app.use(function (req: any, res: express.Response, next: express.NextFunction) {
     }
 })
 
-// grabs the Controller from IoC container and registers all the endpoints
-const controllers: RegistrableController[] = container.getAll<RegistrableController>(TYPES.Controller);
-controllers.forEach(controller => controller.register(app));
 
 // setup express middleware logging and error handling
 
@@ -76,6 +73,12 @@ app.use(function (err: Error, req: express.Request, res: express.Response, next:
     res.status(500).send('Internal Server Error');
 });
 
-app.listen(3000, function () {
+
+var io = require('socket.io').listen(app.listen(3000, ()=>{
     logger.info('Example app listening on port 3000!');
-});
+}));
+
+// grabs the Controller from IoC container and registers all the endpoints
+const controllers: RegistrableController[] = container.getAll<RegistrableController>(TYPES.Controller);
+controllers.forEach(controller => controller.register(app, io));
+

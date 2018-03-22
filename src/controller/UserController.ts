@@ -2,6 +2,7 @@ import { ParseUtils } from './../util/parse-utils';
 import * as express from 'express';
 import {injectable, inject} from 'inversify';
 import TYPES from '../types';
+import 'reflect-metadata';
 import { UserService } from '../service/UserService';
 import { RegistrableController } from './RegisterableController';
 import { ResponseUtil } from '../util/ResponseUtils';

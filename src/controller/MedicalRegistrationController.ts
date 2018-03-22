@@ -18,16 +18,18 @@ export class MedicalRegistrationController implements RegistrableController {
         this.responseUtils = _responseUtils;
     }
 
-    public register(app: express.Application): void {
-        app.route('/api/registration/search')
-            .get(async(req: express.Request, res: express.Response, next: express.NextFunction) => {
-                const addresses = await this.registartionService.getAllRegistration().catch(err => next(err));
-                res.json(this.responseUtils.buildListData<any>(Status._200, "success", addresses, addresses.length));
-        })
+    public register(app: express.Application, io: any): void {
+
+        app.route('/api/MedicalRegistration/notify').post(async(req: express.Request, res: express.Response, next: express.NextFunction) => {
+            const [err, response] = await to(this.registartionService.getone(req.body.madkkb));
+            io.emit('new_registration', {data: response});
+            res.json(response);
+        });
 
         app.route('/api/MedicalRegistration/create')
             .post(async(req: express.Request, res: express.Response, next: express.NextFunction) => {
                 const [err, response] = await to(this.registartionService.insert(req.body));
+                io.emit('new_registration', {data: response});
                 res.json(response);
         })
 
@@ -40,12 +42,6 @@ export class MedicalRegistrationController implements RegistrableController {
         app.route('/api/registration/delete')
         .post(async(req: express.Request, res: express.Response, next: express.NextFunction) => {
             const [err, response] = await to(this.registartionService.delete(req.body));
-            res.json(response);
-        })
-
-        app.route('/api/medicalregistration/cancel')
-        .post(async(req: express.Request, res: express.Response, next: express.NextFunction) => {
-            const [err, response] = await to(this.registartionService.cancel(req.body));
             res.json(response);
         })
     }

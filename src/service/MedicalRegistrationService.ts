@@ -1,57 +1,54 @@
+import { RegistrationRepository } from './../repository/RegistrationRepository';
 import {injectable, inject} from 'inversify';
 import TYPES from '../types';
 import 'reflect-metadata';
-import * as _ from 'lodash';
-import { RegistrationRepository } from '../repository/RegistrationRepository';
 import { ScheduleRepository } from '../repository/ScheduleRepository';
 import { RegistrationDto } from '../model/RegistrationDto';
 import { ResponseModel, Status } from '../model/ResponseDto';
 import  to  from '../util/promise-utils';
+import { CoreService } from '../core/CoreService';
 
 export interface MedicalRegistrationService {
-    getAllRegistration();
     insert(obj: RegistrationDto): Promise<ResponseModel<any>>;
+    getone(id: string): Promise<ResponseModel<any>>
     delete(obj: RegistrationDto): Promise<ResponseModel<any>>;
     update(obj: RegistrationDto): Promise<ResponseModel<any>>;
-    cancel(obj: any): Promise<ResponseModel<any>>;
 }
 
 @injectable()
-export class MedicalRegistrationServiceImpl implements MedicalRegistrationService {
+export class MedicalRegistrationServiceImpl extends CoreService<RegistrationDto, any> implements MedicalRegistrationService {
     @inject(TYPES.RegistrationRepository)
     private registrationRepo: RegistrationRepository;
+
     @inject(TYPES.ScheduleRepository)
     private scheduleRepository: ScheduleRepository;
 
-
-    public async getAllRegistration(): Promise<Array<RegistrationDto>> {
-        // grab addresses from mongo
-        var re = this.registrationRepo.findAll().then(result=>{return result});
-        return re;
+    public setMainRepository() {
+        return this.registrationRepo;
     }
 
-    public async insert(obj: RegistrationDto): Promise<ResponseModel<any>> {
-        return new Promise<ResponseModel<any>>(async (resolve, reject)=>{
-            // if(!mabv) {
-            //     resolve(new ResponseModel(Status._0, "mabv is required"));
-            //     return;
-            // }
+    public async getone(id: any) {
+        let [err, response] = await to(this.registrationRepo.findOne({madkkb: id}));
+        if(err) {
+            return new ResponseModel(Status._500, err);
+        }
 
-            // if(!obj.madkkb) {
-            //     resolve(new ResponseModel(Status._0, "madkkb is required"));
-            //     return;
-            // }
-            console.log(obj);
+        return response;
+    }
+
+
+    public async insert(obj: RegistrationDto): Promise<ResponseModel<any>> {
             obj.created_date = obj.updated_date =  Date.now();
             obj.deleted_flag = false;
             //obj.mabv = mabv;
 
             let [errSchedule, dataSchedule] = await to(this.scheduleRepository.findOne(obj.malichkb.toString()));
             if(errSchedule) {
-            return new ResponseModel(Status._500, JSON.stringify(errSchedule), null);
+                return new ResponseModel(Status._500, JSON.stringify(errSchedule), null);
             }
+
             
-            if(dataSchedule[0].reserve == false)
+            if(dataSchedule && dataSchedule.length <= 0 && dataSchedule[0].reserve == false)
             {
                 dataSchedule[0].reserve = true;
                 console.log(dataSchedule[0]);
@@ -62,25 +59,23 @@ export class MedicalRegistrationServiceImpl implements MedicalRegistrationServic
                 }
                 else
                 {
-                    const [errRegis, response] = await to(this.registrationRepo.insert(obj));
+                    const [errRegis, response] = await to(super.insert(obj));
                     if(errRegis) {
-                        resolve(new ResponseModel(Status._500, "error"));
-                        return;
+                        return new ResponseModel(Status._500, JSON.stringify(errRegis));
                     }
     
                     if(response) {
-                        resolve(new ResponseModel(Status._200, "success"));
-                        return;
+                        return new ResponseModel(Status._200, response[0]);
                     }
                 }
             }
             else
             {
+                return new ResponseModel(Status._200, "Implement later");
                 //to do find scheduler 
             }
             
             
-        })
     }
 
     public async delete(obj: RegistrationDto): Promise<ResponseModel<any>>{
@@ -95,28 +90,4 @@ export class MedicalRegistrationServiceImpl implements MedicalRegistrationServic
         return new ResponseModel(Status._200, "success", result);
     }
 
-    public async update(obj: RegistrationDto): Promise<ResponseModel<any>> {
-        if(!obj) {
-            return new ResponseModel(Status._400, "lack of data");
-        }
-        let [err, result] = await to(this.registrationRepo.update(obj));
-        if(err) {
-            return new ResponseModel(Status._500, "err");
-        }
-
-        return new ResponseModel(Status._200, "success", result);
-    }
-
-    public async cancel(obj: any): Promise<ResponseModel<any>>{
-        if(!obj) {
-            return new ResponseModel(Status._400, "lack of data");
-        }
-
-        let [err, result] = await to(this.registrationRepo.cancel(obj));
-        if(err) {
-            return new ResponseModel(Status._500, "err");
-        }
-
-        return new ResponseModel(Status._200, "success", result);
-    }
 }

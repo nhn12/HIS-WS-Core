@@ -8,6 +8,16 @@ import { inject, injectable } from 'inversify';
 @injectable()
 export abstract class CoreRepository<D> {
     col: mongoose.Model<any>;
+
+    @inject(TYPES.CounterRepository)
+    protected counterRepository: CounterRepository;
+    
+    constructor() {
+        this.initCollection();
+    }
+
+    public abstract setPrimaryTable(): string;
+    public abstract setSchema(): Schema;
     
 
     public async upsert(obj: D, condition?: any): Promise<D> {
@@ -43,7 +53,7 @@ export abstract class CoreRepository<D> {
          return this.update(obj);
     }
     
-    public async findOne(condition: any) {
+    public async findOne(condition: any): Promise<D> {
         let [err, response] = await to(this.col.findOne(condition));
 
         if(err) {
@@ -52,25 +62,13 @@ export abstract class CoreRepository<D> {
 
         return response;
     }
-    
-
-    @inject(TYPES.CounterRepository)
-    protected counterRepository: CounterRepository;
-    
-    constructor() {
-        this.initCollection();
-    }
-
-    public abstract setPrimaryTable(): string;
-    public abstract setSchema(): Schema;
 
     public async findAll(): Promise<Array<D>> {
         let data = await this.col.find({deleted_flag: false});
         let result: D[] = [];
         return Object.assign<D[], mongoose.Document[]>(result, data);
     }
-
-
+    
     public initCollection() {
         this.col = mongoose.model(this.setPrimaryTable(), this.setSchema(), this.setPrimaryTable() );
     }

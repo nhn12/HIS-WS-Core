@@ -1,7 +1,6 @@
 import {injectable, inject} from 'inversify';
 import TYPES from '../types';
 import 'reflect-metadata';
-import * as _ from 'lodash';
 import { RegistrationRepository } from '../repository/RegistrationRepository';
 import { RegistrationDto } from '../model/RegistrationDto';
 import { UserRepository } from '../repository/UserRepository';
