@@ -28,7 +28,7 @@ export class MedicalRegistrationServiceImpl extends CoreService<RegistrationDto,
     }
 
     public async getone(id: any) {
-        let [err, response] = await to(this.registrationRepo.findOne({madkkb: id}));
+        let [err, response] = await to(this.registrationRepo.findOneBy({madkkb: id}));
         if(err) {
             return new ResponseModel(Status._500, err);
         }
@@ -42,7 +42,7 @@ export class MedicalRegistrationServiceImpl extends CoreService<RegistrationDto,
             obj.deleted_flag = false;
             //obj.mabv = mabv;
 
-            let [errSchedule, dataSchedule] = await to(this.scheduleRepository.findOne(obj.malichkb.toString()));
+            let [errSchedule, dataSchedule] = await to(this.scheduleRepository.findOneBy(obj.malichkb.toString()));
             if(errSchedule) {
                 return new ResponseModel(Status._500, JSON.stringify(errSchedule), null);
             }

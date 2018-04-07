@@ -83,9 +83,9 @@
     "@types/events" "*"
     "@types/node" "*"
 
-"@types/mongoose@^4.7.33":
-  version "4.7.33"
-  resolved "https://registry.yarnpkg.com/@types/mongoose/-/mongoose-4.7.33.tgz#de77cd613f261c7662bb175102ebc128dce71250"
+"@types/mongoose@^4.7.36":
+  version "4.7.36"
+  resolved "https://registry.yarnpkg.com/@types/mongoose/-/mongoose-4.7.36.tgz#fd5f2cac4fd4b0c3831efae8824e20f1dfc09f96"
   dependencies:
     "@types/events" "*"
     "@types/mongodb" "*"

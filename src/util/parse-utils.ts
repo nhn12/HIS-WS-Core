@@ -62,6 +62,26 @@ export class ParseUtils {
         return results;
     }
 
+    /**
+     * 
+     * @param type: 1 service, 2 repository 
+     * @param resource: string
+     */
+    public static convertTableToRepositoryName(resource: string, type: number) {
+        if(!resource) {
+            return resource;
+        }
+
+        resource = resource.replace("_tbl", "");
+        if(type == 2) {
+            resource += "repository";
+        }
+        if(type == 1) {
+            resource += "service";
+        }
+        return resource;
+    }
+
     public static splitDate(date1: Date, date2: Date): Date[] {
         if((typeof date1) == "string") {
             date1 = new Date(date1);
@@ -122,4 +142,5 @@ export class ParseUtils {
         return hour+ ":" + minute+"";
         
     }
+    
 }

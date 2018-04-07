@@ -92,7 +92,7 @@ export class SyncServiceImpl implements SyncService {
         let password;
 
         // get domain
-        let [err, responseUrl] = await to<ConfigDto>(this.configRepository.findOne({"key": this.WS_URL_SYNC}));
+        let [err, responseUrl] = await to<ConfigDto>(this.configRepository.findOneBy({"key": this.WS_URL_SYNC}));
         if(err || !responseUrl) {
             this.logRepository.insert([this.generateLogSync("Cannot get domain vkhs from config", 'ERROR')]);
             return Promise.reject("Domain server not found");
@@ -100,7 +100,7 @@ export class SyncServiceImpl implements SyncService {
         url = responseUrl.value;
 
         // get token
-        let [errT, responseT] = await to<ConfigDto>(this.configRepository.findOne({"key": this.WS_ACCOUNT_SYNC_TOKEN}));
+        let [errT, responseT] = await to<ConfigDto>(this.configRepository.findOneBy({"key": this.WS_ACCOUNT_SYNC_TOKEN}));
         if(!errT && responseT && force != true) {
             return {url: url, token: responseT.value}
         } 
@@ -108,7 +108,7 @@ export class SyncServiceImpl implements SyncService {
         // case token not found --> login to get token
 
         // get username
-        let [errU, responseU] = await to<ConfigDto>(this.configRepository.findOne({"key": this.WS_ACCOUNT_SYNC_USERNAME}));
+        let [errU, responseU] = await to<ConfigDto>(this.configRepository.findOneBy({"key": this.WS_ACCOUNT_SYNC_USERNAME}));
         if(errU || !responseU) {
             this.logRepository.insert([this.generateLogSync("Cannot get username from config", 'ERROR')]);
             return Promise.reject("Username to access server not found");
@@ -116,7 +116,7 @@ export class SyncServiceImpl implements SyncService {
         username = responseU.value;
 
         // get password
-        let [errP, responseP] = await to<ConfigDto>(this.configRepository.findOne({"key": this.WS_ACCOUNT_SYNC_PASSWORD}));
+        let [errP, responseP] = await to<ConfigDto>(this.configRepository.findOneBy({"key": this.WS_ACCOUNT_SYNC_PASSWORD}));
         if(errP || !responseP) {
             this.logRepository.insert([this.generateLogSync("Cannot get password from config", 'ERROR')]);
             return Promise.reject("Password to access server not found");

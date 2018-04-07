@@ -35,6 +35,7 @@
     "lodash": "^4.16.4",
     "mongoose": "^5.0.1",
     "reflect-metadata": "^0.1.8",
+    "socket.io": "^2.0.4",
     "sqlite3": "^3.1.7",
     "typeorm": "^0.0.2-alpha.69",
     "winston": "^2.2.0"

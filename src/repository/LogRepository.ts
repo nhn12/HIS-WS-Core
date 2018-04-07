@@ -23,4 +23,8 @@ export class LogRepositoryImpl extends CoreRepository<LogDto> implements LogRepo
     public setSchema(): mongoose.Schema {
         return LogSchema;
     }
+
+    public definedIndexs() {
+        return null;
+    }
 }

@@ -7,6 +7,10 @@ import { RequestQueryDto } from '../model/RequestQueryDto';
 import AppConstants from "../util/AppConstant"
 import { ParseUtils } from '../util/parse-utils';
 import to from '../util/promise-utils';
+import { ResponseModel, Status } from '../model/ResponseDto';
+import container from '../inversify.config';
+import { CoreRepository } from '../core/CoreRepository';
+import { ResponseUtil } from '../util/ResponseUtils';
 
 export interface CategoryService {
     query(obj: RequestQueryDto);
@@ -17,37 +21,72 @@ export class CategoryServiceImpl implements CategoryService {
     @inject(TYPES.CategoryRepository)
     private registrationRepo: CategoryRepository;
 
-    public async query(obj: RequestQueryDto): Promise<Array<any>> {
-        let ext = [];
-        if (!obj.resource) {
-            return null;
+    @inject(TYPES.ResponseUtil) 
+    private responseUtils: ResponseUtil;
+
+    public async query(obj: RequestQueryDto): Promise<ResponseModel<any>> {
+        let tempResource = Symbol(ParseUtils.convertTableToRepositoryName(obj.resource, 2)).toString().toLocaleLowerCase();
+        let existsInstanceKey;
+        for(var item in TYPES) {
+            if(TYPES[item].toString().toLocaleLowerCase() == tempResource) {
+                existsInstanceKey = TYPES[item];
+            }
         }
 
-        if (!obj.filter) {
-            obj.filter = {};
+        if(!existsInstanceKey) {
+            return new ResponseModel(Status._500, "Table not support query");
+        }
+        
+
+        let instance = container.get<CoreRepository<any>>(existsInstanceKey);
+        let [err, response] = await to(instance.query(obj.filter, obj.sort, obj.offset, obj.limit));
+        if(err) {
+            return new ResponseModel(Status._500, JSON.stringify(err));
         }
 
-        if (obj.limit == undefined || obj.limit == null) {
-            obj.limit = AppConstants.DEFAULT_LIMIT_RECORD_SEARCH;
-        }
+        console.log(response);
 
-        if (obj.offset == undefined || obj.offset == null) {
-            obj.offset = AppConstants.DEFAULT_OFFSET_RECORD_SEARCH;
-        }
+        if (response[0] && response[0].totalRecords && response[0].totalRecords.length > 0) {
+            return this.responseUtils.buildListData<any>(Status._200, "success", response[0].data, response[0].totalRecords[0].madkkb);
+        } else {
+            return this.responseUtils.buildListData<any>(Status._200, "success", [], 0);
+        } 
 
-        obj.filter.deleted_flag = false;
 
-        var [error, re] = await to(this.registrationRepo.query(obj.resource, obj.filter, this.getJoinTable(obj.resource, ext), ext, obj.sort, obj.limit, obj.offset));
+        // let ext = [];
+        // if (!obj.resource) {
+        //     return null;
+        // }
 
-        if(error) {
-            return Promise.reject(error);
-        }
+        // if (!obj.filter) {
+        //     obj.filter = {};
+        // }
 
-        if (re && re.length > 0) {
-            re[0].data = this.parseObj(re[0].data, obj.resource);
-            return re[0];
-        }
-        return re;
+        // if (obj.limit == undefined || obj.limit == null) {
+        //     obj.limit = AppConstants.DEFAULT_LIMIT_RECORD_SEARCH;
+        // }
+
+        // if (obj.offset == undefined || obj.offset == null) {
+        //     obj.offset = AppConstants.DEFAULT_OFFSET_RECORD_SEARCH;
+        // }
+
+        // obj.filter.deleted_flag = false;
+
+        // var [error, re] = await to(this.registrationRepo.query(obj.resource, obj.filter, this.getJoinTable(obj.resource, ext), ext, obj.sort, obj.limit, obj.offset));
+
+        // if(error) {
+        //     return Promise.reject(error);
+        // }
+
+        // if (re && re.length > 0) {
+        //     re[0].data = this.parseObj(re[0].data, obj.resource);
+        //     return re[0];
+        // }
+        // return re;
+    }
+
+    public definedIndexs() {
+        return ["name"];
     }
 
     private getJoinTable(resource: string, ext: any[]) {

@@ -21,16 +21,8 @@ export class CategoryController implements RegistrableController {
     public register(app: express.Application): void {
         app.route('/api/category/search')
         .post(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-            const [err, addresses] = await to(this.categoryService.query(req.body));
-            if (err) {
-                res.json(JSON.stringify(err));
-            }
-
-            if (addresses && addresses.totalRecords && addresses.totalRecords.length > 0) {
-                res.json(this.responseUtils.buildListData<any>(Status._200, "success", addresses.data, addresses.totalRecords[0].madkkb));
-            } else {
-                res.json(this.responseUtils.buildListData<any>(Status._200, "success", [], 0));
-            }
+            let result = await (this.categoryService.query(req.body));
+            res.json(result);
         })
     }
 }

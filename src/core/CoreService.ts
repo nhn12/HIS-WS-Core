@@ -6,6 +6,7 @@ import to from '../util/promise-utils';
 import TYPES from '../types';
 import { inject, injectable } from 'inversify';
 import { CoreRepository } from './CoreRepository';
+import container from '../inversify.config';
 
 @injectable()
 export abstract class CoreService<D, R extends CoreRepository<any>> {

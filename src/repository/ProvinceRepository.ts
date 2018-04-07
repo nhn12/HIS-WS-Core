@@ -22,4 +22,8 @@ export class ProvinceRepositoryImpl extends CoreRepository<ProvinceDto> implemen
     public setSchema(): mongoose.Schema {
         return ProvinceSchema;
     }
+
+    public definedIndexs() {
+        return ["name"];
+    }
 }

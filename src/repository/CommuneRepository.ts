@@ -22,4 +22,7 @@ export class CommuneRepositoryImpl extends CoreRepository<CommuneDto> implements
     public setSchema(): mongoose.Schema {
         return CommuneSchema;
     }
+    public definedIndexs() {
+        return null;
+    }
 }

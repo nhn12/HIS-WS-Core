@@ -3,7 +3,7 @@ import { ObjectID } from "bson";
 
 export var DoctorSchema: Schema = new Schema({
     id: Number,
-    code: Schema.Types.ObjectId,
+    code: String,
     name: String,
     firstname: String,
     lastname: String,

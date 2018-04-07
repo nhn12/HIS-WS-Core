@@ -22,4 +22,8 @@ export class DistrictRepositoryImpl extends CoreRepository<DistrictDto> implemen
     public setSchema(): mongoose.Schema {
         return DistrictSchema;
     }
+
+    public definedIndexs() {
+        return null;
+    }
 }

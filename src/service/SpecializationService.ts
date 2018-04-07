@@ -48,22 +48,22 @@ export class SpecializationServiceImpl implements SpecializationService {
             return new ResponseModel(Status._500, JSON.stringify(err), null);
         }
 
-        if(prices && prices.length > 0) {
-            let idSpecialization = response[0].id;
-            prices.forEach(element=>{
-                element.specialization_id = idSpecialization;
-            })
+        // if(prices && prices.length > 0) {
+        //     let idSpecialization = response[0].id;
+        //     prices.forEach(element=>{
+        //         element.specialization_id = idSpecialization;
+        //     })
 
-            let [errPrice, responsePrice] = await to(this.specializationPriceRepository.insert(prices));
-            if(errPrice) {
-                return new ResponseModel(Status._500, JSON.stringify(errPrice), null);
-            }
+        //     let [errPrice, responsePrice] = await to(this.specializationPriceRepository.insert(prices));
+        //     if(errPrice) {
+        //         return new ResponseModel(Status._500, JSON.stringify(errPrice), null);
+        //     }
 
-            response.prices = responsePrice;
-            console.log(response);
-            //only sync when have price
-            await this.Sync(response);
-        }
+        //     response.prices = responsePrice;
+        //     console.log(response);
+        //     //only sync when have price
+        //     await this.Sync(response);
+        // }
         return new ResponseModel(Status._200, "Success", response);
     }
 

@@ -12,7 +12,7 @@ import { CoreRepository } from '../core/CoreRepository';
 
 export interface RegistrationRepository {
     findAll(): Promise<Array<RegistrationDto>>;
-    findOne(condition: any): Promise<RegistrationDto>
+    findOneBy(condition: any): Promise<RegistrationDto>
     insert(obj: RegistrationDto[]): Promise<RegistrationDto[]>;
     delete(obj: RegistrationDto): Promise<RegistrationDto[]>; 
     update(obj: RegistrationDto): Promise<RegistrationDto[]>; 
@@ -27,5 +27,9 @@ export class RegistrationRepositoryImpl extends CoreRepository<RegistrationDto> 
     }
     public setSchema(): mongoose.Schema {
         return RegistrationSchema;
+    }
+
+    public definedIndexs() {
+        return ["name"];
     }
 }

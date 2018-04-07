@@ -31,9 +31,9 @@ export class WardServiceImpl implements WardService {
     }
 
     public async insert(obj: any): Promise<any> {
-        if(obj[0].name != null && obj[0].specialization_id != null)
+        if(obj.name != null && obj.specialization_id != null)
         {
-            let [err, response] = await to(this.scheduleRepository.insert(obj));
+            let [err, response] = await to(this.scheduleRepository.insert([obj]));
 
             //response array
             if(err || !response) {

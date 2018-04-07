@@ -9,6 +9,8 @@ import { ResponseModel, Status } from '../model/ResponseDto';
 import { Schema } from 'mongoose';
 import { CounterRepository } from './CounterRepository';
 import TYPES from '../types';
+import { CoreRepository } from '../core/CoreRepository';
+import { MongoUtils } from '../util/MongoUtils';
 
 
 export interface ScheduleRepository {
@@ -16,70 +18,89 @@ export interface ScheduleRepository {
     insert(obj: any[]): Promise<ScheduleDto[]>;
     delete(obj: ScheduleDto): Promise<ScheduleDto[]>; 
     update(obj: ScheduleDto): Promise<ScheduleDto[]>;
-    findOne(id: String): Promise<any>;
+    findOneBy(id: String): Promise<any>;
 }
 
 @injectable()
-export class ScheduleRepositoryImpl implements ScheduleRepository {
-    col:mongoose.Model<any>;
-
-    @inject(TYPES.CounterRepository)
-    private counterRepository: CounterRepository;
-    constructor() {
-
-        this.col = mongoose.model('schedule_tbl', SchedulerSchema, 'schedule_tbl' );
+export class ScheduleRepositoryImpl extends CoreRepository<ScheduleDto> implements ScheduleRepository {
+    public setPrimaryTable(): string {
+        return "schedule_tbl"
+    }
+    
+    public setSchema(): Schema {
+        return SchedulerSchema;
+    }
+    
+    public definedIndexs() {
+        return null;
     }
 
-    public async findAll(): Promise<Array<ScheduleDto>> {
-        let data = await this.col.find();
-        let result: ScheduleDto[] = [];
-        return Object.assign<ScheduleDto[], mongoose.Document[]>(result, data);
+    public getJoinTable() {
+        let ext = [];
+        return [
+            { $lookup: MongoUtils.generateSubQueries('type_tbl', 'gender', 'code', 'gender_name', ext, [{ $eq: ['$class', 'GENDER'] }], 'name') },
+            { $lookup: MongoUtils.generateSubQueries('specialization_tbl', 'specialization_id', 'id', 'specialization_name', ext, null, 'name') },
+            ...ext];
     }
+    // col:mongoose.Model<any>;
 
-    public async insert(obj: any[]): Promise<ScheduleDto[]> {
-        let result: ScheduleDto[] = [];
+    // @inject(TYPES.CounterRepository)
+    // private counterRepository: CounterRepository;
+    // constructor() {
+
+    //     this.col = mongoose.model('schedule_tbl', SchedulerSchema, 'schedule_tbl' );
+    // }
+
+    // public async findAll(): Promise<Array<ScheduleDto>> {
+    //     let data = await this.col.find();
+    //     let result: ScheduleDto[] = [];
+    //     return Object.assign<ScheduleDto[], mongoose.Document[]>(result, data);
+    // }
+
+    // public async insert(obj: any[]): Promise<ScheduleDto[]> {
+    //     let result: ScheduleDto[] = [];
         
-        let seq = await this.counterRepository.getNextSequenceValue("schedule_tbl", obj.length);
+    //     let seq = await this.counterRepository.getNextSequenceValue("schedule_tbl", obj.length);
 
-        obj.map(element=>{
-            element.id = seq++;
-        })
+    //     obj.map(element=>{
+    //         element.id = seq++;
+    //     })
 
-        let data = await this.col.insertMany(obj);
+    //     let data = await this.col.insertMany(obj);
 
 
-        return Object.assign<ScheduleDto[], mongoose.Document[]>(result, data);
-    }
+    //     return Object.assign<ScheduleDto[], mongoose.Document[]>(result, data);
+    // }
 
-    public async delete(obj: ScheduleDto): Promise<ScheduleDto[]> {
-        let [err, data] = await to(this.col.updateMany({id : obj.id},  { $set: { "deleted_flag" : true }}))
-        if(err) {
-            return Promise.reject(err);
-        }
+    // public async delete(obj: ScheduleDto): Promise<ScheduleDto[]> {
+    //     let [err, data] = await to(this.col.updateMany({id : obj.id},  { $set: { "deleted_flag" : true }}))
+    //     if(err) {
+    //         return Promise.reject(err);
+    //     }
 
-        let result: ScheduleDto[] = [];
-        return Object.assign<ScheduleDto[], mongoose.Document[]>(result, data);
-    }
+    //     let result: ScheduleDto[] = [];
+    //     return Object.assign<ScheduleDto[], mongoose.Document[]>(result, data);
+    // }
 
-    public async update(obj: ScheduleDto): Promise<ScheduleDto[]>
-    {
-        obj.updated_date = Date.now();
-        let [err, data] = await to(this.col.updateMany({id : obj.id},  { $set:  obj }))
-        if(err) {
-            return Promise.reject(err);
-        }
+    // public async update(obj: ScheduleDto): Promise<ScheduleDto[]>
+    // {
+    //     obj.updated_date = Date.now();
+    //     let [err, data] = await to(this.col.updateMany({id : obj.id},  { $set:  obj }))
+    //     if(err) {
+    //         return Promise.reject(err);
+    //     }
 
-        let result: ScheduleDto[] = [];
-        return Object.assign<ScheduleDto[], mongoose.Document[]>(result, data);
-    }
+    //     let result: ScheduleDto[] = [];
+    //     return Object.assign<ScheduleDto[], mongoose.Document[]>(result, data);
+    // }
 
-    public async findOne(id: String): Promise<any>
-    {
-        let [err, data] = await to(this.col.find({ "id": id}));
-        if(err) {
-            return Promise.reject(err);
-        }
-        else
-            return data
-    }
+    // public async findOne(id: String): Promise<any>
+    // {
+    //     let [err, data] = await to(this.col.find({ "id": id}));
+    //     if(err) {
+    //         return Promise.reject(err);
+    //     }
+    //     else
+    //         return data
+    // }
 }

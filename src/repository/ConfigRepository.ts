@@ -13,7 +13,7 @@ export interface ConfigRepository {
     insert(obj: any[]): Promise<ConfigDto[]>;
     delete(obj: ConfigDto): Promise<ConfigDto[]>; 
     update(obj: ConfigDto): Promise<ConfigDto[]>;  
-    findOne(obj: any): Promise<ConfigDto>;
+    findOneBy(obj: any): Promise<ConfigDto>;
     upsert(obj, condition?: any): Promise<ConfigDto>;
 }
 
@@ -24,5 +24,8 @@ export class ConfigRepositoryImpl extends CoreRepository<ConfigDto> implements C
     }
     public setSchema(): mongoose.Schema {
         return ConfigSchema;
+    }
+    public definedIndexs() {
+        return null;
     }
 }
