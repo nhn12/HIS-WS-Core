@@ -1,5 +1,3 @@
-import { SyncService } from './service/SyncService';
-import { ScheduleRepository } from './repository/ScheduleRepository';
 const TYPES = {
     AddressRepository: Symbol('AddressRepository'),
     AddressRepository2: Symbol('AddressRepository2'),
@@ -53,6 +51,38 @@ const TYPES = {
     //Commune
     CommuneRepository:Symbol("CommuneRepository"),
     CommuneService:Symbol("CommuneService"),
+
+    //ReasonCategory
+    ReasonCategoryRepository:Symbol("ReasonCategoryRepository"),
+    ReasonCategoryService:Symbol("ReasonCategoryService"),
+
+    //ReasonCategory
+    DiseaseCategoryRepository:Symbol("DiseaseCategoryRepository"),
+    DiseaseCategoryService:Symbol("DiseaseCategoryService"),
+
+    //XutriCategory
+    XutriCategoryRepository:Symbol("XutriCategoryRepository"),
+    XutriCategoryService:Symbol("XutriCategoryService"),
+
+    //XutriCategory
+    TongquatCategoryRepository:Symbol("TongquatCategoryRepository"),
+    TongquatCategoryService:Symbol("TongquatCategoryService"),
+
+    //XutriCategory
+    TrieuchungCategoryRepository:Symbol("TrieuchungCategoryRepository"),
+    TrieuchungCategoryService:Symbol("TrieuchungCategoryService"),
+
+    //XutriCategory
+    IcdCategoryRepository:Symbol("IcdCategoryRepository"),
+    IcdCategoryService:Symbol("IcdCategoryService"),
+
+    //XutriCategory
+    TiencanCategoryRepository:Symbol("TiencanCategoryRepository"),
+    TiencanCategoryService:Symbol("TiencanCategoryService"),
+
+    //XutriCategory
+    CacBoPhanCategoryRepository:Symbol("CacBoPhanCategoryRepository"),
+    CacBoPhanCategoryService:Symbol("CacBoPhanCategoryService"),
 
     //Doctor
     DoctorService: Symbol("DoctorService"),

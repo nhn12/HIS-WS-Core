@@ -38,7 +38,8 @@
     "socket.io": "^2.0.4",
     "sqlite3": "^3.1.7",
     "typeorm": "^0.0.2-alpha.69",
-    "winston": "^2.2.0"
+    "winston": "^2.2.0",
+    "yarn": "^1.7.0"
   },
   "devDependencies": {
     "@types/mongodb": "^2.2.20",

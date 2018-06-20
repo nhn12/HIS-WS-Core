@@ -49,9 +49,34 @@ import { CommuneRepository, CommuneRepositoryImpl } from './repository/CommuneRe
 import { CommuneController } from './controller/CommuneController';
 import { DoctorService, DoctorServiceImpl } from './service/DoctorService';
 import { LogRepositoryImpl, LogRepository } from './repository/LogRepository';
+import { ReasonCategoryController } from './controller/ReasonIllCategoryController';
+import { ReasonCategoryRepositoryImpl, ReasonCategoryRepository } from './repository/ReasonCategoryRepository';
+import { ReasonCategoryServiceImpl, ReasonCategoryService } from './service/ReasonCategoryService';
+import { IcdCategoryController } from './controller/IcdCategoryController';
+import { XutriCategoryController } from './controller/XutriCategoryController';
+import { TiencanCategoryController } from './controller/TiencanCategoryController';
+import { TongquatCategoryController } from './controller/TongquatCategoryController';
+import { TrieuchungCategoryController } from './controller/TrieuchungCategoryController';
+import { DiseaseCategoryController } from './controller/DiseaseCategoryController';
+import { IcdCategoryService, IcdCategoryServiceImpl } from './service/IcdCategoryService';
+import { IcdCategoryRepository, IcdCategoryRepositoryImpl } from './repository/IcdCategoryRepository';
+import { TrieuchungCategoryService, TrieuchungCategoryServiceImpl } from './service/TrieuchungCategoryService';
+import { TrieuchungCategoryRepository, TrieuchungCategoryRepositoryImpl } from './repository/TrieuchungCategoryRepository';
+import { TiencanCategoryRepository, TiencanCategoryRepositoryImpl } from './repository/TiencanCategoryRepository';
+import { TiencanCategoryService, TiencanCategoryServiceImpl } from './service/TiencanCategoryService';
+import { DiseaseCategoryService, DiseaseCategoryServiceImpl } from './service/DiseaseCategoryService';
+import { DiseaseCategoryRepositoryImpl, DiseaseCategoryRepository } from './repository/DiseaseCategoryRepository';
+import { XutriCategoryService } from './service/XutriCategoryService';
+import { XutriCategoryRepository, XutriCategoryRepositoryImpl } from './repository/XutriCategoryRepository';
+import { TongquatCategoryService, TongquatCategoryServiceImpl } from './service/TongquatCategoryService';
+import { TongquatCategoryRepository, TongquatCategoryRepositoryImpl } from './repository/TongquatCategoryRepository';
+import { CacBoPhanCategoryController } from './controller/CacBoPhanCategoryController';
+import { CacBoPhanCategoryService, CacBoPhanCategoryServiceImpl } from './service/CacBoPhanCategoryService';
+import { CacBoPhanCategoryRepository, CacBoPhanCategoryRepositoryImpl } from './repository/CacBoPhanCategoryRepository';
 
 const container = new Container();
 container.bind<RegistrableController>(TYPES.Controller).to(MedicalRegistrationController);
+container.bind<RegistrableController>(TYPES.Controller).to(CacBoPhanCategoryController);
 container.bind<RegistrableController>(TYPES.Controller).to(UserController);
 container.bind<RegistrableController>(TYPES.Controller).to(CategoryController);
 container.bind<RegistrableController>(TYPES.Controller).to(ScheduleController);
@@ -65,12 +90,16 @@ container.bind<RegistrableController>(TYPES.Controller).to(ProvinceController);
 container.bind<RegistrableController>(TYPES.Controller).to(DistrictController);
 container.bind<RegistrableController>(TYPES.Controller).to(CommuneController);
 container.bind<RegistrableController>(TYPES.Controller).to(DoctorController);
+container.bind<RegistrableController>(TYPES.Controller).to(ReasonCategoryController);
+container.bind<RegistrableController>(TYPES.Controller).to(IcdCategoryController);
+container.bind<RegistrableController>(TYPES.Controller).to(XutriCategoryController);
+container.bind<RegistrableController>(TYPES.Controller).to(TiencanCategoryController);
+container.bind<RegistrableController>(TYPES.Controller).to(TongquatCategoryController);
+container.bind<RegistrableController>(TYPES.Controller).to(TrieuchungCategoryController);
+container.bind<RegistrableController>(TYPES.Controller).to(DiseaseCategoryController);
 
 
 
-// container.bind<AddressService>(TYPES.AddressService).to(AddressServiceImpl);
-// container.bind<AddressRepository>(TYPES.AddressRepository).to(AddressRepositoryImplMongo);
-// container.bind<AddressRepository>(TYPES.AddressRepository2).to(AddressRepositoryImplDb);
 container.bind<RegistrationRepository>(TYPES.RegistrationRepository).to(RegistrationRepositoryImpl);
 container.bind<MedicalRegistrationService>(TYPES.MedicalRegistrationService).to(MedicalRegistrationServiceImpl);
 container.bind<UserRepository>(TYPES.UserRepository).to(UserRepositoryImpl);
@@ -80,6 +109,38 @@ container.bind<UserService>(TYPES.UserService).to(UserServiceImpl);
 //category section
 container.bind<CategoryRepository>(TYPES.CategoryRepository).to(CategoryRepositoryImpl);
 container.bind<CategoryService>(TYPES.CategoryService).to(CategoryServiceImpl);
+
+//category section
+container.bind<ReasonCategoryRepository>(TYPES.ReasonCategoryRepository).to(ReasonCategoryRepositoryImpl);
+container.bind<ReasonCategoryService>(TYPES.ReasonCategoryService).to(ReasonCategoryServiceImpl);
+
+//category section
+container.bind<IcdCategoryService>(TYPES.IcdCategoryService).to(IcdCategoryServiceImpl);
+container.bind<IcdCategoryRepository>(TYPES.IcdCategoryRepository).to(IcdCategoryRepositoryImpl);
+
+//category section
+container.bind<TrieuchungCategoryService>(TYPES.TrieuchungCategoryService).to(TrieuchungCategoryServiceImpl);
+container.bind<TrieuchungCategoryRepository>(TYPES.TrieuchungCategoryRepository).to(TrieuchungCategoryRepositoryImpl);
+
+//category section
+container.bind<TiencanCategoryRepository>(TYPES.TiencanCategoryRepository).to(TiencanCategoryRepositoryImpl);
+container.bind<TiencanCategoryService>(TYPES.TiencanCategoryService).to(TiencanCategoryServiceImpl);
+
+//category section
+container.bind<DiseaseCategoryService>(TYPES.DiseaseCategoryService).to(DiseaseCategoryServiceImpl);
+container.bind<DiseaseCategoryRepository>(TYPES.DiseaseCategoryRepository).to(DiseaseCategoryRepositoryImpl);
+
+//category section
+container.bind<XutriCategoryService>(TYPES.XutriCategoryService).to(DiseaseCategoryServiceImpl);
+container.bind<XutriCategoryRepository>(TYPES.XutriCategoryRepository).to(XutriCategoryRepositoryImpl);
+
+//category section
+container.bind<CacBoPhanCategoryService>(TYPES.CacBoPhanCategoryService).to(CacBoPhanCategoryServiceImpl);
+container.bind<CacBoPhanCategoryRepository>(TYPES.CacBoPhanCategoryRepository).to(CacBoPhanCategoryRepositoryImpl);
+
+//category section
+container.bind<TongquatCategoryService>(TYPES.TongquatCategoryService).to(TongquatCategoryServiceImpl);
+container.bind<TongquatCategoryRepository>(TYPES.TongquatCategoryRepository).to(TongquatCategoryRepositoryImpl);
 
 //schedule
 container.bind<ScheduleRepository>(TYPES.ScheduleRepository).to(ScheduleRepositoryImpl);

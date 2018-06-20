@@ -1,4 +1,3 @@
-import { ResponseModel, Status } from './../../../HIS-WebService/src/model/ResponseDto';
 import { CounterRepository } from './../repository/CounterRepository';
 import * as mongoose from 'mongoose';
 import { Schema } from 'mongoose';
@@ -7,6 +6,7 @@ import TYPES from '../types';
 import { inject, injectable } from 'inversify';
 import { CoreRepository } from './CoreRepository';
 import container from '../inversify.config';
+import { ResponseModel, Status } from '../model/ResponseDto';
 
 @injectable()
 export abstract class CoreService<D, R extends CoreRepository<any>> {
