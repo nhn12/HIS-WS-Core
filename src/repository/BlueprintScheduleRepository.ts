@@ -34,7 +34,7 @@ export class BlueprintScheduleRepositoryImpl implements BlueprintScheduleReposit
     }
 
     public async insert(obj: any[]): Promise<BlueprintScheduleDto[]> {
-        console.log(obj);
+        //console.log(obj);
         var count = await this.counterRepository.getNextSequenceValue('blueprint_schedule_tbl');
         obj[0].id = count;
         let [err, data] = await to(this.col.insertMany(obj));

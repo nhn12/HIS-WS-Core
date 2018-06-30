@@ -54,6 +54,6 @@ export class RegistrationDto {
     public is_bvcancel: boolean;
 
     //audit tbl
-    public created_date: Number;
-    public updated_date: Number;
+    public created_date: Date;
+    public updated_date: Date;
 }

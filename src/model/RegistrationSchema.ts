@@ -58,4 +58,4 @@ export var RegistrationSchema: Schema = new Schema({
       //audit tbl
     created_date: Date,
     updated_date: Date
-});
+}, { strict: false });

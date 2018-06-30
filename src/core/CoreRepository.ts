@@ -27,6 +27,8 @@ export abstract class CoreRepository<D> {
 
         let onlyFilter = [];
         if (filter) {
+            this.replaceRegrex(filter);
+            console.log(JSON.stringify(filter));
             objFilter.push({ $match: filter });
             onlyFilter.push({ $match: filter });
         }
@@ -55,7 +57,7 @@ export abstract class CoreRepository<D> {
         }]
 
 
-        console.log(JSON.stringify(aggre));
+    //    console.log(JSON.stringify(aggre));
 
         return <any>this.col.aggregate(aggre);
     }
@@ -95,6 +97,18 @@ export abstract class CoreRepository<D> {
         }
 
         return this.update(obj);
+    }
+
+    private replaceRegrex(filter: any) {
+        if(filter.length != undefined) {
+            filter.forEach(element => {
+                this.replaceRegrex(element);
+            });
+        } else {
+            if(filter['$regrex'] != undefined) {
+                filter['$regrex'] = new RegExp("/^bar$/i");
+            }
+        }
     }
 
     public async findOneBy(condition: any): Promise<D> {
@@ -144,7 +158,7 @@ export abstract class CoreRepository<D> {
 
         obj.forEach(element => {
             element['id'] = seqC++;
-            element['code'] = this.generateCode(element);
+            element['code'] = (element['code']?element['code']:this.generateCode(element));
         })
 
         let [err, response] = await to(this.col.insertMany(obj));

@@ -3,7 +3,7 @@ const TYPES = {
     AddressRepository2: Symbol('AddressRepository2'),
     AddressService: Symbol('AddressService'),
     RegistrationRepository: Symbol('RegistrationRepository'),
-    MedicalRegistrationService: Symbol('MedicalRegistrationService'),
+    RegistrationService: Symbol('RegistrationService'),
 
     CategoryService: Symbol('CategoryService'),
     CategoryRepository: Symbol('CategoryRepository'),

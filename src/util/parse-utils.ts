@@ -43,7 +43,7 @@ export class ParseUtils {
         }
         result.setHours(parseInt(abc[0]));
         result.setMinutes(parseInt(abc[1]));
-        console.log(result);
+      //  console.log(result);
         return result;
     }
 

@@ -44,7 +44,7 @@ export class CategoryServiceImpl implements CategoryService {
             return new ResponseModel(Status._500, JSON.stringify(err));
         }
 
-        console.log(response);
+        //console.log(response);
 
         if (response[0] && response[0].totalRecords && response[0].totalRecords.length > 0) {
             return this.responseUtils.buildListData<any>(Status._200, "success", response[0].data, response[0].totalRecords[0].madkkb);
@@ -137,8 +137,7 @@ export class CategoryServiceImpl implements CategoryService {
                     this.generateSubQueries('specialization_tbl', 'specialization_id', 'id', 'specialization_name', ext, null, 'name') ]
             case "registration_tbl":
                 return [
-                    // this.generateSubQueries('specialization_tbl', 'specialization_id', 'id', 'specialization_name', ext, null, 'name'),
-                    this.generateSubQueries('type_tbl', 'gioitinh', 'code', 'gender_name', ext,  [{$eq:['$class', 'GENDER']}], 'name'),
+                    this.generateSubQueries('type_tbl', 'gender', 'code', 'gender_name', ext,  [{$eq:['$class', 'GENDER']}], 'name'),
                 ]
         }
         return null;

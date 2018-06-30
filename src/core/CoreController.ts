@@ -13,13 +13,16 @@ export abstract class CoreController<S extends CoreService<any, any>> {
     public abstract registerCotrollerName(): String;
     private app: express.Application;
 
-
     private service: S;
     private responseUtils: ResponseUtil;
 
     constructor() {
         this.responseUtils = container.getAll<ResponseUtil>(TYPES.ResponseUtil)[0];
         this.service = container.getAll<S>(TYPES[capitalizeFirstLetter(this.registerCotrollerName()) + "Service"])[0];
+    }
+
+    public getService() {
+        return this.service;
     }
 
 

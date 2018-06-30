@@ -9,7 +9,7 @@ import { WardRepository, WardRepositoryImpl } from './repository/WardRepository'
 import { WardController } from './controller/WardController';
 import { WardService, WardServiceImpl } from './service/WardService';
 import { ResponseUtil, ResponseUtilImp } from './util/ResponseUtils';
-import { MedicalRegistrationService, MedicalRegistrationServiceImpl } from './service/MedicalRegistrationService';
+import { RegistrationService, RegistrationServiceImpl } from './service/RegistrationService';
 import {Container} from 'inversify';
 import TYPES from './types';
 // import {AddressService, AddressServiceImpl} from './service/AddressService';
@@ -101,7 +101,7 @@ container.bind<RegistrableController>(TYPES.Controller).to(DiseaseCategoryContro
 
 
 container.bind<RegistrationRepository>(TYPES.RegistrationRepository).to(RegistrationRepositoryImpl);
-container.bind<MedicalRegistrationService>(TYPES.MedicalRegistrationService).to(MedicalRegistrationServiceImpl);
+container.bind<RegistrationService>(TYPES.RegistrationService).to(RegistrationServiceImpl);
 container.bind<UserRepository>(TYPES.UserRepository).to(UserRepositoryImpl);
 container.bind<UserService>(TYPES.UserService).to(UserServiceImpl);
 
