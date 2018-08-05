@@ -1,5 +1,5 @@
-import { ProvinceDto } from './../model/ProvinceDto';
-import { ProvinceRepository } from './../repository/ProvinceRepository';
+import { ProvinceDto } from '../model/ProvinceDto';
+import { ProvinceRepository } from '../repository/ProvinceRepository';
 import {injectable, inject} from 'inversify';
 import TYPES from '../types';
 import 'reflect-metadata';
@@ -21,7 +21,7 @@ export class ProvinceServiceImpl extends CoreService<ProvinceDto, any> implement
     @inject(TYPES.ProvinceRepository)
     protected mainRepository: ProvinceRepository;
 
-    public setMainRepository() {
-        return this.mainRepository;
+    public registerServiceName() {
+        return "province";
     }
 }

@@ -1,17 +1,20 @@
+import { MessageConst } from '../util/message-const';
 
 import TYPES from '../types';
 import { inject, injectable } from 'inversify';
 import container from '../inversify.config';
 import { ResponseModel, Status } from '../model/ResponseDto';
 import { CoreService } from './CoreService';
-import { ResponseUtil } from '../util/ResponseUtils';
+import { ResponseUtil } from '../util/response-utils';
 import * as express from 'express';
+import 'reflect-metadata';
 
 @injectable()
 export abstract class CoreController<S extends CoreService<any, any>> {
 
-    public abstract registerCotrollerName(): String;
+    public abstract registerCotrollerName(url?:string): String;
     private app: express.Application;
+    protected socket: any;
 
     private service: S;
     private responseUtils: ResponseUtil;
@@ -25,35 +28,50 @@ export abstract class CoreController<S extends CoreService<any, any>> {
         return this.service;
     }
 
+    public getResponseUtils() {
+        return this.responseUtils;
+    }
+
 
     public getExpressApp(): express.Application {
         return this.app;
     }
 
-    public register(_app: express.Application): void {
+    public register(_app: express.Application, io: any): void {
         this.app = _app;
-        this.app.route('/api/' + this.registerCotrollerName() + '/insertmany')
+        this.socket = io;
+        this.app.route('/api/' + this.registerCotrollerName('url') + '/insertmany')
             .post(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
                 const respone = await this.service.insertMany(req.body);
                 res.json(respone);
             })
 
-        this.app.route('/api/' + this.registerCotrollerName() + '/insert')
+        this.app.route('/api/' + this.registerCotrollerName('url') + '/insert')
             .post(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
                 const respone = await this.service.insert(req.body);
+
+                if(this.registerCotrollerName() == 'registration') {
+                    io.sockets.emit('registration', {});
+                }
+
                 res.json(respone);
             })
 
-        this.app.route('/api/' + this.registerCotrollerName() + '/delete')
-            .post(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-                var addresses = await this.service.delete(req.body).catch(err => next(err));
-                res.json(new ResponseModel<any>(Status._200, "success", addresses));
+        this.app.route('/api/' + this.registerCotrollerName('url') + '/delete')
+            .delete(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+                var addresses = await this.service.delete(req.query).catch(err => next(err));
+                res.json(new ResponseModel<any>(Status._200, "MSG_001", addresses));
             });
 
-        this.app.route('/api/' + this.registerCotrollerName() + '/update')
+        this.app.route('/api/' + this.registerCotrollerName('url') + '/update')
             .post(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
                 var addresses = await this.service.update(req.body).catch(err => next(err));
-                res.json(new ResponseModel<any>(Status._200, "success", addresses));
+                res.json(new ResponseModel<any>(Status._200, "MSG_001", addresses));
+            });
+        this.app.route('/api/' + this.registerCotrollerName('url') + '/query')
+            .post(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+                var addresses = await this.service.query(req.body).catch(err => next(err));
+                res.json(addresses);
             });
     }
 }

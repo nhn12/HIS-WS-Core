@@ -1,10 +1,10 @@
-import { CommuneSchema } from './../model/CommuneSchema';
-import { CommuneDto } from './../model/CommuneDto';
+import { CommuneSchema } from '../model/CommuneSchema';
+import { CommuneDto } from '../model/CommuneDto';
 import { injectable, inject } from 'inversify';
 import * as mongoose from 'mongoose';
 import 'reflect-metadata';
 import TYPES from '../types';
-import to from './../util/promise-utils';
+import to from '../util/promise-utils';
 import { CoreRepository } from '../core/CoreRepository';
 
 

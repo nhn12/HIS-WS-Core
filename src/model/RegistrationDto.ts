@@ -19,6 +19,10 @@ export class RegistrationDto {
     public maba: string;
     public mack: string;
     public mapk: string;
+    public ngaykb: Date;
+    public gia: Number;
+    public tenck: string;
+    public tenpk: string;
     public stt: number;
     public thanhtoan: boolean;
     public dongia: number;
@@ -31,7 +35,7 @@ export class RegistrationDto {
     // patient information
     public hoten: string;
     public namsinh: string;
-    public gioitinh: number;
+    public gioitinh: string;
     public matt: string;
     public maqh: string
     public mapx: string;
@@ -44,9 +48,9 @@ export class RegistrationDto {
     public sodt: string;
 
     // payment information
-    public has_paymnt: boolean;
-    public token_paymnt: string;
-    public date_paymnt: Date;
+    public has_payment: boolean;
+    public token_payment: string;
+    public date_payment: Date;
 
     // extra-registration
     public deleted_flag: boolean;

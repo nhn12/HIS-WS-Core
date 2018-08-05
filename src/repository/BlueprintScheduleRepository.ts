@@ -1,3 +1,4 @@
+import { MongoUtils } from './../util/mongo-utils';
 import { CounterRepository } from './CounterRepository';
 import {injectable, inject} from 'inversify';
 import * as mongoose from 'mongoose';
@@ -6,7 +7,8 @@ import { BlueprintScheduleDto } from '../model/BlueprintScheduleDto';
 import { BlueprintScheduleSchema } from '../model/BlueprintScheduleSchema';
 import 'reflect-metadata';
 import TYPES from '../types';
-import to from './../util/promise-utils';
+import to from '../util/promise-utils';
+import { CoreRepository } from '../core/CoreRepository';
 
 
 export interface BlueprintScheduleRepository {
@@ -17,55 +19,22 @@ export interface BlueprintScheduleRepository {
 }
 
 @injectable()
-export class BlueprintScheduleRepositoryImpl implements BlueprintScheduleRepository {
-    col:mongoose.Model<any>;
-
-    @inject(TYPES.CounterRepository)
-    private counterRepository: CounterRepository;
-    constructor() {
-
-        this.col = mongoose.model('blueprint_schedule_tbl', BlueprintScheduleSchema, 'blueprint_schedule_tbl' );
+export class BlueprintScheduleRepositoryImpl extends CoreRepository<BlueprintScheduleDto> implements BlueprintScheduleRepository {
+    public setPrimaryTable(): string {
+        return 'blueprint_schedule_tbl';
+    }
+    public setSchema(): mongoose.Schema {
+        return BlueprintScheduleSchema;
+    }
+    public definedIndexs() {
+        return null;
     }
 
-    public async findAll(): Promise<Array<BlueprintScheduleDto>> {
-        let data = await this.col.find({deleted_flag: false});
-        let result: BlueprintScheduleDto[] = [];
-        return Object.assign<BlueprintScheduleDto[], mongoose.Document[]>(result, data);
-    }
-
-    public async insert(obj: any[]): Promise<BlueprintScheduleDto[]> {
-        //console.log(obj);
-        var count = await this.counterRepository.getNextSequenceValue('blueprint_schedule_tbl');
-        obj[0].id = count;
-        let [err, data] = await to(this.col.insertMany(obj));
-        
-        if(err) {
-            return Promise.reject(err);
-        }
-
-        let result: BlueprintScheduleDto[] = [];
-        return Object.assign<BlueprintScheduleDto[], mongoose.Document[]>(result, data);
-    }
-
-    public async delete(obj: BlueprintScheduleDto): Promise<BlueprintScheduleDto[]> {
-        let [err, data] = await to(this.col.updateMany({id : obj.id},  { $set: { "deleted_flag" : true }}))
-        if(err) {
-            return Promise.reject(err);
-        }
-
-        let result: BlueprintScheduleDto[] = [];
-        return Object.assign<BlueprintScheduleDto[], mongoose.Document[]>(result, data);
-    }
-
-    public async update(obj: BlueprintScheduleDto): Promise<BlueprintScheduleDto[]>
-    {
-        obj.updated_date = Date.now();
-        let [err, data] = await to(this.col.updateMany({id : obj.id},  { $set:  obj }))
-        if(err) {
-            return Promise.reject(err);
-        }
-
-        let result: BlueprintScheduleDto[] = [];
-        return Object.assign<BlueprintScheduleDto[], mongoose.Document[]>(result, data);
+    protected getJoinTable(): any[] {
+        let ext = [];
+        return [
+            { $lookup: MongoUtils.generateSubQueries('ward_tbl', 'ward_id', 'id', 'ward_name', ext, null, 'name') },
+            { $lookup: MongoUtils.generateSubQueries('specialization_tbl', 'specialization_id', 'id', 'specialization_name', ext, null, 'name') },
+            ...ext];
     }
 }

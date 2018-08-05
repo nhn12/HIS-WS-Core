@@ -12,6 +12,7 @@ import { ScheduleAbsoluteDto } from './dto/ScheduleAbsoluteDto';
 import to from '../util/promise-utils';
 import { ParseUtils } from '../util/parse-utils';
 import { SyncService } from '../service/SyncService';
+import { CoreService } from '../core/CoreService';
 
 
 export interface ScheduleService {
@@ -21,29 +22,28 @@ export interface ScheduleService {
 }
 
 @injectable()
-export class ScheduleServiceImpl implements ScheduleService {
-    @inject(TYPES.ScheduleRepository)
-    private scheduleRepository: ScheduleRepository;
-    private syncService: SyncService;
-
+export class ScheduleServiceImpl extends CoreService<ScheduleDto, any> implements ScheduleService {
     @inject(TYPES.BlueprintScheduleRepository)
     private bluePrintRepository: BlueprintScheduleRepository;
 
-    public async insert(obj: any): Promise<ResponseModel<any>> {        
-        if (!obj || obj.ward_id == null || obj.start_time == null || obj.end_time == null) {
-            return new ResponseModel(Status._400, "lack of data");
+    public registerServiceName() {
+        return "schedule";
+    }
+
+
+    public async insert(obj: any): Promise<ResponseModel<any>> {
+        if (!obj  || obj.start_time == null || obj.end_time == null || !obj.hospital_id) {
+            return new ResponseModel(Status._400, "lack of ward_id data");
         }
         obj.mode = 'period';
-
         // Get list blueprint schedule
         let [errBlue, blueList] = await to<BlueprintScheduleDto[]>(this.bluePrintRepository.findAll());
         if (!blueList || blueList.length <= 0) {
-            console.log(obj);
             return new ResponseModel(Status._500, "Blueprint schedule empty");
         }
         // Split each blueprint
-        let scheduleList:ScheduleDto[] = [];
-        for(var i=0;i<blueList.length;i++){
+        let scheduleList: ScheduleDto[] = [];
+        for (let i = 0; i < blueList.length; i++) {
             let pathDate: Date[] = ParseUtils.splitDate(obj.start_time, obj.end_time);
             pathDate.forEach(date => {
                 let tempBlue = new SchedulePeriodDto();
@@ -52,44 +52,19 @@ export class ScheduleServiceImpl implements ScheduleService {
                 tempBlue.period = blueList[i].period.valueOf();
 
                 let tempSchedule = this.insertPeriod(tempBlue);
-                tempSchedule = tempSchedule.map(value=>{
+                tempSchedule = tempSchedule.map(value => {
                     value.specialization_id = blueList[i].specialization_id;
                     value.ward_id = blueList[i].ward_id;
-                    value.period = value.period.valueOf()/60000;
+                    value.period = value.period.valueOf() / 60000;
+                    value.hospital_id = obj.hospital_id;
                     return value;
                 });
 
                 scheduleList.push(...tempSchedule);
-            })
+            });
         }
-        console.log(scheduleList);
-        await this.scheduleRepository.insert(scheduleList);
-        this.Sync(scheduleList);
-        return new ResponseModel(Status._200, "success", scheduleList); 
-    }
-
-    public async delete(obj: ScheduleDto): Promise<ResponseModel<any>>{
-        if(!obj) {
-            return new ResponseModel(Status._400, "lack of data");
-        }
-        let [err, result] = await to(this.scheduleRepository.delete(obj));
-        if(err) {
-            return new ResponseModel(Status._500, "err");
-        }
-
-        return new ResponseModel(Status._200, "success", result);
-    }
-
-    public async update(obj: ScheduleDto): Promise<ResponseModel<any>> {
-        if(!obj) {
-            return new ResponseModel(Status._400, "lack of data");
-        }
-        let [err, result] = await to(this.scheduleRepository.update(obj));
-        if(err) {
-            return new ResponseModel(Status._500, "err");
-        }
-
-        return new ResponseModel(Status._200, "success", result);
+        await this.repository.insert(scheduleList);
+        return new ResponseModel(Status._200, "success", scheduleList);
     }
 
     private insertAbsolute(obj: ScheduleAbsoluteDto): ScheduleDto[] {
@@ -131,24 +106,20 @@ export class ScheduleServiceImpl implements ScheduleService {
         return schedule;
     }
 
-    public Sync(obj: any)
-    {
+    public Sync(obj: any) {
         console.log("sync");
         console.log(obj);
 
-        function groupBy( array , f )
-        {
-        var groups = {};
-        array.forEach( function( o )
-        {
-            var group = JSON.stringify( f(o) );
-            groups[group] = groups[group] || [];
-            groups[group].push( o );  
-        });
-        return Object.keys(groups).map( function( group )
-        {
-            return groups[group]; 
-        })
+        function groupBy(array, f) {
+            var groups = {};
+            array.forEach(function (o) {
+                var group = JSON.stringify(f(o));
+                groups[group] = groups[group] || [];
+                groups[group].push(o);
+            });
+            return Object.keys(groups).map(function (group) {
+                return groups[group];
+            })
         }
 
         // var result = groupBy(obj, function(item)
@@ -158,63 +129,61 @@ export class ScheduleServiceImpl implements ScheduleService {
 
         var lstItemSync = new Array();
         obj.forEach(element => {
-                var itemSync = {
-                    //"is_interval": item.is_interval,
-                    //"period": item.period,
-                    "HISRoomId": element.ward_id,
-                    "HisId": element.id,
-                    "Date": ParseUtils.convertToFormatDateSync(element.start_time),
-                    "StartTime": ParseUtils.convertToFormatTimeSync(element.start_time)
-                    //"specialization_id": item.specialization_id,                                      
-                    };
-                    lstItemSync.push(itemSync);
-        });  
-        
+            var itemSync = {
+                //"is_interval": item.is_interval,
+                //"period": item.period,
+                "HISRoomId": element.ward_id,
+                "HisId": element.id,
+                "Date": ParseUtils.convertToFormatDateSync(element.start_time),
+                "StartTime": ParseUtils.convertToFormatTimeSync(element.start_time)
+                //"specialization_id": item.specialization_id,                                      
+            };
+            lstItemSync.push(itemSync);
+        });
+
         //console.log(lstItemSync);
         // group by RoomID
-        var itemSyncGroupByRoom = groupBy(lstItemSync, function(item)
-        {
+        var itemSyncGroupByRoom = groupBy(lstItemSync, function (item) {
             return item.HISRoomId;
         });
 
         console.log(itemSyncGroupByRoom);
 
         itemSyncGroupByRoom.forEach(element => {
-                // group by Date
-                var ItemSyncGroupByDate = groupBy(element, function(item)
-                {
-                    return item.Date;
-                });
-                console.log("item");
-                console.log(ItemSyncGroupByDate);
+            // group by Date
+            var ItemSyncGroupByDate = groupBy(element, function (item) {
+                return item.Date;
+            });
+            console.log("item");
+            console.log(ItemSyncGroupByDate);
 
-                ItemSyncGroupByDate.forEach(element => {
-                    var schedulers = new Array();
-                    let No = 0; 
-                    element.forEach(item => {
-                            No = No + 1;                 
-                        var scheduler = {
-                            "HisId": item.HisId.toString(),
-                            "StartTime": item.StartTime.toString(),
-                            "No": No,
-                            };
-                            schedulers.push(scheduler);
-                    });
-                    var scheduleSyncDTO = {
-                        "HISRoomId": element[0].HISRoomId.toString(),
-                        "Date": element[0].Date.toString(),
-                        "Schedules": schedulers,
+            ItemSyncGroupByDate.forEach(element => {
+                var schedulers = new Array();
+                let No = 0;
+                element.forEach(item => {
+                    No = No + 1;
+                    var scheduler = {
+                        "HisId": item.HisId.toString(),
+                        "StartTime": item.StartTime.toString(),
+                        "No": No,
                     };
-
-                    console.log("item Sync");
-                    console.log(scheduleSyncDTO);
-                    //open comment when use sync()
-                    //this.syncService.sync(scheduleSyncDTO, "HISRoomSchedule/Create", null);
-                    
+                    schedulers.push(scheduler);
                 });
+                var scheduleSyncDTO = {
+                    "HISRoomId": element[0].HISRoomId.toString(),
+                    "Date": element[0].Date.toString(),
+                    "Schedules": schedulers,
+                };
+
+                console.log("item Sync");
+                console.log(scheduleSyncDTO);
+                //open comment when use sync()
+                //this.syncService.sync(scheduleSyncDTO, "HISRoomSchedule/Create", null);
+
+            });
         });
 
-        
+
 
     }
 

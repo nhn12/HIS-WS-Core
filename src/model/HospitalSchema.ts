@@ -4,11 +4,19 @@ import { ObjectID } from "bson";
 export var HospitalSchema: Schema = new Schema({
     id: Number,
     hispital_code: Schema.Types.ObjectId,
-    name: Date,
-
+    code: String,
+    name: String,
     address: String,
     phone: String,
     image: String,
+    status: {type: Boolean, default: true},
+
+
+    // Relationship defination
+    doctor_id: [{ type: Number, ref: 'doctor_tbl' }],
+    province_id: {type: Number, ref: 'province_tbl'},
+    commune_id: {type: Number, ref: 'commune_tbl'},
+    district_id: {type: Number, ref: 'district_tbl'},
 
     has_sync: {type: Boolean, default: false},
     //audit tbl

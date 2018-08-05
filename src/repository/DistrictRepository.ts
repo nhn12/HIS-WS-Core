@@ -1,10 +1,10 @@
-import { DistrictDto } from './../model/DistrictDto';
-import { DistrictSchema } from './../model/DistrictSchema';
+import { DistrictDto } from '../model/DistrictDto';
+import { DistrictSchema } from '../model/DistrictSchema';
 import { injectable, inject } from 'inversify';
 import * as mongoose from 'mongoose';
 import 'reflect-metadata';
 import TYPES from '../types';
-import to from './../util/promise-utils';
+import to from '../util/promise-utils';
 import { CoreRepository } from '../core/CoreRepository';
 
 

@@ -7,6 +7,7 @@ export var SchedulerSchema: Schema = new Schema({
     start_time: Date,
     end_time: Date,
     type: String,
+    hospital_id: Number,
 
     is_interval: Boolean,
     period: Number,

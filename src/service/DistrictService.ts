@@ -1,5 +1,5 @@
-import { DistrictDto } from './../model/DistrictDto';
-import { DistrictRepository } from './../repository/DistrictRepository';
+import { DistrictDto } from '../model/DistrictDto';
+import { DistrictRepository } from '../repository/DistrictRepository';
 import {injectable, inject} from 'inversify';
 import TYPES from '../types';
 import 'reflect-metadata';
@@ -21,7 +21,7 @@ export class DistrictServiceImpl extends CoreService<DistrictDto, any> implement
     @inject(TYPES.DistrictRepository)
     protected mainRepository: DistrictRepository;
 
-    public setMainRepository() {
-        return this.mainRepository;
+    public registerServiceName() {
+        return "district";
     }
 }

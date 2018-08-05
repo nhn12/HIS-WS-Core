@@ -1,12 +1,12 @@
-import { RegistrationDto } from './../model/RegistrationDto';
+import { MongoUtils } from './../util/mongo-utils';
+import { RegistrationDto } from '../model/RegistrationDto';
 import { injectable, inject } from 'inversify';
 import TYPES from '../types';
 import { CounterRepository } from './CounterRepository';
 import { ResponseModel, Status } from '../model/ResponseDto';
 import * as mongoose from 'mongoose';
-import to from './../util/promise-utils';
+import to from '../util/promise-utils';
 import { RegistrationSchema } from '../model/RegistrationSchema';
-import { SchedulerSchema } from '../model/ScheduleSchema';
 import { CoreRepository } from '../core/CoreRepository';
 
 
@@ -31,5 +31,13 @@ export class RegistrationRepositoryImpl extends CoreRepository<RegistrationDto> 
 
     public definedIndexs() {
         return ["name"];
+    }
+
+    protected getJoinTable(): any[] {
+        let ext = [];
+        return [
+            { $lookup: MongoUtils.generateSubQueries('type_tbl', 'gioitinh', 'code', 'gender_name', ext, [{ $eq: ['$class', 'GENDER_TYPE'] }], 'name') },
+            { $lookup: MongoUtils.generateSubQueries('specialization_tbl', 'mack', 'id', 'specialization_name', ext, null, 'name') },
+            ...ext];
     }
 }

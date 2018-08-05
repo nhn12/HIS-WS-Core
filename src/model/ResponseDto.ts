@@ -1,3 +1,5 @@
+import { MessageConst } from "../util/message-const";
+
 export enum Status {
     _500,
     _400,
@@ -16,15 +18,21 @@ export const STATUS_NAME = new Map<number, string>([
     [Status._1, "1"]
 ])
 
+export class MessageContentModel {
+    messageCode: string;
+    message: string;
+}
+
 export class ResponseModel<T> {
     public status: string;
-    public message: string;
+    public message: MessageContentModel = new MessageContentModel();
     public data: any;
     
-    public constructor(_status: Status, _message: string, data?: T)
+    public constructor(_status: Status, _messageCode: string, data?: T)
     {
         this.status = STATUS_NAME.get(_status);
-        this.message = _message;
+        this.message.messageCode = _messageCode;        
+        this.message.message = MessageConst[_messageCode];
         this.data = data;
     }
 

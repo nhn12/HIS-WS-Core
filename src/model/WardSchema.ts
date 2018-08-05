@@ -6,7 +6,7 @@ export var WardSchema: Schema = new Schema({
     ward_code: {type: Schema.Types.ObjectId, index: true, required: true, auto: true,},
     name: String,
     specialization_id: {type: Number, ref: 'specialization_tbl'},
-    hospital_id:Number,
+    hospital_id: {type: Number, required: true},
 
     has_sync: {type: Boolean, default: false},
     //audit tbl

@@ -1,4 +1,4 @@
-import { CounterRepository } from './../repository/CounterRepository';
+import { CounterRepository } from '../repository/CounterRepository';
 import * as mongoose from 'mongoose';
 import { Schema, Collection } from 'mongoose';
 import to from '../util/promise-utils';
@@ -25,10 +25,11 @@ export abstract class CoreRepository<D> {
     public async query(filter: any, sort: any, skip: number, limit: number, ext?: any): Promise<QueryResultDto> {
         let objFilter = [];
 
+        console.log(filter);
+
         let onlyFilter = [];
         if (filter) {
             this.replaceRegrex(filter);
-            console.log(JSON.stringify(filter));
             objFilter.push({ $match: filter });
             onlyFilter.push({ $match: filter });
         }
@@ -56,10 +57,20 @@ export abstract class CoreRepository<D> {
             }
         }]
 
-
-    //    console.log(JSON.stringify(aggre));
-
         return <any>this.col.aggregate(aggre);
+    }
+
+    public async findBy(obj: any, sort?: any) {
+        if(!sort) {
+            sort = {updated_date: -1}
+        }
+        let [error, response] = await to(this.col.find(obj).sort(sort));
+
+        if(error) {
+            return Promise.reject(error);
+        }
+
+        return response;
     }
 
     protected getJoinTable(): any[] {
@@ -118,7 +129,11 @@ export abstract class CoreRepository<D> {
             return Promise.reject(err);
         }
 
-        return response;
+        if(!response) {
+            return null;
+        }
+
+        return response.toObject({ getters: true });
     }
 
     public async findAll(): Promise<Array<D>> {
@@ -188,5 +203,9 @@ export abstract class CoreRepository<D> {
         }
 
         return data;
+    }
+
+    public getCollection(): mongoose.Model<any> {
+        return this.col;
     }
 }

@@ -11,14 +11,11 @@ const TYPES = {
     UserRepository: Symbol('UserRepository'),
     UserService: Symbol('UserService'),
 
-    //schedule
-    ScheduleRepository:Symbol("ScheduleRepository"),
-    ScheduleService:Symbol("ScheduleService"),
+    ScheduleService: Symbol('ScheduleService'),
+    BlueprintScheduleService: Symbol('BlueprintScheduleService'),
 
-    
-    //schedule
-    BlueprintScheduleRepository:Symbol("BlueprintScheduleRepository"),
-    BlueprintScheduleService:Symbol("BlueprintScheduleService"),
+    ScheduleRepository: Symbol('ScheduleRepository'),
+    BlueprintScheduleRepository: Symbol('BlueprintScheduleRepository'),
 
     //ward
     WardRepository:Symbol("WardRepository"),
@@ -52,38 +49,6 @@ const TYPES = {
     CommuneRepository:Symbol("CommuneRepository"),
     CommuneService:Symbol("CommuneService"),
 
-    //ReasonCategory
-    ReasonCategoryRepository:Symbol("ReasonCategoryRepository"),
-    ReasonCategoryService:Symbol("ReasonCategoryService"),
-
-    //ReasonCategory
-    DiseaseCategoryRepository:Symbol("DiseaseCategoryRepository"),
-    DiseaseCategoryService:Symbol("DiseaseCategoryService"),
-
-    //XutriCategory
-    XutriCategoryRepository:Symbol("XutriCategoryRepository"),
-    XutriCategoryService:Symbol("XutriCategoryService"),
-
-    //XutriCategory
-    TongquatCategoryRepository:Symbol("TongquatCategoryRepository"),
-    TongquatCategoryService:Symbol("TongquatCategoryService"),
-
-    //XutriCategory
-    TrieuchungCategoryRepository:Symbol("TrieuchungCategoryRepository"),
-    TrieuchungCategoryService:Symbol("TrieuchungCategoryService"),
-
-    //XutriCategory
-    IcdCategoryRepository:Symbol("IcdCategoryRepository"),
-    IcdCategoryService:Symbol("IcdCategoryService"),
-
-    //XutriCategory
-    TiencanCategoryRepository:Symbol("TiencanCategoryRepository"),
-    TiencanCategoryService:Symbol("TiencanCategoryService"),
-
-    //XutriCategory
-    CacBoPhanCategoryRepository:Symbol("CacBoPhanCategoryRepository"),
-    CacBoPhanCategoryService:Symbol("CacBoPhanCategoryService"),
-
     //Doctor
     DoctorService: Symbol("DoctorService"),
     DoctorRepository: Symbol("DoctorRepository"),
@@ -91,6 +56,26 @@ const TYPES = {
     //Log
     LogService: Symbol("LogService"),
     LogRepository: Symbol("LogRepository"),
+
+    //Hospital
+    HospitalService: Symbol("HospitalService"),
+    HospitalRepository: Symbol("HospitalRepository"),
+
+    //Operation
+    OperationService: Symbol("OperationService"),
+    OperationRepository: Symbol("OperationRepository"),
+
+    //Staff
+    StaffService: Symbol("StaffService"),
+    StaffRepository: Symbol("StaffRepository"),
+
+    //Staff
+    StaffAccountService: Symbol("StaffAccountService"),
+    StaffAccountRepository: Symbol("StaffAccountRepository"),
+
+    //Role
+    RoleService: Symbol("RoleService"),
+    RoleRepository: Symbol("RoleRepository"),
     
     //utils section
     ResponseUtil: Symbol('ResponseUtil'),

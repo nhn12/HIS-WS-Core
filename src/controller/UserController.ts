@@ -1,11 +1,12 @@
-import { ParseUtils } from './../util/parse-utils';
+import { MessageConst } from '../util/message-const';
+import { ParseUtils } from '../util/parse-utils';
 import * as express from 'express';
 import { injectable, inject } from 'inversify';
 import TYPES from '../types';
 import 'reflect-metadata';
 import { UserService } from '../service/UserService';
 import { RegistrableController } from './RegisterableController';
-import { ResponseUtil } from '../util/ResponseUtils';
+import { ResponseUtil } from '../util/response-utils';
 import { ResponseModel, Status } from '../model/ResponseDto';
 import { UserDto } from '../model/UserDto';
 import * as jsonwebtoken from 'jsonwebtoken';
@@ -36,33 +37,28 @@ export class UserController implements RegistrableController {
                     if (!result) {
                         res.json(this.responseUtils.buildAuthenticationFailed());
                     }
-                    res.json(new ResponseModel(Status._200, "Login sucess", { token: jsonwebtoken.sign({ username: result.username, fullname: result.fullname, created: result.created }, config.KEY_ENCRYPTION) }));
+                    res.json(new ResponseModel(Status._200, "MSG_001", result));
                 }).catch(err => {
                     res.json(this.responseUtils.buildAuthenticationFailed());
                 });
             });
 
-        app.route('/api/test')
-            .post(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-                io.emit("message", {a: ""});
-            });
-
         app.route('/api/register')
             .post(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
                 var addresses = await this.userService.register(req.body).catch(err => next(err));
-                res.json(new ResponseModel<any>(Status._200, "success", addresses));
+                res.json(new ResponseModel<any>(Status._200, "MSG_001", addresses));
             });
 
         app.route('/api/user/update')
             .post(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
                 var addresses = await this.userService.update(req.body).catch(err => next(err));
-                res.json(new ResponseModel<any>(Status._200, "success", addresses));
+                res.json(new ResponseModel<any>(Status._200, "MSG_001", addresses));
             });
 
         app.route('/api/user/delete')
             .post(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
                 var addresses = await this.userService.delete(req.body).catch(err => next(err));
-                res.json(new ResponseModel<any>(Status._200, "success", addresses));
+                res.json(new ResponseModel<any>(Status._200, "MSG_001", addresses));
             });
 
         app.route("/api/loginRequired")

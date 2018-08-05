@@ -1,10 +1,10 @@
-import { UserSchema } from './../model/UserModel';
+import { UserSchema } from '../model/UserModel';
 import { injectable, inject } from 'inversify';
 import * as mongoose from 'mongoose';
 import { CounterRepository } from './CounterRepository';
 import { RegistrationDto } from '../model/RegistrationDto';
 import TYPES from '../types';
-import to from './../util/promise-utils';
+import to from '../util/promise-utils';
 import { UserDto } from '../model/UserDto';
 import * as bcrypt from 'bcrypt';
 import config from '../../config/config';

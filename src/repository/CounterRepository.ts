@@ -1,6 +1,6 @@
-import { CounterSchema } from './../model/CounterSchema';
-import { WardSchema } from './../model/WardSchema';
-import { WardDto } from './../model/WardDto';
+import { CounterSchema } from '../model/CounterSchema';
+import { WardSchema } from '../model/WardSchema';
+import { WardDto } from '../model/WardDto';
 import { injectable, inject } from 'inversify';
 import * as mongoose from 'mongoose';
 import 'reflect-metadata';

@@ -1,143 +1,75 @@
-import { RegistrationRepository } from './../repository/RegistrationRepository';
-import {injectable, inject} from 'inversify';
-import TYPES from '../types';
+import { CounterRepository } from './../repository/CounterRepository';
+import { ScheduleDto } from './../model/ScheduleDto';
+import { ScheduleRepository } from './../repository/ScheduleRepository';
+import { inject } from 'inversify';
+import { injectable } from 'inversify';
 import 'reflect-metadata';
-import { ScheduleRepository } from '../repository/ScheduleRepository';
 import { RegistrationDto } from '../model/RegistrationDto';
-import { ResponseModel, Status, STATUS_NAME } from '../model/ResponseDto';
-import  to  from '../util/promise-utils';
+import { ResponseModel, Status } from '../model/ResponseDto';
 import { CoreService } from '../core/CoreService';
-import { CounterRepository } from '../repository/CounterRepository';
-import { STATUS_CODES } from 'http';
+import TYPES from '../types';
+import { ResponseUtil } from '../util/response-utils';
 
 export interface RegistrationService {
     insert(obj: RegistrationDto): Promise<ResponseModel<any>>;
-    getone(id: string): Promise<ResponseModel<any>>
     delete(obj: RegistrationDto): Promise<ResponseModel<any>>;
     update(obj: RegistrationDto): Promise<ResponseModel<any>>;
-    getBaNumber(): Promise<ResponseModel<string>>;
-    getCvNumber(): Promise<ResponseModel<string>>;
+    query(obj: any): Promise<ResponseModel<any>>;
 }
 
 @injectable()
 export class RegistrationServiceImpl extends CoreService<RegistrationDto, any> implements RegistrationService {
-    @inject(TYPES.RegistrationRepository)
-    private registrationRepo: RegistrationRepository;
+    @inject(TYPES.ScheduleRepository)
+    protected scheduleRepo: ScheduleRepository;
 
     @inject(TYPES.CounterRepository)
-    private counterRpository: CounterRepository;
+    protected countRepo: CounterRepository;
 
-    @inject(TYPES.ScheduleRepository)
-    private scheduleRepository: ScheduleRepository;
-
-    public setMainRepository() {
-        return this.registrationRepo;
-    }
-
-    public async getone(id: any) {
-        let [err, response] = await to(this.registrationRepo.findOneBy({madkkb: id}));
-        if(err) {
-            return new ResponseModel(Status._500, err);
-        }
-
-        return response;
-    }
-
-    public async getBaNumber(): Promise<ResponseModel<string>> {
-        let [err, response] = await to(this.counterRpository.getNextSequenceValue("BA", 1));
-
-        if(err) {
-            return Promise.reject(err);
-        }
-
-        response+='';
-
-        while(response.length < 5) {
-            response = '0' + response;
-        }
-
-        response = 'BA' + response;
-
-        return  new ResponseModel(Status._200, "Read success", response);
-    }
-
-    async getCvNumber(): Promise<ResponseModel<string>> {
-        let [err, response] = await to(this.counterRpository.getNextSequenceValue("CV", 1));
-
-        if(err) {
-            return Promise.reject(err);
-        }
-
-        response+='';
-
-        while(response.length < 5) {
-            response = '0' + response;
-        }
-
-        response = 'CV' + response;
-
-        return  new ResponseModel(Status._200, "Read success", response);
+    public registerServiceName() {
+        return "registration";
     }
 
     public async insert(obj: RegistrationDto) {
-        obj.deleted_flag = false;
-        obj.created_date = new Date();
-        return super.insert(obj);
-    }
 
-
-    // public async insert(obj: RegistrationDto): Promise<ResponseModel<any>> {
-    //         let await to(this.registrationRepo.insert([obj]));
-    //         // obj.created_date = obj.updated_date =  Date.now();
-    //         // obj.deleted_flag = false;
-    //         // //obj.mabv = mabv;
-
-    //         // let [errSchedule, dataSchedule] = await to(this.scheduleRepository.findOneBy(obj.malichkb.toString()));
-    //         // if(errSchedule) {
-    //         //     return new ResponseModel(Status._500, JSON.stringify(errSchedule), null);
-    //         // }
-
-            
-    //         // if(dataSchedule && dataSchedule.length <= 0 && dataSchedule[0].reserve == false)
-    //         // {
-    //         //     dataSchedule[0].reserve = true;
-    //         //     console.log(dataSchedule[0]);
-    //         //     let [err, result] = await to(this.scheduleRepository.update(dataSchedule[0]));
-    //         //     if(err) 
-    //         //     {
-    //         //         return new ResponseModel(Status._500, "err");
-    //         //     }
-    //         //     else
-    //         //     {
-    //         //         const [errRegis, response] = await to(super.insert(obj));
-    //         //         if(errRegis) {
-    //         //             return new ResponseModel(Status._500, JSON.stringify(errRegis));
-    //         //         }
-    
-    //         //         if(response) {
-    //         //             return new ResponseModel(Status._200, response[0]);
-    //         //         }
-    //         //     }
-    //         // }
-    //         // else
-    //         // {
-    //         //     return new ResponseModel(Status._200, "Implement later");
-    //         //     //to do find scheduler 
-    //         // }
-            
-            
-    // }
-
-    public async delete(obj: RegistrationDto): Promise<ResponseModel<any>>{
-        if(!obj) {
-            return new ResponseModel(Status._400, "lack of data");
+        if (!obj || !obj.mabv || !obj.mack) {
+            return this.responseUtils.buildErrorData('ERR_001');
         }
-        let [err, result] = await to(this.registrationRepo.delete(obj));
-        if(err) {
-            return new ResponseModel(Status._500, "err");
+        let response = await this.scheduleRepo.query({
+            $and: [
+                { specialization_id: parseInt(obj.mack) },
+                { hospital_id: parseInt(obj.mabv) },
+                { deleted_flag: false },
+                { reserve: false }
+            ]
+        }, { start_time: 1 }, 0, 10, {});
+        obj["_id"] = obj["_rev"] = undefined;
+        let count = await this.countRepo.getNextSequenceValue("idservice");
+        if (response[0].data.length <= 0) {
+            obj.is_accept = false;
+            obj.is_bvcancel = true;
+            let registation: ResponseModel<RegistrationDto> = await super.insert(obj);
+            registation.data[0].iddkkb = registation.data[0].id;
+            registation.data[0].lidotuchoi = "Xin lỗi. Hệ thống không tìm thấy lịch khám phù hợp.";
+            return new ResponseModel(Status._200, null, { action: 'rj', idservice: count, data: registation.data[0] });
         }
 
-        return new ResponseModel(Status._200, "success", result);
-    }
+        obj.tenpk = response[0].data[0].ward_name;
+        obj.tenck = response[0].data[0].specialization_name;
+        obj.ngaykb = response[0].data[0].start_time;
+        obj.gia = 200000;
+        obj.stt = 20;
+        obj.is_accept = true;
+        obj.is_bvcancel = false;
+        obj.malichkb = response[0].data[0].id;
 
+
+        let registation: ResponseModel<RegistrationDto> = await super.insert(obj);
+
+        registation.data[0].iddkkb = registation.data[0].id;
+        let schedule = new ScheduleDto();
+        schedule.id = response[0].data[0].id;
+        schedule.reserve = true;
+        await this.scheduleRepo.update(schedule);
+        return new ResponseModel(Status._200, null, { action: '02', idservice: count, data: registation.data[0] });
+    }
 }

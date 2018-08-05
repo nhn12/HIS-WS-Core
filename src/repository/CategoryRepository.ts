@@ -1,7 +1,5 @@
 import { injectable } from 'inversify';
 import * as mongoose from 'mongoose';
-import to from '../util/promise-utils';
-import container from '../inversify.config';
 
 
 export interface CategoryRepository {

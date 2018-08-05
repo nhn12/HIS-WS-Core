@@ -2,7 +2,7 @@ import * as express from 'express';
 import { injectable, inject } from 'inversify';
 import TYPES from '../types';
 import { RegistrableController } from './RegisterableController';
-import { ResponseUtil } from '../util/ResponseUtils';
+import { ResponseUtil } from '../util/response-utils';
 import { Status } from '../model/ResponseDto';
 import { CategoryService } from '../service/CategoryService';
 import to from '../util/promise-utils'

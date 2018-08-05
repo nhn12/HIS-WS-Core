@@ -1,11 +1,11 @@
 import { CounterRepository } from './CounterRepository';
-import { SpecializationPriceSchema } from './../model/SpecializationPriceSchema';
-import { SpecializationPriceDto } from './../model/SpecializationPriceDto';
+import { SpecializationPriceSchema } from '../model/SpecializationPriceSchema';
+import { SpecializationPriceDto } from '../model/SpecializationPriceDto';
 import { injectable, inject } from 'inversify';
 import * as mongoose from 'mongoose';
 import 'reflect-metadata';
 import TYPES from '../types';
-import to from './../util/promise-utils';
+import to from '../util/promise-utils';
 import { CoreRepository } from '../core/CoreRepository';
 
 

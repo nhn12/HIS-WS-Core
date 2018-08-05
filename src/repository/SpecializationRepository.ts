@@ -1,11 +1,11 @@
 import { CounterRepository } from './CounterRepository';
-import { SpecializationSchema } from './../model/SpecializationSchema';
-import { SpecializationDto } from './../model/SpecializationDto';
+import { SpecializationSchema } from '../model/SpecializationSchema';
+import { SpecializationDto } from '../model/SpecializationDto';
 import { injectable, inject } from 'inversify';
 import * as mongoose from 'mongoose';
 import 'reflect-metadata';
 import TYPES from '../types';
-import to from './../util/promise-utils';
+import to from '../util/promise-utils';
 import { CoreRepository } from '../core/CoreRepository';
 
 export interface SpecializationRepository {
@@ -23,6 +23,7 @@ export class SpecializationRepositoryImpl extends CoreRepository<SpecializationD
     public setSchema(): mongoose.Schema {
         return SpecializationSchema;
     }
+    
 
     public definedIndexs() {
         return ["name"];

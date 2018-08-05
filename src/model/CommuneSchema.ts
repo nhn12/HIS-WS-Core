@@ -4,7 +4,7 @@ export var CommuneSchema: Schema = new Schema({
     id: Number,
     code: String,
     name: String,
-    district_id: Number,
+    district_id: {type: Number, ref: "district_tbl"},
     district_code: String,
     
     has_sync: { type: Boolean, default: false },

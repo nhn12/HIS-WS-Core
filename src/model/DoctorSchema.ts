@@ -1,5 +1,4 @@
 import { Schema } from "mongoose";
-import { ObjectID } from "bson";
 
 export var DoctorSchema: Schema = new Schema({
     id: Number,
@@ -9,16 +8,15 @@ export var DoctorSchema: Schema = new Schema({
     lastname: String,
     gender: String,
     birthday: String,
-
     address: String,
     province_id: Number,
     district_id: Number,
     commune_id: Number,
-
     specialization_id: Number,
-
+    hospital_id: [{ type: Number, ref: 'hospital_tbl' }],
 
     has_sync: {type: Boolean, default: false},
+
     //audit tbl
     created_by: String,
     created_date: {type: Date, default: Date.now},

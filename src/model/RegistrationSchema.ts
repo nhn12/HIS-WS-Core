@@ -1,7 +1,7 @@
 import { Schema } from "mongoose";
 
 export var RegistrationSchema: Schema = new Schema({
-      id: Number,
+      id: {type: Number, unique: true},
       ngaydkkb: Date,
       mabv: String,
 
@@ -21,6 +21,8 @@ export var RegistrationSchema: Schema = new Schema({
       maba: String,
       mack: String,
       mapk: String,
+      tenck: String,
+      tenpk: String,
       stt: Number,
       thanhtoan: Boolean,
       dongia: Number,
@@ -33,7 +35,7 @@ export var RegistrationSchema: Schema = new Schema({
     // patient information
       hoten: String,
       namsinh: String,
-      gioitinh: Number,
+      gioitinh: String,
       matt: String,
       maqh: String,
       mapx: String,

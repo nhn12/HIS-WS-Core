@@ -3,12 +3,13 @@ export class ScheduleDto {
     public schedule_code: String;
     public start_time: Date;
     public end_time: Date;
+    public hospital_id: number;
 
     public is_interval: boolean; //create interval
     public period: Number;
 
     public type: String;
-    public reserve: {type: Boolean; default: false};
+    public reserve: Boolean;//{type: Boolean; default: false};
     public channel: String;
     public relational_code: string;
     public relational_name: string;

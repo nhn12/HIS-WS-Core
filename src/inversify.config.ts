@@ -1,88 +1,77 @@
+import { BlueprintScheduleRepository, BlueprintScheduleRepositoryImpl } from './repository/BlueprintScheduleRepository';
+import { ScheduleRepositoryImpl } from './repository/ScheduleRepository';
+import { ScheduleRepository } from './repository/ScheduleRepository';
+import { ScheduleService, ScheduleServiceImpl } from './service/ScheduleService';
+import { BlueprintScheduleService, BlueprintScheduleServiceImpl } from './service/BlueprintScheduleService';
+import { ScheduleController } from './controller/ScheduleController';
+import { BlueprintScheduleController } from './controller/BlueprintScheduleController';
+import { StaffAccountRepositoryImpl, StaffAccountRepository } from './repository/StaffAccountRepository';
+import { StaffAccountService, StaffAccountServiceImpl } from './service/StaffAccountService';
+import { StaffAccountController } from './controller/StaffAccountController';
+import { OperationController } from './controller/OperationControler';
+import { HospitalController } from './controller/HospitalController';
+import { StaffController } from './controller/StaffController';
+import { RoleController } from './controller/RoleController';
+import { OperationRepository, OperationRepositoryImpl } from './repository/OperationRepository';
+import { HospitalService, HospitalServiceImpl } from './service/HospitalService';
+import { OperationService, OperationServiceImpl } from './service/OperationService';
+import { HospitalRepository, HospitalRepositoryImpl } from './repository/HospitalRepository';
+import { RoleService, RoleServiceImpl } from './service/RoleRepository';
+import { StaffRepository, StaffRepositoryImpl } from './repository/StaffRepository';
+import { StaffService, StaffServiceImpl } from './service/StaffService';
 import { DoctorController } from './controller/DoctorController';
+import { CommuneController } from './controller/CommuneController';
+import { DistrictController } from './controller/DistrictController';
+import { SpecializationPriceController } from './controller/SpecializationPriceController';
+import { ProvinceController } from './controller/ProvinceController';
+import { SpecializationController } from './controller/SpecializationController';
+import { WardController } from './controller/WardController';
+import { TypeController } from './controller/TypeController';
 import { DoctorRepository, DoctorRepositoryImpl } from './repository/DoctorRepository';
 import { SyncService, SyncServiceImpl } from './service/SyncService';
-import { BlueprintScheduleRepository, BlueprintScheduleRepositoryImpl } from './repository/BlueprintScheduleRepository';
 import { SpecializationRepositoryImpl, SpecializationRepository } from './repository/SpecializationRepository';
 import { SpecializationServiceImpl, SpecializationService } from './service/SpecializationService';
 import { CounterRepository, CounterRepositoryImpl } from './repository/CounterRepository';
 import { WardRepository, WardRepositoryImpl } from './repository/WardRepository';
-import { WardController } from './controller/WardController';
 import { WardService, WardServiceImpl } from './service/WardService';
-import { ResponseUtil, ResponseUtilImp } from './util/ResponseUtils';
+import { ResponseUtil, ResponseUtilImp } from './util/response-utils';
 import { RegistrationService, RegistrationServiceImpl } from './service/RegistrationService';
 import {Container} from 'inversify';
 import TYPES from './types';
-// import {AddressService, AddressServiceImpl} from './service/AddressService';
-// import {AddressRepository, AddressRepositoryImplMongo, AddressRepositoryImplDb} from './repository/AddressRepository';
-import {RegistrableController} from './controller/RegisterableController';
 import { RegistrationRepositoryImpl, RegistrationRepository } from './repository/RegistrationRepository';
-import { MedicalRegistrationController } from './controller/MedicalRegistrationController';
-import { UserController } from './controller/UserController';
 import { UserService, UserServiceImpl } from './service/UserService';
 import { UserRepository, UserRepositoryImpl } from './repository/UserRepository';
 import { CategoryRepository, CategoryRepositoryImpl } from './repository/CategoryRepository';
 import { CategoryService, CategoryServiceImpl } from './service/CategoryService';
-import { CategoryController } from './controller/CategoryController';
-import { ScheduleRepository, ScheduleRepositoryImpl } from './repository/ScheduleRepository';
-import { ScheduleService, ScheduleServiceImpl } from './service/ScheduleService';
-import { ScheduleController } from './controller/ScheduleController';
-import { SpecializationController } from './controller/SpecializationController';
-import { BlueprintScheduleService, BlueprintScheduleServiceImpl } from './service/BlueprintScheduleService';
-import { BlueprintScheduleController } from './controller/BlueprintScheduleController';
 import { SpecializationPriceServiceImpl, SpecializationPriceService } from './service/SpecializationPriceService';
 import { SpecializationPriceRepository, SpecializationPriceRepositoryImpl } from './repository/SpecializationPriceRepository';
-import { SpecializationPriceController } from './controller/SpecializationPriceController';
 import { TypeService, TypeServiceImpl } from './service/TypeService';
 import { TypeRepository, TypeRepositoryImpl } from './repository/TypeRepository';
-import { TypeController } from './controller/TypeController';
 import { ConfigService, ConfigServiceImpl } from './service/ConfigService';
 import { ConfigRepository, ConfigRepositoryImpl } from './repository/ConfigRepository';
-import { ConfigController } from './controller/ConfigController';
 import { ProvinceService, ProvinceServiceImpl } from './service/ProvinceService';
 import { ProvinceRepository, ProvinceRepositoryImpl } from './repository/ProvinceRepository';
-import { ProvinceController } from './controller/ProvinceController';
 import { DistrictService, DistrictServiceImpl } from './service/DistrictService';
 import { DistrictRepository, DistrictRepositoryImpl } from './repository/DistrictRepository';
-import { DistrictController } from './controller/DistrictController';
 import { CommuneService, CommuneServiceImpl } from './service/CommuneService';
 import { CommuneRepository, CommuneRepositoryImpl } from './repository/CommuneRepository';
-import { CommuneController } from './controller/CommuneController';
 import { DoctorService, DoctorServiceImpl } from './service/DoctorService';
 import { LogRepositoryImpl, LogRepository } from './repository/LogRepository';
-import { ReasonCategoryController } from './controller/ReasonIllCategoryController';
-import { ReasonCategoryRepositoryImpl, ReasonCategoryRepository } from './repository/ReasonCategoryRepository';
-import { ReasonCategoryServiceImpl, ReasonCategoryService } from './service/ReasonCategoryService';
-import { IcdCategoryController } from './controller/IcdCategoryController';
-import { XutriCategoryController } from './controller/XutriCategoryController';
-import { TiencanCategoryController } from './controller/TiencanCategoryController';
-import { TongquatCategoryController } from './controller/TongquatCategoryController';
-import { TrieuchungCategoryController } from './controller/TrieuchungCategoryController';
-import { DiseaseCategoryController } from './controller/DiseaseCategoryController';
-import { IcdCategoryService, IcdCategoryServiceImpl } from './service/IcdCategoryService';
-import { IcdCategoryRepository, IcdCategoryRepositoryImpl } from './repository/IcdCategoryRepository';
-import { TrieuchungCategoryService, TrieuchungCategoryServiceImpl } from './service/TrieuchungCategoryService';
-import { TrieuchungCategoryRepository, TrieuchungCategoryRepositoryImpl } from './repository/TrieuchungCategoryRepository';
-import { TiencanCategoryRepository, TiencanCategoryRepositoryImpl } from './repository/TiencanCategoryRepository';
-import { TiencanCategoryService, TiencanCategoryServiceImpl } from './service/TiencanCategoryService';
-import { DiseaseCategoryService, DiseaseCategoryServiceImpl } from './service/DiseaseCategoryService';
-import { DiseaseCategoryRepositoryImpl, DiseaseCategoryRepository } from './repository/DiseaseCategoryRepository';
-import { XutriCategoryService } from './service/XutriCategoryService';
-import { XutriCategoryRepository, XutriCategoryRepositoryImpl } from './repository/XutriCategoryRepository';
-import { TongquatCategoryService, TongquatCategoryServiceImpl } from './service/TongquatCategoryService';
-import { TongquatCategoryRepository, TongquatCategoryRepositoryImpl } from './repository/TongquatCategoryRepository';
-import { CacBoPhanCategoryController } from './controller/CacBoPhanCategoryController';
-import { CacBoPhanCategoryService, CacBoPhanCategoryServiceImpl } from './service/CacBoPhanCategoryService';
-import { CacBoPhanCategoryRepository, CacBoPhanCategoryRepositoryImpl } from './repository/CacBoPhanCategoryRepository';
+import { RegistrableController } from './controller/RegisterableController';
+import { MedicalRegistrationController } from './controller/MedicalRegistrationController';
+import { UserController } from './controller/UserController';
+import { CategoryController } from './controller/CategoryController';
+import { ConfigController } from './controller/ConfigController';
+import { RoleRepository, RoleRepositoryImpl } from './repository/RoleRepository';
 
 const container = new Container();
 container.bind<RegistrableController>(TYPES.Controller).to(MedicalRegistrationController);
-container.bind<RegistrableController>(TYPES.Controller).to(CacBoPhanCategoryController);
+container.bind<RegistrableController>(TYPES.Controller).to(BlueprintScheduleController);
+container.bind<RegistrableController>(TYPES.Controller).to(ScheduleController);
 container.bind<RegistrableController>(TYPES.Controller).to(UserController);
 container.bind<RegistrableController>(TYPES.Controller).to(CategoryController);
-container.bind<RegistrableController>(TYPES.Controller).to(ScheduleController);
 container.bind<RegistrableController>(TYPES.Controller).to(WardController);
 container.bind<RegistrableController>(TYPES.Controller).to(SpecializationController);
-container.bind<RegistrableController>(TYPES.Controller).to(BlueprintScheduleController);
 container.bind<RegistrableController>(TYPES.Controller).to(SpecializationPriceController);
 container.bind<RegistrableController>(TYPES.Controller).to(TypeController);
 container.bind<RegistrableController>(TYPES.Controller).to(ConfigController);
@@ -90,65 +79,19 @@ container.bind<RegistrableController>(TYPES.Controller).to(ProvinceController);
 container.bind<RegistrableController>(TYPES.Controller).to(DistrictController);
 container.bind<RegistrableController>(TYPES.Controller).to(CommuneController);
 container.bind<RegistrableController>(TYPES.Controller).to(DoctorController);
-container.bind<RegistrableController>(TYPES.Controller).to(ReasonCategoryController);
-container.bind<RegistrableController>(TYPES.Controller).to(IcdCategoryController);
-container.bind<RegistrableController>(TYPES.Controller).to(XutriCategoryController);
-container.bind<RegistrableController>(TYPES.Controller).to(TiencanCategoryController);
-container.bind<RegistrableController>(TYPES.Controller).to(TongquatCategoryController);
-container.bind<RegistrableController>(TYPES.Controller).to(TrieuchungCategoryController);
-container.bind<RegistrableController>(TYPES.Controller).to(DiseaseCategoryController);
-
-
-
+container.bind<RegistrableController>(TYPES.Controller).to(RoleController);
+container.bind<RegistrableController>(TYPES.Controller).to(StaffController);
+container.bind<RegistrableController>(TYPES.Controller).to(StaffAccountController);
+container.bind<RegistrableController>(TYPES.Controller).to(HospitalController);
+container.bind<RegistrableController>(TYPES.Controller).to(OperationController);
 container.bind<RegistrationRepository>(TYPES.RegistrationRepository).to(RegistrationRepositoryImpl);
 container.bind<RegistrationService>(TYPES.RegistrationService).to(RegistrationServiceImpl);
 container.bind<UserRepository>(TYPES.UserRepository).to(UserRepositoryImpl);
 container.bind<UserService>(TYPES.UserService).to(UserServiceImpl);
 
-
 //category section
 container.bind<CategoryRepository>(TYPES.CategoryRepository).to(CategoryRepositoryImpl);
 container.bind<CategoryService>(TYPES.CategoryService).to(CategoryServiceImpl);
-
-//category section
-container.bind<ReasonCategoryRepository>(TYPES.ReasonCategoryRepository).to(ReasonCategoryRepositoryImpl);
-container.bind<ReasonCategoryService>(TYPES.ReasonCategoryService).to(ReasonCategoryServiceImpl);
-
-//category section
-container.bind<IcdCategoryService>(TYPES.IcdCategoryService).to(IcdCategoryServiceImpl);
-container.bind<IcdCategoryRepository>(TYPES.IcdCategoryRepository).to(IcdCategoryRepositoryImpl);
-
-//category section
-container.bind<TrieuchungCategoryService>(TYPES.TrieuchungCategoryService).to(TrieuchungCategoryServiceImpl);
-container.bind<TrieuchungCategoryRepository>(TYPES.TrieuchungCategoryRepository).to(TrieuchungCategoryRepositoryImpl);
-
-//category section
-container.bind<TiencanCategoryRepository>(TYPES.TiencanCategoryRepository).to(TiencanCategoryRepositoryImpl);
-container.bind<TiencanCategoryService>(TYPES.TiencanCategoryService).to(TiencanCategoryServiceImpl);
-
-//category section
-container.bind<DiseaseCategoryService>(TYPES.DiseaseCategoryService).to(DiseaseCategoryServiceImpl);
-container.bind<DiseaseCategoryRepository>(TYPES.DiseaseCategoryRepository).to(DiseaseCategoryRepositoryImpl);
-
-//category section
-container.bind<XutriCategoryService>(TYPES.XutriCategoryService).to(DiseaseCategoryServiceImpl);
-container.bind<XutriCategoryRepository>(TYPES.XutriCategoryRepository).to(XutriCategoryRepositoryImpl);
-
-//category section
-container.bind<CacBoPhanCategoryService>(TYPES.CacBoPhanCategoryService).to(CacBoPhanCategoryServiceImpl);
-container.bind<CacBoPhanCategoryRepository>(TYPES.CacBoPhanCategoryRepository).to(CacBoPhanCategoryRepositoryImpl);
-
-//category section
-container.bind<TongquatCategoryService>(TYPES.TongquatCategoryService).to(TongquatCategoryServiceImpl);
-container.bind<TongquatCategoryRepository>(TYPES.TongquatCategoryRepository).to(TongquatCategoryRepositoryImpl);
-
-//schedule
-container.bind<ScheduleRepository>(TYPES.ScheduleRepository).to(ScheduleRepositoryImpl);
-container.bind<ScheduleService>(TYPES.ScheduleService).to(ScheduleServiceImpl);
-
-//blueprint-schedule
-container.bind<BlueprintScheduleRepository>(TYPES.BlueprintScheduleRepository).to(BlueprintScheduleRepositoryImpl);
-container.bind<BlueprintScheduleService>(TYPES.BlueprintScheduleService).to(BlueprintScheduleServiceImpl);
 
 //ward
 container.bind<WardService>(TYPES.WardService).to(WardServiceImpl);
@@ -165,6 +108,14 @@ container.bind<SpecializationPriceRepository>(TYPES.SpecializationPriceRepositor
 //type
 container.bind<TypeService>(TYPES.TypeService).to(TypeServiceImpl);
 container.bind<TypeRepository>(TYPES.TypeRepository).to(TypeRepositoryImpl);
+
+//Schedule
+container.bind<BlueprintScheduleService>(TYPES.BlueprintScheduleService).to(BlueprintScheduleServiceImpl);
+container.bind<BlueprintScheduleRepository>(TYPES.BlueprintScheduleRepository).to(BlueprintScheduleRepositoryImpl);
+
+//Schedule
+container.bind<ScheduleService>(TYPES.ScheduleService).to(ScheduleServiceImpl);
+container.bind<ScheduleRepository>(TYPES.ScheduleRepository).to(ScheduleRepositoryImpl);
 
 //log 
 container.bind<LogRepository>(TYPES.LogRepository).to(LogRepositoryImpl);
@@ -189,9 +140,28 @@ container.bind<CommuneRepository>(TYPES.CommuneRepository).to(CommuneRepositoryI
 container.bind<DoctorService>(TYPES.DoctorService).to(DoctorServiceImpl);
 container.bind<DoctorRepository>(TYPES.DoctorRepository).to(DoctorRepositoryImpl);
 
+//Staff
+container.bind<StaffService>(TYPES.StaffService).to(StaffServiceImpl);
+container.bind<StaffRepository>(TYPES.StaffRepository).to(StaffRepositoryImpl);
+
+//Staff Account
+container.bind<StaffAccountService>(TYPES.StaffAccountService).to(StaffAccountServiceImpl);
+container.bind<StaffAccountRepository>(TYPES.StaffAccountRepository).to(StaffAccountRepositoryImpl);
+
+//Hospital
+container.bind<HospitalService>(TYPES.HospitalService).to(HospitalServiceImpl);
+container.bind<HospitalRepository>(TYPES.HospitalRepository).to(HospitalRepositoryImpl);
+
+//Operation
+container.bind<OperationService>(TYPES.OperationService).to(OperationServiceImpl);
+container.bind<OperationRepository>(TYPES.OperationRepository).to(OperationRepositoryImpl);
+
+//Role
+container.bind<RoleService>(TYPES.RoleService).to(RoleServiceImpl);
+container.bind<RoleRepository>(TYPES.RoleRepository).to(RoleRepositoryImpl);
+
 //counter 
 container.bind<CounterRepository>(TYPES.CounterRepository).to(CounterRepositoryImpl)
-
 
 // utils section
 container.bind<ResponseUtil>(TYPES.ResponseUtil).to(ResponseUtilImp);

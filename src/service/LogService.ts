@@ -1,10 +1,7 @@
-import { ScheduleDto } from './../model/ScheduleDto';
 import {injectable, inject} from 'inversify';
 import TYPES from '../types';
 import 'reflect-metadata';
-import * as _ from 'lodash';
-import { ResponseModel, Status } from '../model/ResponseDto';
-import to from '../util/promise-utils';
+import { ResponseModel } from '../model/ResponseDto';
 import { CoreService } from '../core/CoreService';
 import { LogRepository } from '../repository/LogRepository';
 import { LogDto } from '../model/LogDto';
@@ -22,7 +19,7 @@ export class LogServiceImpl extends CoreService<LogDto, any> implements LogServi
     @inject(TYPES.LogRepository)
     protected mainRepository: LogRepository;
 
-    public setMainRepository() {
-        return this.mainRepository;
+    public registerServiceName() {
+        return "log";
     }
 }

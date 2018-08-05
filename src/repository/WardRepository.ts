@@ -1,13 +1,13 @@
 import { CounterRepository } from './CounterRepository';
-import { WardSchema } from './../model/WardSchema';
-import { WardDto } from './../model/WardDto';
+import { WardSchema } from '../model/WardSchema';
+import { WardDto } from '../model/WardDto';
 import { injectable, inject } from 'inversify';
 import * as mongoose from 'mongoose';
 import 'reflect-metadata';
 import TYPES from '../types';
-import to from './../util/promise-utils';
+import to from '../util/promise-utils';
 import { CoreRepository } from '../core/CoreRepository';
-import { MongoUtils } from '../util/MongoUtils';
+import { MongoUtils } from '../util/mongo-utils';
 
 export interface WardRepository {
     findAll(): Promise<WardDto[]>;

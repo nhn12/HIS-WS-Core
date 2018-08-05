@@ -1,5 +1,5 @@
-import { ConfigRepository } from './../repository/ConfigRepository';
-import { Status } from './../model/ResponseDto';
+import { ConfigRepository } from '../repository/ConfigRepository';
+import { Status } from '../model/ResponseDto';
 import { ResponseModel } from "../model/ResponseDto";
 import { injectable, inject } from "inversify";
 import TYPES from "../types";

@@ -1,4 +1,3 @@
-import { ScheduleDto } from './../model/ScheduleDto';
 import {injectable, inject} from 'inversify';
 import TYPES from '../types';
 import 'reflect-metadata';
@@ -22,51 +21,7 @@ export class ConfigServiceImpl extends CoreService<ConfigDto ,any> implements Co
     @inject(TYPES.ConfigRepository)
     private ConfigRepository: ConfigRepository;
 
-    public setMainRepository() {
-        return this.ConfigRepository;
+    public registerServiceName() {
+        return "config";
     }
-
-
-    // public async insert(obj: any): Promise<ResponseModel<any>> {
-    //     if(!obj) {
-    //         return new ResponseModel(Status._400, "lack of data");
-    //     }
-    //     let [err, result] = await to(this.ConfigRepository.insert(obj));
-    //     if(err) {
-    //         return new ResponseModel(Status._500, "err");
-    //     }
-
-    //     return new ResponseModel(Status._200, "success", result);
-    // }
-
-    // public async delete(obj: ConfigDto): Promise<ResponseModel<any>>{
-    //     if(!obj) {
-    //         return new ResponseModel(Status._400, "lack of data");
-    //     }
-    //     let [err, result] = await to(this.ConfigRepository.delete(obj));
-    //     if(err) {
-    //         return new ResponseModel(Status._500, "err");
-    //     }
-
-    //     return new ResponseModel(Status._200, "success", result);
-    // }
-
-    // public async update(obj: ConfigDto): Promise<ResponseModel<any>> {
-    //     if(!obj) {
-    //         return new ResponseModel(Status._400, "lack of data");
-    //     }
-    //     let [err, result] = await to(this.ConfigRepository.update(obj));
-    //     if(err) {
-    //         return new ResponseModel(Status._500, "err");
-    //     }
-
-    //     return new ResponseModel(Status._200, "success", result);
-    // }
-
-  
-
-
-
-
- 
 }

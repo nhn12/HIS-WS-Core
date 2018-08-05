@@ -3,7 +3,7 @@ import { injectable, inject } from 'inversify';
 import * as mongoose from 'mongoose';
 import 'reflect-metadata';
 import TYPES from '../types';
-import to from './../util/promise-utils';
+import to from '../util/promise-utils';
 import { TypeDto } from '../model/TypeDto';
 import { TypeSchema } from '../model/TypeSchema';
 import { CoreRepository } from '../core/CoreRepository';

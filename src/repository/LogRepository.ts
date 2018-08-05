@@ -1,9 +1,9 @@
-import { LogSchema } from './../model/LogSchema';
+import { LogSchema } from '../model/LogSchema';
 import { injectable, inject } from 'inversify';
 import * as mongoose from 'mongoose';
 import 'reflect-metadata';
 import TYPES from '../types';
-import to from './../util/promise-utils';
+import to from '../util/promise-utils';
 import { ConfigSchema } from '../model/ConfigSchema';
 import { CoreRepository } from '../core/CoreRepository';
 import { LogDto } from '../model/LogDto';

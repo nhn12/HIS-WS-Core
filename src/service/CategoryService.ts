@@ -1,16 +1,14 @@
 import { injectable, inject } from 'inversify';
 import TYPES from '../types';
 import 'reflect-metadata';
-import * as _ from 'lodash';
 import { CategoryRepository } from '../repository/CategoryRepository';
 import { RequestQueryDto } from '../model/RequestQueryDto';
-import AppConstants from "../util/AppConstant"
 import { ParseUtils } from '../util/parse-utils';
 import to from '../util/promise-utils';
 import { ResponseModel, Status } from '../model/ResponseDto';
 import container from '../inversify.config';
 import { CoreRepository } from '../core/CoreRepository';
-import { ResponseUtil } from '../util/ResponseUtils';
+import { ResponseUtil } from '../util/response-utils';
 
 export interface CategoryService {
     query(obj: RequestQueryDto);

@@ -4,12 +4,9 @@ import * as bodyParser from 'body-parser';
 import TYPES from './types';
 import container from './inversify.config';
 import { logger } from './util/Logger';
-import { RegistrableController } from './controller/RegisterableController';
 import config from '../config/config';
-import { ResponseUtil } from './util/ResponseUtils';
-// import mongoose from 'mongoose';
-
-
+import { ResponseUtil } from './util/response-utils';
+import { RegistrableController } from './controller/RegisterableController';
 
 // create express application
 const app: express.Application = express();
@@ -44,7 +41,7 @@ app.use(cors({
 app.use(bodyParser.json());
 
 app.use(function (req: any, res: express.Response, next: express.NextFunction) {
-    if (req.path.indexOf("/api/login") != -1 || req.path.indexOf("/api/register") != -1) {
+    if (req.path.indexOf("/api/login") != -1 || req.path.indexOf("/api/register") != -1 || req.path.indexOf("api/staff-account/login") != -1) {
         next();
     } else {
         container.getAll<UserService>(TYPES.UserService)[0].checkRequiredLogin(req.headers).then(result => {
