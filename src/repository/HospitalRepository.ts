@@ -11,6 +11,7 @@ export interface HospitalRepository {
     insert(obj: HospitalDto[]): Promise<HospitalDto[]>;
     delete(obj: HospitalDto): Promise<HospitalDto[]>; 
     update(obj: HospitalDto): Promise<HospitalDto[]>;  
+    findOneBy(conditio: any): Promise<HospitalDto>;
 }
 
 @injectable()
@@ -26,7 +27,7 @@ export class HospitalRepositoryImpl extends CoreRepository<HospitalDto> implemen
         return [
             MongoUtils.generateJoinTable("specialization_tbl", "hospital_id", "id", "specialization"),
             MongoUtils.generateJoinTable("ward_tbl", "hospital_id", "id", "ward"),
-
+            MongoUtils.generateJoinTable("type_tbl", "hospital_type", "code", "hospital_type_obj")
         ]
     }
 

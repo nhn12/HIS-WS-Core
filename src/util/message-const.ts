@@ -6,6 +6,7 @@ export const MessageConst = {
     ERR_005: "Thông tin account bệnh viện không được rỗng",
     ERR_006: "Tên đăng nhập bệnh viện đã tồn tại",
     ERR_007: "### không được rỗng.",
+    ERR_008: "Tài khoản bị hủy kích hoạt. Vui lòng liên hện Admin để biết thêm thông tin.",
 
     MSG_001: "Read data success"
 }

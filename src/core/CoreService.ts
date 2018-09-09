@@ -57,7 +57,7 @@ export abstract class CoreService<D, R extends CoreRepository<any>> {
             return new ResponseModel(Status._500, 'ERR_001', JSON.stringify(err));
         }
 
-        return new ResponseModel(Status._200, 'MSG_001', response);
+        return new ResponseModel(Status._200, 'MSG_001', response[0]);
     }
 
     /**

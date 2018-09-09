@@ -11,6 +11,7 @@ import { MessageConst } from '../util/message-const';
 import TYPES from '../types';
 import to from '../util/promise-utils';
 import { StaffDto } from '../model/StaffDto';
+import { StaffAccountDto } from '../model/StaffAccountDto';
 
 
 export interface HospitalService {
@@ -30,6 +31,24 @@ export class HospitalServiceImpl extends CoreService<any, any> implements Hospit
 
     public registerServiceName() {
         return "hospital";
+    }
+
+    public async update(obj: HospitalDto) {
+        if(obj.status != null && obj.status != undefined) {
+            let account: StaffAccountDto = await this.staffAccountService.getAccountByHospitaId(<number>obj.id);
+            account.status = obj.status;
+            this.staffAccountService.update(account);
+        }
+        return super.update(obj);
+    }
+
+    public async delete(obj: HospitalDto) {
+        let staff = await this.staffService.findOneBy({hospital_id: obj.id});
+        let account = await this.staffAccountService.getAccountByHospitaId(<number>obj.id);
+
+        this.staffService.delete(staff);
+        this.staffAccountService.delete(account);
+        return super.delete(obj);
     }
 
     public async insert(obj: HospitalDto) {
@@ -63,10 +82,9 @@ export class HospitalServiceImpl extends CoreService<any, any> implements Hospit
 
         // Insert staff fake
         let staffDto: StaffDto = new StaffDto();
-        console.log(bv);
-        staffDto.hospital_id = bv.data[0].id;
-        staffDto.email = bv.data[0].email;
-        staffDto.name = bv.data[0].name;
+        staffDto.hospital_id = bv.data.id;
+        staffDto.email = bv.data.email;
+        staffDto.name = bv.data.name;
         staffDto.role = 4;
         let [errorStaff, responseStaff] = await to<StaffDto[]>(this.staffService.insert([staffDto]));
         if(errorStaff) {
@@ -84,8 +102,6 @@ export class HospitalServiceImpl extends CoreService<any, any> implements Hospit
             return new ResponseModel(Status._500, 'ERR_001', errorInsertAccount);
         }
 
-        return new ResponseModel(Status._200, 'MSG_001', responseInsertBV);
-
-        
+        return responseInsertBV;
     }
 }

@@ -14,6 +14,7 @@ import config from '../../config/config';
 import { StaffAccountRepository } from '../repository/StaffAccountRepository';
 import { StaffRepository } from '../repository/StaffRepository';
 import { RoleRepository } from '../repository/RoleRepository';
+import { StaffAccountDto } from '../model/StaffAccountDto';
 
 
 export interface UserService {
@@ -65,6 +66,11 @@ export class UserServiceImpl implements UserService {
             }
 
             userModel = data;
+
+            if(userModel.status == 0) {
+                return Promise.reject('ERR_008');
+            }
+
             let [erro1r, data1] = await to(this.staffRepo.findOneBy({ id:  data.staff_id}));
             if(erro1r) {
                 return Promise.reject(erro1r);
@@ -80,6 +86,14 @@ export class UserServiceImpl implements UserService {
             userModel.operation = data1.operation;
             userModel.hospital_id = data1.hospital_id;
             userModel.operation = dataRole.operation;
+
+            let account = await this.saffAccRepo.getAccountByHospitaId(userModel.hospital_id);
+            account.last_visit = new Date();
+            
+            let hospital = await this.hospitalRepo.findOneBy({id: userModel.hospital_id});
+            hospital.last_visit = new Date();
+            await this.hospitalRepo.update(hospital);
+            await this.saffAccRepo.update(account);
         }
 
         if(!userModel) {

@@ -33,8 +33,12 @@ export class BlueprintScheduleRepositoryImpl extends CoreRepository<BlueprintSch
     protected getJoinTable(): any[] {
         let ext = [];
         return [
+            { $lookup: MongoUtils.generateSubQueries('doctor_tbl', 'doctor_id', 'id', 'doctor_name', ext, null, 'name') },
             { $lookup: MongoUtils.generateSubQueries('ward_tbl', 'ward_id', 'id', 'ward_name', ext, null, 'name') },
             { $lookup: MongoUtils.generateSubQueries('specialization_tbl', 'specialization_id', 'id', 'specialization_name', ext, null, 'name') },
+            { $unwind: "$time" },
+            MongoUtils.generateJoinTable('ward_tbl', 'time.ward_id', 'id', 'time.ward_obj') ,
+            { $group : { _id : "$_id", time: { $push: "$time" } , "doctor_name": { "$first": "$doctor_name" },"id": { "$first": "$id" }, "specialization_name": { "$first": "$specialization_name" }, "date": { "$first": "$date" }}},
             ...ext];
     }
 }

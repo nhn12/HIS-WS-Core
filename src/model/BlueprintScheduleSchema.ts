@@ -10,6 +10,8 @@ export var BlueprintScheduleSchema: Schema = new Schema({
     specialization_id: Number,
     period: Number,
     hospital_id: Number,
+    date: Date,
+    time: [{ward_id: Number, start_time: String, end_time: String}],
 
     has_sync: {type: Boolean, default: false},
 

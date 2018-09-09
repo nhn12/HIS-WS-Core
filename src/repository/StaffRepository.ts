@@ -21,8 +21,13 @@ export class StaffRepositoryImpl extends CoreRepository<StaffDto> implements Sta
     public setPrimaryTable(): string {
         return 'staff_tbl'
     }
+
     public setSchema(): mongoose.Schema {
         return StaffSchema;
+    }
+
+    public async getStaffByHospital(hopitalId: Number): Promise<StaffDto> {
+        return this.findOneBy({hospital_id: hopitalId})
     }
 
     public definedIndexs() {

@@ -9,8 +9,9 @@ export var HospitalSchema: Schema = new Schema({
     address: String,
     phone: String,
     image: String,
+    hospital_type: String,
     status: {type: Boolean, default: true},
-
+    last_visit: Date,
 
     // Relationship defination
     doctor_id: [{ type: Number, ref: 'doctor_tbl' }],

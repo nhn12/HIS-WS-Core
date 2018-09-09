@@ -1,3 +1,4 @@
+import { StaffDto } from './StaffDto';
 import { RoleDto } from "./RoleDto";
 
 export class StaffAccountDto {
@@ -5,7 +6,10 @@ export class StaffAccountDto {
     public code: String;
     public username: String;
     public password: String;
-    public status: String;
+    public status: number;
     public staff_id:number;
+    public staff: StaffDto;
     public role:RoleDto;
+
+    public last_visit: Date;
 }

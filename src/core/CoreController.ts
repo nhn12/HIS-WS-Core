@@ -8,6 +8,7 @@ import { CoreService } from './CoreService';
 import { ResponseUtil } from '../util/response-utils';
 import * as express from 'express';
 import 'reflect-metadata';
+import to from '../util/promise-utils';
 
 @injectable()
 export abstract class CoreController<S extends CoreService<any, any>> {
@@ -48,8 +49,10 @@ export abstract class CoreController<S extends CoreService<any, any>> {
 
         this.app.route('/api/' + this.registerCotrollerName('url') + '/insert')
             .post(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-                const respone = await this.service.insert(req.body);
-
+                const [error,respone] = await to(this.service.insert(req.body));
+                if(error) {
+                    res.json(error);
+                }
                 if(this.registerCotrollerName() == 'registration') {
                     io.sockets.emit('registration', {});
                 }
@@ -64,7 +67,7 @@ export abstract class CoreController<S extends CoreService<any, any>> {
             });
 
         this.app.route('/api/' + this.registerCotrollerName('url') + '/update')
-            .post(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+            .put(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
                 var addresses = await this.service.update(req.body).catch(err => next(err));
                 res.json(new ResponseModel<any>(Status._200, "MSG_001", addresses));
             });

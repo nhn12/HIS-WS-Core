@@ -20,7 +20,7 @@ export class StaffAccountController extends CoreController<any> implements Regis
     }
 
     public register(_app: express.Application) {
-        super.register(_app);
+        super.register(_app, null);
         this.loginRoute();
     }
 

@@ -13,6 +13,7 @@ export var DoctorSchema: Schema = new Schema({
     district_id: Number,
     commune_id: Number,
     specialization_id: Number,
+    staff_id: {type: Number, ref: 'staff_tbl'},
     hospital_id: [{ type: Number, ref: 'hospital_tbl' }],
 
     has_sync: {type: Boolean, default: false},

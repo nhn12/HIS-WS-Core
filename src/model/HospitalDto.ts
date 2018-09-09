@@ -10,7 +10,9 @@ export class HospitalDto {
     public phone: string;
     public image: string;
     public email: string;
-    public status: boolean;
+    public status: number;
+    public hospital_type: string;
+    public last_visit: Date;
 
     public specialization: SpecializationDto[] = [];
     public ward: WardDto[] = [];

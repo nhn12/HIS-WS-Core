@@ -67,6 +67,7 @@ app.use(function (err: Error, req: express.Request, res: express.Response, next:
 });
 
 app.use(function (err: Error, req: express.Request, res: express.Response, next: express.NextFunction) {
+    console.log("Error");
     res.status(500).send('Internal Server Error');
 });
 
